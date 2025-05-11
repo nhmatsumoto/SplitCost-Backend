@@ -1,0 +1,125 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SplitCost.Application.DTOs;
+using SplitCost.Application.Interfaces;
+using System.Security.Claims;
+
+namespace SplitCost.API.Controllers
+{
+    [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ResidencesController : ControllerBase
+    {
+        private readonly ICreateResidenceUseCase _createResidenceUseCase;
+        private readonly IUpdateResidenceUseCase _updateResidenceUseCase;
+        private readonly IGetResidenceUseCase _getResidenceUseCase;
+        private readonly IRegisterResidenceOwnerUseCase _registerOwnerUseCase;
+
+        public ResidencesController(
+            ICreateResidenceUseCase createResidenceUseCase,
+            IUpdateResidenceUseCase updateResidenceUseCase,
+            IGetResidenceUseCase getResidenceUseCase,
+            IRegisterResidenceOwnerUseCase registerOwnerUseCase)
+        {
+            _createResidenceUseCase = createResidenceUseCase;
+            _updateResidenceUseCase = updateResidenceUseCase;
+            _getResidenceUseCase = getResidenceUseCase;
+            _registerOwnerUseCase = registerOwnerUseCase;
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateResidence([FromBody] CreateResidenceDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
+                var username = User.Identity?.Name ?? "unknown";
+                var email = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
+
+                if (!Guid.TryParse(userIdStr, out var userId))
+                    return Unauthorized(new { Error = "Usuário não autenticado corretamente." });
+
+                // 1. Cria a residência
+                var residenceDto = await _createResidenceUseCase.CreateResidenceAsync(dto.Name);
+
+                // 2. Registra o usuário como proprietário da residência
+                await _registerOwnerUseCase.RegisterResidenceOwnerAsync(new RegisterOwnerDto
+                {
+                    UserId = userId,
+                    Username = username,
+                    Email = email,
+                    ResidenceId = residenceDto.Id
+                });
+
+                return CreatedAtAction(nameof(GetResidence), new { id = residenceDto.Id }, residenceDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
+        [HttpPut("{residenceId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateResidence(Guid residenceId, [FromBody] UpdateResidenceDto dto)
+        {
+            if (!ModelState.IsValid || residenceId != dto.ResidenceId)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var residenceDto = await _updateResidenceUseCase.UpdateResidenceAsync(residenceId, dto.Name);
+                return Ok(residenceDto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetResidence(Guid id)
+        {
+            try
+            {
+                var residenceDto = await _getResidenceUseCase.GetByIdAsync(id);
+                if (residenceDto == null)
+                    return NotFound(new { Error = "Residência não encontrada." });
+                return Ok(residenceDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllResidences()
+        {
+            try
+            {
+                var residences = await _getResidenceUseCase.GetAllAsync();
+                return Ok(residences);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+    }
+}

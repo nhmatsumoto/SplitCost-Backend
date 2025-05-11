@@ -1,0 +1,6 @@
+@NextHome.API_HostAddress = http://localhost:5153
+
+GET {{NextHome.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
