@@ -1,6 +1,6 @@
 ﻿using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
-using SplitCost.Domain.Repository;
+using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases
 {
@@ -36,7 +36,23 @@ namespace SplitCost.Application.UseCases
                 Id = r.Id,
                 Name = r.Name,
                 CreatedAt = r.CreatedAt,
-                UpdatedAt = r.UpdatedAt
+                UpdatedAt = r.UpdatedAt,
+
+
+                Members = r.Members?.Select(m => new ResidenceMemberDto
+                {
+                    UserId = m.UserId,
+                    UserName = m.User?.Name ?? string.Empty,
+                }).ToList() ?? new List<ResidenceMemberDto>(),
+
+                Expenses = r.Expenses?.Select(e => new ExpenseDto
+                {
+                    Id = e.Id,
+                    ExpenseType = e.Type.ToString(),
+                    TotalAmount = e.Amount,
+                    Date = e.Date
+                }).ToList() ?? new List<ExpenseDto>()
+
             });
         }
     }

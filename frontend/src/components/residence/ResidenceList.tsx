@@ -12,35 +12,35 @@ import {
   ColumnDef,
 } from '@tanstack/react-table';
 import { Eye } from 'lucide-react';
-import { IngredientDto } from '../../hooks/useIngredients';
+import { ResidenceDto } from '../../hooks/useResidences';
 import Loader from '../ui/Loader';
 
-export const IngredientsList = () => {
+export const ResidenceList = () => {
   const { keycloak } = useKeycloak();
   const navigate = useNavigate();
 
   const api = useMemo(() => createApiClient(keycloak), [keycloak]);
 
-  const [ingredients, setIngredients] = useState<IngredientDto[]>([]);
+  const [restaurants, setRestaurants] = useState<ResidenceDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [globalFilter, setGlobalFilter] = useState('');
 
   useEffect(() => {
-    const fetchIngredients = async () => {
+    const fetchRestaurants = async () => {
       try {
-        const response = await api.get<IngredientDto[]>('/ingredients');
-        setIngredients(response.data);
+        const response = await api.get<ResidenceDto[]>('/restaurants');
+        setRestaurants(response.data);
       } catch (err) {
-        console.error('Erro ao buscar ingredientes:', err);
+        console.error('Erro ao buscar restaurantes:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchIngredients();
+    fetchRestaurants();
   }, [api]);
 
-  const columns: ColumnDef<IngredientDto>[] = useMemo(
+  const columns: ColumnDef<ResidenceDto>[] = useMemo(
     () => [
       {
         accessorKey: 'name',
@@ -48,14 +48,9 @@ export const IngredientsList = () => {
         cell: (info) => info.getValue(),
       },
       {
-        accessorKey: 'unitSymbol',
-        header: 'Unidade',
-        cell: (info) => info.getValue(),
-      },
-      {
-        accessorKey: 'unitPriceAmount',
-        header: 'Preço Atual',
-        cell: (info) => `R$ ${Number(info.getValue()).toFixed(2)}`,
+        accessorKey: 'totalDishesSold',
+        header: 'Pratos Vendidos',
+        cell: (info) => Number(info.getValue()).toLocaleString(),
       },
       {
         id: 'actions',
@@ -63,7 +58,7 @@ export const IngredientsList = () => {
         cell: ({ row }) => (
           <div className="text-center">
             <button
-              onClick={() => navigate(`/ingredientes/${row.original.ingredientId}`)}
+              onClick={() => navigate(`/restaurantes/${row.original.id}`)}
               className="text-[#00796B] hover:text-[#005B4D] transition-colors duration-200"
               title="Ver detalhes"
             >
@@ -76,8 +71,8 @@ export const IngredientsList = () => {
     [navigate]
   );
 
-  const table = useReactTable<IngredientDto>({
-    data: ingredients,
+  const table = useReactTable<ResidenceDto>({
+    data: restaurants,
     columns,
     state: { globalFilter },
     onGlobalFilterChange: setGlobalFilter,
@@ -91,14 +86,14 @@ export const IngredientsList = () => {
 
   return (
     <div className="space-y-6">
-      {/* Campo de busca */}
+      {/* Filtro */}
       <div className="flex justify-between items-center">
         <input
           type="text"
-          placeholder="Buscar ingrediente..."
+          placeholder="Buscar restaurante..."
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
-          className="w-full max-w-md px-4 py-2 border border-[#E0E0E0] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00796B] text-sm text-[#2E2E2E]"
+          className="w-full max-w-md px-4 py-2 border border-[#E0E0E0] rounded-lg shadow-sm focus:ring-2 focus:ring-[#00796B] focus:outline-none text-sm text-[#2E2E2E]"
         />
       </div>
 
@@ -112,7 +107,7 @@ export const IngredientsList = () => {
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
-                    className="px-6 py-3 font-semibold cursor-pointer select-none text-left"
+                    className="px-6 py-3 text-left font-semibold cursor-pointer select-none"
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                     {header.column.getIsSorted() === 'asc'
@@ -143,7 +138,7 @@ export const IngredientsList = () => {
       </div>
 
       {/* Paginação */}
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center justify-between gap-2 text-sm">
         <button
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}

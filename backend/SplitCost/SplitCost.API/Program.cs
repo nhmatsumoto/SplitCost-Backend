@@ -2,6 +2,8 @@ using Microsoft.IdentityModel.Tokens;
 using Playground.API.Middlewares;
 using Playground.Infrastructure.DependencyInjection;
 using SplitCost.Application.DependencyInjection;
+using SplitCost.Domain.Interfaces;
+using SplitCost.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Configuration
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddHttpClient<IKeycloakService, KeycloakService>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>

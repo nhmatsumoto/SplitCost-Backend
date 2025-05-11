@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace SplitCost.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ResidencesController : ControllerBase

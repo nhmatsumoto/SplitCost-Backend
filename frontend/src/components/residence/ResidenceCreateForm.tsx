@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRestaurants, CreateRestaurantDto } from '../../hooks/useRestaurants';
+import { useResidences, CreateResidenceDto } from '../../hooks/useResidences';
 
 export const RestaurantCreateForm = () => {
-  const { create } = useRestaurants();
+  const { create } = useResidences();
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
@@ -18,12 +18,12 @@ export const RestaurantCreateForm = () => {
     }
 
     try {
-      const payload: CreateRestaurantDto = { name };
+      const payload: CreateResidenceDto = { name };
       await create(payload);
-      navigate('/restaurantes');
+      navigate('/residences');
     } catch (err) {
       console.error(err);
-      setError('Erro ao criar restaurante.');
+      setError('Erro ao criar residência.');
     }
   };
 
@@ -32,7 +32,7 @@ export const RestaurantCreateForm = () => {
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Nome</label>
+        <label className="block text-sm font-medium text-gray-700">Name</label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -44,7 +44,7 @@ export const RestaurantCreateForm = () => {
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
       >
-        Criar Restaurante
+        Create
       </button>
     </form>
   );

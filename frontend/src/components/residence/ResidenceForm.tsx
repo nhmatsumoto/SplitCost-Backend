@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { useRestaurants, RestaurantDto } from '../../hooks/useRestaurants';
+import { useResidences, ResidenceDto } from '../../hooks/useResidences'
 import SuccessToast from '../ui/SuccessToast';
 import ErrorToast from '../ui/ErrorToast';
 import { useNavigate } from 'react-router-dom';
 
-export const RestaurantForm = ({ initialData }: { initialData: RestaurantDto }) => {
-  const { update } = useRestaurants();
+export const RestaurantForm = ({ initialData }: { initialData: ResidenceDto }) => {
+  const { update } = useResidences();
 
   const [name, setName] = useState(initialData.name);
-  const [totalDishesSold, setTotalDishesSold] = useState(initialData.totalDishesSold.toString());
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -18,20 +17,13 @@ export const RestaurantForm = ({ initialData }: { initialData: RestaurantDto }) 
       return;
     }
 
-    const dishesSold = parseInt(totalDishesSold, 10);
-    if (isNaN(dishesSold)) {
-      setError('Total de pratos vendidos inválido.');
-      return;
-    }
-
     try {
-      await update(initialData.restaurantId, {
-        restaurantId: initialData.restaurantId,
-        name, 
-        totalDishesSold: dishesSold,
+      await update(initialData.id, {
+        residenceId: initialData.id,
+        name
       });
       SuccessToast('Atualizado com sucesso!');
-      navigate("/restaurantes");
+      navigate("/residences");
     } catch (err) {
       ErrorToast('Erro ao atualizar restaurante!');
     }
@@ -47,16 +39,6 @@ export const RestaurantForm = ({ initialData }: { initialData: RestaurantDto }) 
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border rounded px-3 py-2 text-sm"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">Total de Pratos Vendidos</label>
-        <input
-          type="number"
-          value={totalDishesSold}
-          onChange={(e) => setTotalDishesSold(e.target.value)}
           className="w-full border rounded px-3 py-2 text-sm"
         />
       </div>

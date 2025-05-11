@@ -1,6 +1,6 @@
 ﻿using SplitCost.Domain.Entities;
 
-namespace SplitCost.Domain.Repository;
+namespace SplitCost.Domain.Interfaces;
 
 public interface IResidenceRepository
 {

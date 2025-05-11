@@ -2,15 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from '../pages/dashboard/DashboardPage';
 import ProtectedRoute from './ProtectedRoute';
 import { AppLayout } from '../components/layout/AppLayout';
-import IngredientsPage from '../pages/ingredient/IngredientsPage';
-import RecipesPage from '../pages/recipe/RecipesPage';
-import IngredientDetailsPage from '../pages/ingredient/IngredientDetailsPage';
-import IngredientCreatePage from '../pages/ingredient/IngredientCreatePage';
-import RecipeCreatePage from '../pages/recipe/RecipeCreatePage';
-import RecipeDetailsPage from '../pages/recipe/RecipeDetailsPage';
-import RestaurantsPage from '../pages/restaurant/RestaurantsPage';
-import RestaurantCreatePage from '../pages/restaurant/RestaurantCreatePage';
-import RestaurantDetailsPage from '../pages/restaurant/RestaurantDetailsPage';
+import ResidencePage from '../pages/residence/ResidencePage';
+import ResidenceCreatePage from '../pages/residence/ResidenceCreatePage';
+import ResidenceDetailsPage from '../pages/residence/ResidenceDetailsPage';
 
 const AppRoutes = () => {
   return (
@@ -29,99 +23,33 @@ const AppRoutes = () => {
         />
 
         <Route
-            path="/ingredientes/novo"
+            path="/residences"
             element={
                 <ProtectedRoute>
                     <AppLayout>
-                        <IngredientCreatePage />
+                        <ResidencePage />
                     </AppLayout>
                 </ProtectedRoute>
             }
         />
 
         <Route
-            path="/ingredientes/:id"
+            path="/residences/create"
             element={
                 <ProtectedRoute>
                     <AppLayout>
-                        <IngredientDetailsPage />
+                        <ResidenceCreatePage />
                     </AppLayout>
                 </ProtectedRoute>
             }
         />
 
         <Route
-            path="/ingredientes"
+            path="/residence/:id"
             element={
                 <ProtectedRoute>
                     <AppLayout>
-                        <IngredientsPage />
-                    </AppLayout>
-                </ProtectedRoute>
-            }
-        />
-
-        <Route
-            path="/receitas"
-            element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <RecipesPage />
-                    </AppLayout>
-                </ProtectedRoute>
-            }
-        />
-
-        <Route
-            path="/receitas/:id"
-            element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <RecipeDetailsPage />
-                    </AppLayout>
-                </ProtectedRoute>
-            }
-        />
-
-        <Route
-            path="/receitas/nova"
-            element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <RecipeCreatePage />
-                    </AppLayout>
-                </ProtectedRoute>
-            }
-        />
-
-        <Route
-            path="/restaurantes"
-            element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <RestaurantsPage />
-                    </AppLayout>
-                </ProtectedRoute>
-            }
-        />
-
-        <Route
-            path="/restaurantes/novo"
-            element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <RestaurantCreatePage />
-                    </AppLayout>
-                </ProtectedRoute>
-            }
-        />
-
-        <Route
-            path="/restaurantes/:id"
-            element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <RestaurantDetailsPage />
+                        <ResidenceDetailsPage />
                     </AppLayout>
                 </ProtectedRoute>
             }

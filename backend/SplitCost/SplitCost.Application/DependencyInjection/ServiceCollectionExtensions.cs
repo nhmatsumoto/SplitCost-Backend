@@ -13,6 +13,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGetResidenceUseCase, GetResidenceUseCase>();
         services.AddScoped<IRegisterResidenceOwnerUseCase, RegisterResidenceOwnerUseCase>();
 
+        services.AddScoped<IAppUserUseCase, CreateAppUserUseCase>();
+        
+
         return services;
     }
 }

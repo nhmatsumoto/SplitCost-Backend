@@ -1,10 +1,8 @@
 import { NavLink } from 'react-router-dom';
-import { PackageOpen, Pizza, Store, UtensilsCrossed } from 'lucide-react';
+import { HomeIcon, JapaneseYen } from 'lucide-react';
 
 const links = [
-  { to: '/ingredientes', label: 'Ingredientes', icon: PackageOpen },
-  { to: '/receitas', label: 'Receitas', icon: Pizza },
-  { to: '/restaurantes', label: 'Restaurantes', icon: Store },
+  { to: '/residences', label: 'Residences', icon: HomeIcon }
 ];
 
 export const Sidebar = () => {
@@ -12,8 +10,8 @@ export const Sidebar = () => {
     <aside className="w-64 bg-[#F4F6F8] border-r border-[#E0E0E0] h-screen p-6 flex flex-col">
       {/* Logo */}
       <div className="flex items-center gap-3 mb-8">
-        <UtensilsCrossed className="h-7 w-7 text-[#00796B]" />
-        <h1 className="text-2xl font-bold text-[#2E2E2E] tracking-tight">DishFlow</h1>
+        <JapaneseYen className="h-7 w-7 text-[#00796B]" />
+        <h1 className="text-2xl font-bold text-[#2E2E2E] tracking-tight">SplitCost</h1>
       </div>
 
       {/* Divider */}

@@ -1,15 +1,15 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useRestaurants, RestaurantDto } from '../../hooks/useRestaurants';
+import { useResidences, ResidenceDto } from '../../hooks/useResidences';
 import { useEffect, useState } from 'react';
-import { RestaurantForm } from '../../components/restaurant/RestaurantForm';
+import { RestaurantForm } from '../../components/residence/ResidenceForm';
 import ConfirmModal from '../../components/ui/ConfirmModal';
 
-const RestaurantDetailsPage = () => {
+const ResidenceDetailsPage = () => {
   const { id } = useParams<{ id: string }>(); // Tipagem explícita para id
   const navigate = useNavigate();
-  const { getById, remove } = useRestaurants();
+  const { getById, remove } = useResidences();
 
-  const [restaurant, setRestaurant] = useState<RestaurantDto | null>(null);
+  const [restaurant, setRestaurant] = useState<ResidenceDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -73,4 +73,4 @@ const RestaurantDetailsPage = () => {
   );
 };
 
-export default RestaurantDetailsPage;
+export default ResidenceDetailsPage;
