@@ -25,7 +25,7 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .Include(u => u.Residences)
                 .ThenInclude(rm => rm.Residence)
-            .Include(u => u.ExpensesPaid)
+            .Include(u => u.ResidenceExpensesPaid)
             .Include(u => u.ExpenseShares)
             .FirstOrDefaultAsync(u => u.Id == userId);
     }

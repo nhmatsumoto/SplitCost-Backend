@@ -2,6 +2,7 @@
 {
     public class CreateResidenceDto
     {
-        public string Name { get; set; }
+        public Guid UserId { get; set; }
+        public string ResidenceName { get; set; }
     }
 }

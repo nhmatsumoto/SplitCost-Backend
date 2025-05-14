@@ -61,13 +61,13 @@ namespace SplitCost.Infrastructure.Services
         private async Task<string> GetAdminTokenAsync()
         {
             using var client = new HttpClient();
-
-            var tokenEndpoint = "http://localhost:8080/realms/split-costs/protocol/openid-connect/token";
+            
+            var tokenEndpoint = _config["Keycloak:TokenEndpoint"];
 
             var content = new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("client_id", "split-costs-client"),
-                new KeyValuePair<string, string>("client_secret", "0p9aqmjYx501YZiOXW940QDoCHxa7Nbp"),
+                new KeyValuePair<string, string>("client_id", _config["Keycloak:ClientId"]),
+                new KeyValuePair<string, string>("client_secret", _config["Keycloak:ClientSecret"]),
                 new KeyValuePair<string, string>("grant_type", "client_credentials")
             });
 

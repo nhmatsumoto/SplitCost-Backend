@@ -13,13 +13,13 @@ namespace SplitCost.Application.UseCases
             _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
         }
 
-        public async Task<ResidenceDto> UpdateResidenceAsync(Guid residenceId, string name)
+        public async Task<ResidenceDto> UpdateResidenceAsync(Guid residenceId, UpdateResidenceDto residenceDto)
         {
             var residence = await _residenceRepository.GetByIdAsync(residenceId);
             if (residence == null)
                 throw new InvalidOperationException("Residência não encontrada.");
 
-            residence.Name = name;
+            residence.Name = residenceDto.Name;
             await _residenceRepository.UpdateAsync(residence);
 
             return new ResidenceDto

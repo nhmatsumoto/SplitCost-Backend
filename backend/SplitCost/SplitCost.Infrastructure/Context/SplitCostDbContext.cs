@@ -9,8 +9,8 @@ public class SplitCostDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Residence> Residences { get; set; }
     public DbSet<ResidenceMember> ResidenceMembers { get; set; }
-    public DbSet<Expense> Expenses { get; set; }
-    public DbSet<ExpenseShare> ExpenseShares { get; set; }
+    public DbSet<ResidenceExpense> ResidenceExpenses { get; set; }
+    public DbSet<ResidenceExpenseShare> ExpenseShares { get; set; }
 
     public SplitCostDbContext(DbContextOptions<SplitCostDbContext> options)
         : base(options)
@@ -21,48 +21,63 @@ public class SplitCostDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // USER ⇄ RESIDENCEMEMBER (Many-to-Many via Entity)
         modelBuilder.Entity<ResidenceMember>()
-            .HasKey(rm => new { rm.UserId, rm.ResidenceId });
+            .HasKey(rm => rm.Id);
 
         modelBuilder.Entity<ResidenceMember>()
             .HasOne(rm => rm.User)
             .WithMany(u => u.Residences)
-            .HasForeignKey(rm => rm.UserId);
+            .HasForeignKey(rm => rm.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ResidenceMember>()
             .HasOne(rm => rm.Residence)
             .WithMany(r => r.Members)
-            .HasForeignKey(rm => rm.ResidenceId);
+            .HasForeignKey(rm => rm.ResidenceId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Expense -> Residence
-        modelBuilder.Entity<Expense>()
+        // RESIDENCE ⇄ RESIDENCEEXPENSE (One-to-Many)
+        modelBuilder.Entity<ResidenceExpense>()
             .HasOne(e => e.Residence)
             .WithMany(r => r.Expenses)
-            .HasForeignKey(e => e.ResidenceId);
+            .HasForeignKey(e => e.ResidenceId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Expense -> User (quem pagou)
-        modelBuilder.Entity<Expense>()
-            .HasOne(e => e.PaidByUser)
-            .WithMany(u => u.ExpensesPaid)
+        // USER ⇄ RESIDENCEEXPENSE (RegisteredBy)
+        modelBuilder.Entity<ResidenceExpense>()
+            .HasOne(e => e.RegisteredBy)
+            .WithMany(u => u.ResidenceExpensesRegistered)
+            .HasForeignKey(e => e.RegisteredByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // USER ⇄ RESIDENCEEXPENSE (PaidBy)
+        modelBuilder.Entity<ResidenceExpense>()
+            .HasOne(e => e.PaidBy)
+            .WithMany(u => u.ResidenceExpensesPaid)
             .HasForeignKey(e => e.PaidByUserId)
-            .OnDelete(DeleteBehavior.Restrict); // evita cascade delete indesejado
+            .OnDelete(DeleteBehavior.Restrict);
 
-        // ExpenseShare -> Expense
-        modelBuilder.Entity<ExpenseShare>()
-            .HasOne(es => es.Expense)
+        // RESIDENCEEXPENSE ⇄ RESIDENCEEXPENSESHARE (One-to-Many)
+        modelBuilder.Entity<ResidenceExpenseShare>()
+            .HasOne(s => s.ResidenceExpense)
             .WithMany(e => e.Shares)
-            .HasForeignKey(es => es.ExpenseId);
+            .HasForeignKey(s => s.ResidenceExpenseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // ExpenseShare -> User
-        modelBuilder.Entity<ExpenseShare>()
-            .HasOne(es => es.User)
+        // USER ⇄ RESIDENCEEXPENSESHARE (One-to-Many)
+        modelBuilder.Entity<ResidenceExpenseShare>()
+            .HasOne(s => s.User)
             .WithMany(u => u.ExpenseShares)
-            .HasForeignKey(es => es.UserId);
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        // Enum mapeado como string
-        modelBuilder.Entity<Expense>()
-            .Property(e => e.Type)
-            .HasConversion<string>();
+        // RESIDENCE
+        modelBuilder.Entity<Residence>()
+            .HasOne(r => r.CreatedBy)
+            .WithMany()
+            .HasForeignKey(r => r.CreatedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
 

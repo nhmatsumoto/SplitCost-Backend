@@ -1,28 +1,38 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useResidences, CreateResidenceDto } from '../../hooks/useResidences';
+import { useKeycloak } from '@react-keycloak/web';
 
 export const RestaurantCreateForm = () => {
   const { create } = useResidences();
   const navigate = useNavigate();
 
-  const [name, setName] = useState('');
+  const { keycloak } = useKeycloak();
+
+  const [residenceName, setResidenceName] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name) {
+    if (!residenceName) {
       setError('O nome é obrigatório.');
       return;
     }
 
     try {
-      const payload: CreateResidenceDto = { name };
-      await create(payload);
-      navigate('/residences');
+
+      if (keycloak.authenticated) {
+        const tokenParsed = keycloak.tokenParsed;
+        const payload: CreateResidenceDto = { residenceName, userId: tokenParsed?.sub }; // Substitua 'user-id' pelo ID do usuário atual
+        await create(payload);
+        navigate('/residences');
+      }else {
+        setError('Você não está autenticado. Faça login para criar uma residência.');
+        keycloak.logout();
+      }
+
     } catch (err) {
-      console.error(err);
       setError('Erro ao criar residência.');
     }
   };
@@ -34,8 +44,8 @@ export const RestaurantCreateForm = () => {
       <div>
         <label className="block text-sm font-medium text-gray-700">Name</label>
         <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={residenceName}
+          onChange={(e) => setResidenceName(e.target.value)}
           className="w-full border px-3 py-2 rounded text-sm"
         />
       </div>

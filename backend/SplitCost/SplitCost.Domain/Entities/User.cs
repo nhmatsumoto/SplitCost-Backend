@@ -15,10 +15,13 @@ public class User : BaseEntity
     // Participação em residências (via tabela intermediária)
     public ICollection<ResidenceMember> Residences { get; set; } = new List<ResidenceMember>();
 
+    // Despesas registradas por este usuário
+    public ICollection<ResidenceExpense> ResidenceExpensesRegistered { get; set; } = new List<ResidenceExpense>();
+
     // Despesas pagas por este usuário
-    public ICollection<Expense> ExpensesPaid { get; set; } = new List<Expense>();
+    public ICollection<ResidenceExpense> ResidenceExpensesPaid { get; set; } = new List<ResidenceExpense>();
 
     // Compartilhamentos de despesas em que este usuário está envolvido
-    public ICollection<ExpenseShare> ExpenseShares { get; set; } = new List<ExpenseShare>();
+    public ICollection<ResidenceExpenseShare> ExpenseShares { get; set; } = new List<ResidenceExpenseShare>();
 
 }

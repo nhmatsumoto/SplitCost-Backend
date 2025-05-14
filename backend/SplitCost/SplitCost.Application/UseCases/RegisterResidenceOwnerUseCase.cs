@@ -1,5 +1,6 @@
 ﻿using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
+using SplitCost.Domain.Entities;
 using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases
@@ -25,7 +26,18 @@ namespace SplitCost.Application.UseCases
             if (residence == null)
                 throw new InvalidOperationException("Residência não encontrada.");
 
-            user.Id = residence.Id;  // Adicionar a associação do proprietário à residência
+            // Adicionar a associação do proprietário à residência
+            //user.Id = residence.Id;
+
+            residence.CreatedByUserId = user.Id;
+
+            residence.AddMember(new ResidenceMember
+            {
+                User = user,
+                Residence = residence,
+                JoinedAt = DateTime.Now,
+            });
+
             await _userRepository.UpdateAsync(user);
         }
     }

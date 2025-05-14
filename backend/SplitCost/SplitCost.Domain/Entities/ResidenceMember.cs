@@ -1,7 +1,11 @@
-﻿namespace SplitCost.Domain.Entities
+﻿using SplitCost.Domain.Common;
+
+namespace SplitCost.Domain.Entities
 {
-    public class ResidenceMember
+    public class ResidenceMember : BaseEntity
     {
+        public Guid Id { get; set; } 
+
         public Guid UserId { get; set; }
         public User User { get; set; } = null!;
 

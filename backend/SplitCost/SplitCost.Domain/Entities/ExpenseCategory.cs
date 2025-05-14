@@ -1,6 +1,6 @@
 ﻿namespace SplitCost.Domain.Entities
 {
-    public enum ExpenseType
+    public enum ExpenseCategory
     {
         Market,
         Pharmacy,

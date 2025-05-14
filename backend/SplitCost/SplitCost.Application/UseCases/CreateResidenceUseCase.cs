@@ -14,9 +14,9 @@ public class CreateResidenceUseCase : ICreateResidenceUseCase
         _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
     }
 
-    public async Task<ResidenceDto> CreateResidenceAsync(string name)
+    public async Task<ResidenceDto> CreateResidenceAsync(CreateResidenceDto createResidenceDto)
     {
-        var residence = new Residence(name);
+        var residence = new Residence(createResidenceDto.ResidenceName, createResidenceDto.UserId);
         await _residenceRepository.AddAsync(residence);
 
         return new ResidenceDto
@@ -26,7 +26,7 @@ public class CreateResidenceUseCase : ICreateResidenceUseCase
             CreatedAt = residence.CreatedAt,
             UpdatedAt = residence.UpdatedAt,
             Members = new List<ResidenceMemberDto>(),
-            Expenses = new List<ExpenseDto>()
+            Expenses = new List<ResidenceExpenseDto>()
         };
     }
 }

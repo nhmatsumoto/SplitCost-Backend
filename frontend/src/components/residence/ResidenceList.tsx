@@ -28,10 +28,10 @@ export const ResidenceList = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await api.get<ResidenceDto[]>('/restaurants');
+        const response = await api.get<ResidenceDto[]>('/residences');
         setRestaurants(response.data);
       } catch (err) {
-        console.error('Erro ao buscar restaurantes:', err);
+        console.error('Erro ao buscar residencias:', err);
       } finally {
         setLoading(false);
       }
@@ -40,36 +40,34 @@ export const ResidenceList = () => {
     fetchRestaurants();
   }, [api]);
 
-  const columns: ColumnDef<ResidenceDto>[] = useMemo(
-    () => [
-      {
-        accessorKey: 'name',
-        header: 'Nome',
-        cell: (info) => info.getValue(),
-      },
-      {
-        accessorKey: 'totalDishesSold',
-        header: 'Pratos Vendidos',
-        cell: (info) => Number(info.getValue()).toLocaleString(),
-      },
-      {
-        id: 'actions',
-        header: () => <div className="text-center">Ações</div>,
-        cell: ({ row }) => (
-          <div className="text-center">
-            <button
-              onClick={() => navigate(`/restaurantes/${row.original.id}`)}
-              className="text-[#00796B] hover:text-[#005B4D] transition-colors duration-200"
-              title="Ver detalhes"
-            >
-              <Eye size={18} />
-            </button>
-          </div>
-        ),
-      },
-    ],
-    [navigate]
-  );
+  const columns: ColumnDef<ResidenceDto>[] = useMemo(() => [
+    {
+      accessorKey: 'name',
+      header: 'Nome',
+      cell: (info) => info.getValue(),
+    },
+    {
+      accessorKey: 'members',
+      header: 'Membros',
+      cell: (info) => (info.getValue() as any[]).length,
+    },
+    {
+      id: 'actions',
+      header: () => <div className="text-center">Ações</div>,
+      cell: ({ row }) => (
+        <div className="text-center">
+          <button
+            onClick={() => navigate(`/residence/${row.original.id}`)}
+            className="text-[#00796B] hover:text-[#005B4D] transition-colors duration-200"
+            title="Ver detalhes"
+          >
+            <Eye size={18} />
+          </button>
+        </div>
+      ),
+    },
+  ], [navigate]);
+
 
   const table = useReactTable<ResidenceDto>({
     data: restaurants,

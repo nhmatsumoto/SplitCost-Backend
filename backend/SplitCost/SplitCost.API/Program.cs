@@ -19,8 +19,8 @@ builder.Services.AddHttpClient<IKeycloakService, KeycloakService>();
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
-        options.Authority = "http://localhost:8080/realms/next-home";
-        options.Audience = "next-home-client";
+        options.Authority = "http://localhost:8080/realms/split-costs";
+        options.Audience = "split-costs-client";
         options.RequireHttpsMetadata = false; //true em produção
 
         options.TokenValidationParameters = new TokenValidationParameters

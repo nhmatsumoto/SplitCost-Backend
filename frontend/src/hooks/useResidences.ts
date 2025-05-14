@@ -2,37 +2,50 @@ import { useCallback, useMemo } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 import { createApiClient } from '../api/client';
 
-export interface ResidenceMember {
-  userId: string,
-  userName: string,
-  isPrimary: boolean
+export interface Members {
+  userId: string;
+  userName: string;
+  isPrimary: boolean;
 }
 
-export interface Expense {
-  expenseId: string
+export interface ExpenseDto {
+  expenseId: string;
+  expenseType: string;
+  amount: number;
+  date: string;
+  isShared?: boolean; // se ainda quiser usar futuramente
+}
+
+export interface MemberDto {
+  userId: string;
+  userName: string;
+  isPrimary: boolean;
 }
 
 export interface ResidenceDto {
   id: string;
   name: string;
-  members: ResidenceMember[]; 
-  expenses: Expense[]; 
   createdAt: string;
   updatedAt: string;
+  members: MemberDto[];
+  expenses: ExpenseDto[];
 }
 
 export interface CreateResidenceDto {
-  name: string;
+  residenceName: string;
+  userId: string | undefined;
+  members?: Members[] | null;
 }
 
 export interface UpdateResidenceDto {
   residenceId: string;
   name: string;
+  expenses: ExpenseDto[];
+  members?: Members[]; 
 }
 
 export const useResidences = () => {
   const { keycloak } = useKeycloak();
-  
   const api = useMemo(() => createApiClient(keycloak), [keycloak]);
 
   const create = useCallback(
@@ -43,8 +56,8 @@ export const useResidences = () => {
   );
 
   const update = useCallback(
-    async (restaurantId: string, data: UpdateResidenceDto) => {
-      await api.put(`/residences/${restaurantId}`, data);
+    async (residenceId: string, data: UpdateResidenceDto) => {
+      await api.put(`/residences/${residenceId}`, data);
     },
     [api]
   );

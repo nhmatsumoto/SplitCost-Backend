@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace SplitCost.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ResidencesController : ControllerBase
@@ -31,7 +31,7 @@ namespace SplitCost.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateResidence([FromBody] CreateResidenceDto dto)
+        public async Task<IActionResult> CreateResidence([FromBody] CreateResidenceDto createResidenceDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -45,10 +45,9 @@ namespace SplitCost.API.Controllers
                 if (!Guid.TryParse(userIdStr, out var userId))
                     return Unauthorized(new { Error = "Usuário não autenticado corretamente." });
 
-                // 1. Cria a residência
-                var residenceDto = await _createResidenceUseCase.CreateResidenceAsync(dto.Name);
+                var residenceDto = await _createResidenceUseCase.CreateResidenceAsync(createResidenceDto);
 
-                // 2. Registra o usuário como proprietário da residência
+                //Registra o usuário logado como proprietário da residência
                 await _registerOwnerUseCase.RegisterResidenceOwnerAsync(new RegisterOwnerDto
                 {
                     UserId = userId,
@@ -69,14 +68,14 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateResidence(Guid residenceId, [FromBody] UpdateResidenceDto dto)
+        public async Task<IActionResult> UpdateResidence(Guid residenceId, [FromBody] UpdateResidenceDto updateResidencecDto)
         {
-            if (!ModelState.IsValid || residenceId != dto.ResidenceId)
+            if (!ModelState.IsValid || residenceId != updateResidencecDto.ResidenceId)
                 return BadRequest(ModelState);
 
             try
             {
-                var residenceDto = await _updateResidenceUseCase.UpdateResidenceAsync(residenceId, dto.Name);
+                var residenceDto = await _updateResidenceUseCase.UpdateResidenceAsync(residenceId, updateResidencecDto);
                 return Ok(residenceDto);
             }
             catch (InvalidOperationException ex)

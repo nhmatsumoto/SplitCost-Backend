@@ -7,12 +7,12 @@
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public List<ResidenceMemberDto> Members { get; set; }
-        public List<ExpenseDto> Expenses { get; set; }
+        public List<ResidenceExpenseDto> Expenses { get; set; }
 
         public ResidenceDto()
         {
             Members = new List<ResidenceMemberDto>();
-            Expenses = new List<ExpenseDto>();
+            Expenses = new List<ResidenceExpenseDto>();
         }
     }
 }

@@ -4,6 +4,6 @@ namespace SplitCost.Application.Interfaces
 {
     public interface ICreateResidenceUseCase
     {
-        Task<ResidenceDto> CreateResidenceAsync(string name);
+        Task<ResidenceDto> CreateResidenceAsync(CreateResidenceDto dto);
     }
 }

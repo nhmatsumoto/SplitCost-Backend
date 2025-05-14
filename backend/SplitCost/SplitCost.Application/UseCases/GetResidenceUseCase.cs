@@ -23,7 +23,23 @@ namespace SplitCost.Application.UseCases
                 Id = residence.Id,
                 Name = residence.Name,
                 CreatedAt = residence.CreatedAt,
-                UpdatedAt = residence.UpdatedAt
+                UpdatedAt = residence.UpdatedAt,
+
+                Members = residence.Members.Select(x => new ResidenceMemberDto
+                {
+                    UserId = x.UserId,
+                    UserName = x.User.Name
+                })
+                .ToList() ?? new List<ResidenceMemberDto>(),
+
+                Expenses = residence.Expenses.Select(e => new ResidenceExpenseDto
+                {
+                    Id = e.Id,
+                    ExpenseCategory = e.Category,
+                    Amount = e.Amount,
+                    Date = e.Date
+                })
+                .ToList() ?? new List<ResidenceExpenseDto>()
             };
         }
 
@@ -38,20 +54,22 @@ namespace SplitCost.Application.UseCases
                 CreatedAt = r.CreatedAt,
                 UpdatedAt = r.UpdatedAt,
 
-
                 Members = r.Members?.Select(m => new ResidenceMemberDto
                 {
                     UserId = m.UserId,
                     UserName = m.User?.Name ?? string.Empty,
-                }).ToList() ?? new List<ResidenceMemberDto>(),
+                })
+                .ToList() ?? new List<ResidenceMemberDto>(),
 
-                Expenses = r.Expenses?.Select(e => new ExpenseDto
+                Expenses = r.Expenses?.Select(e => new ResidenceExpenseDto
                 {
                     Id = e.Id,
-                    ExpenseType = e.Type.ToString(),
-                    TotalAmount = e.Amount,
-                    Date = e.Date
-                }).ToList() ?? new List<ExpenseDto>()
+                    ExpenseCategory = e.Category,
+                    Amount = e.Amount,
+                    Date = e.Date,
+                    IsSharedAmongMembers = e.IsSharedAmongMembers
+                })
+                .ToList() ?? new List<ResidenceExpenseDto>()
 
             });
         }
