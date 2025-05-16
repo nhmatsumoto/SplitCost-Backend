@@ -106,6 +106,25 @@ namespace SplitCost.API.Controllers
             }
         }
 
+
+        [HttpGet("user/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetResidenceByUserId(Guid id)
+        {
+            try
+            {
+                var residenceDto = await _getResidenceUseCase.GetByUserIdAsync(id);
+                if (residenceDto == null)
+                    return NotFound(new { Error = "Residência não encontrada." });
+                return Ok(residenceDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllResidences()

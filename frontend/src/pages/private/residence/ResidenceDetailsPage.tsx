@@ -1,13 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useResidences, ResidenceDto } from '../../hooks/useResidences';
+import { useResidences, ResidenceDto } from '../../../hooks/useResidences';
 import { useEffect, useState } from 'react';
-import { ResidenceForm } from '../../components/residence/ResidenceForm';
-import ConfirmModal from '../../components/ui/ConfirmModal';
-import Loader from '../../components/ui/Loader';
-import ExpenseList from '../../components/expenses/ExpenseList';
+import { ResidenceForm } from '../../../components/residence/ResidenceForm';
+import ConfirmModal from '../../../components/ui/ConfirmModal';
+import Loader from '../../../components/ui/Loader';
+import ExpenseList from '../../../components/expenses/ExpenseList';
 
 const ResidenceDetailsPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { residenceId } = useParams<{ residenceId: string }>();
   const navigate = useNavigate();
   const { getById, remove } = useResidences();
 
@@ -18,8 +18,8 @@ const ResidenceDetailsPage = () => {
   useEffect(() => {
     const fetchResidence = async () => {
       try {
-        if (!id) throw new Error('ID da residência não fornecido.');
-        const data = await getById(id);
+        if (!residenceId) throw new Error('ID da residência não fornecido.');
+        const data = await getById(residenceId);
         if (!data) throw new Error('Residência não encontrada.');
         setResidence(data);
       } catch (err) {
@@ -31,12 +31,12 @@ const ResidenceDetailsPage = () => {
     };
 
     fetchResidence();
-  }, [id, getById]);
+  }, [residenceId, getById]);
 
   const handleDelete = async () => {
-    if (!id) return;
+    if (!residenceId) return;
     try {
-      await remove(id);
+      await remove(residenceId);
       navigate('/residencias');
     } catch (err) {
       console.error('Erro ao excluir residência:', err);

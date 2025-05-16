@@ -1,4 +1,3 @@
-// components/residence/MemberSection.tsx
 import { useState } from 'react';
 import { MemberDto } from '../../hooks/useResidences';
 import ErrorToast from '../ui/ErrorToast';

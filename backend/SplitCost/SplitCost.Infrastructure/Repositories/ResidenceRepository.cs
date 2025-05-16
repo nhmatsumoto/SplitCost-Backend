@@ -30,6 +30,16 @@ public class ResidenceRepository : IResidenceRepository
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 
+    public async Task<Residence?> GetByUserIdAsync(Guid id)
+    {
+        return await _context.Residences
+            .Include(r => r.Members)
+                .ThenInclude(rm => rm.User)
+            .Include(r => r.Expenses)
+                .ThenInclude(e => e.Shares)
+            .FirstOrDefaultAsync(rm => rm.Id == id);
+    }
+
     public async Task UpdateAsync(Residence residence)
     {
         _context.Residences.Update(residence);

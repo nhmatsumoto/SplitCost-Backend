@@ -43,6 +43,36 @@ namespace SplitCost.Application.UseCases
             };
         }
 
+        public async Task<ResidenceDto?> GetByUserIdAsync(Guid id)
+        {
+            var residence = await _residenceRepository.GetByUserIdAsync(id);
+            if (residence == null) return null;
+
+            return new ResidenceDto
+            {
+                Id = residence.Id,
+                Name = residence.Name,
+                CreatedAt = residence.CreatedAt,
+                UpdatedAt = residence.UpdatedAt,
+
+                Members = residence.Members.Select(x => new ResidenceMemberDto
+                {
+                    UserId = x.UserId,
+                    UserName = x.User.Name
+                })
+                .ToList() ?? new List<ResidenceMemberDto>(),
+
+                Expenses = residence.Expenses.Select(e => new ResidenceExpenseDto
+                {
+                    Id = e.Id,
+                    ExpenseCategory = e.Category,
+                    Amount = e.Amount,
+                    Date = e.Date
+                })
+                .ToList() ?? new List<ResidenceExpenseDto>()
+            };
+        }
+
         public async Task<IEnumerable<ResidenceDto>> GetAllAsync()
         {
             var residences = await _residenceRepository.GetAllAsync();

@@ -1,4 +1,3 @@
-// components/residence/ExpenseForm.tsx
 import { useState } from 'react';
 import { ExpenseDto } from '../../hooks/useResidences';
 import ErrorToast from '../ui/ErrorToast';

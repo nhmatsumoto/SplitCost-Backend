@@ -1,23 +1,24 @@
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { HomeIcon, JapaneseYen } from 'lucide-react';
 
 const links = [
-  { to: '/residences', label: 'Residences', icon: HomeIcon }
+  { to: '/residence', label: 'Residence', icon: HomeIcon }
 ];
 
 export const Sidebar = () => {
   return (
     <aside className="w-64 bg-[#F4F6F8] border-r border-[#E0E0E0] h-screen p-6 flex flex-col">
-      {/* Logo */}
       <div className="flex items-center gap-3 mb-8">
         <JapaneseYen className="h-7 w-7 text-[#00796B]" />
-        <h1 className="text-2xl font-bold text-[#2E2E2E] tracking-tight">SplitCost</h1>
+        <h1 className="text-2xl font-bold text-[#2E2E2E] tracking-tight">
+          <Link to="/">
+            Split-Cost
+          </Link>
+        </h1>
       </div>
 
-      {/* Divider */}
       <div className="border-b border-[#E0E0E0] mb-6" />
 
-      {/* Navegação */}
       <nav className="flex flex-col gap-1">
         {links.map(({ to, label, icon: Icon }) => (
           <NavLink
@@ -38,10 +39,8 @@ export const Sidebar = () => {
         ))}
       </nav>
 
-      {/* Espaço para expansão futura */}
       <div className="mt-auto pt-6 border-t border-[#E0E0E0] text-xs text-[#9EA7AD]">
-        {/* <button className="hover:underline">Colapsar</button> */}
-        <p>© {new Date().getFullYear()} DishFlow</p>
+        <p>© {new Date().getFullYear()} Design By NHMatsumoto</p>
       </div>
     </aside>
   );

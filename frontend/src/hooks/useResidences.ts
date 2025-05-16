@@ -70,6 +70,14 @@ export const useResidences = () => {
     [api]
   );
 
+  const getByUserId = useCallback(
+    async (id: string): Promise<ResidenceDto | null> => {
+      const response = await api.get<ResidenceDto>(`/residences/user/${id}`);
+      return response.data;
+    },
+    [api]
+  );
+
   const getAll = useCallback(
     async (): Promise<ResidenceDto[]> => {
       const response = await api.get<ResidenceDto[]>('/residences');
@@ -85,5 +93,12 @@ export const useResidences = () => {
     [api]
   );
 
-  return { create, update, getById, getAll, remove };
+  return { 
+    create,
+    update,
+    getById,
+    getAll,
+    remove,
+    getByUserId
+  };
 };

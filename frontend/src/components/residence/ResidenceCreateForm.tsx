@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useResidences, CreateResidenceDto } from '../../hooks/useResidences';
 import { useKeycloak } from '@react-keycloak/web';
 
-export const RestaurantCreateForm = () => {
+export const ResidenceCreateForm = () => {
   const { create } = useResidences();
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export const RestaurantCreateForm = () => {
 
       if (keycloak.authenticated) {
         const tokenParsed = keycloak.tokenParsed;
-        const payload: CreateResidenceDto = { residenceName, userId: tokenParsed?.sub }; // Substitua 'user-id' pelo ID do usuário atual
+        const payload: CreateResidenceDto = { residenceName, userId: tokenParsed?.sub }; 
         await create(payload);
         navigate('/residences');
       }else {

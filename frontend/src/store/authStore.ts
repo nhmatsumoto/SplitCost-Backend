@@ -1,0 +1,34 @@
+import { create } from 'zustand';
+import { ResidenceDto } from '../hooks/useResidences';
+
+export interface UserProfile {
+  id?: string;
+  username?: string;
+  email?: string;
+  residence: ResidenceDto | null;
+}
+
+export interface UserRoles {
+  isAdmin?: boolean;
+  isOwner?: boolean;
+  isMember?: boolean;
+  // Adicione outras roles conforme necessário
+}
+
+interface AuthState {
+  isAuthenticated: boolean;
+  userProfile: UserProfile | null;
+  userRoles: UserRoles | null;
+  setAuthInfo: (isAuthenticated: boolean, userProfile: UserProfile | null, userRoles: UserRoles | null) => void;
+  clearAuthInfo: () => void;
+}
+
+const useAuthStore = create<AuthState>((set) => ({
+  isAuthenticated: false,
+  userProfile: null,
+  userRoles: null,
+  setAuthInfo: (isAuthenticated, userProfile, userRoles) => set({ isAuthenticated, userProfile, userRoles }),
+  clearAuthInfo: () => set({ isAuthenticated: false, userProfile: null, userRoles: null }),
+}));
+
+export default useAuthStore;

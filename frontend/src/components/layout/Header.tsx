@@ -2,7 +2,7 @@ import { useKeycloak } from '@react-keycloak/web';
 
 export const Header = () => {
   const { keycloak } = useKeycloak();
-
+  
   return (
     <header className="bg-[#F4F6F8] border-b border-[#E0E0E0] shadow-sm">
       <div className="px-6 py-4 flex justify-between items-center"> {/* Removido max-w-7xl */}

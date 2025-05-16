@@ -1,19 +1,6 @@
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 
-
-/* ===== Paleta de Cores do Sistema (DishFlow) =====
-
-  Primária:             #4CAF50  (Verde Matcha Moderno)
-  Secundária:           #F4F6F8  (Cinza Claro Suave - fundo geral)
-  Destaque:             #FF6B6B  (Coral Suave - alertas e botões)
-  Texto Principal:      #2E2E2E  (Antracito - para títulos e textos)
-  Neutro Médio:         #9EA7AD  (Cinza Elegante - subtítulos, datas, etc.)
-  Ênfase / CTA:         #00796B  (Azul Petróleo Moderno - botões, links principais)
-  Hover / Suporte:      #D8F3DC  (Verde Menta Claro - hover e ativos leves)
-
-====================================================== */
-
 body {
   background-color: #F4F6F8;
   color: #2E2E2E;

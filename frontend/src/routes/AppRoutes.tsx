@@ -1,55 +1,43 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Dashboard from '../pages/dashboard/DashboardPage';
 import ProtectedRoute from './ProtectedRoute';
 import { AppLayout } from '../components/layout/AppLayout';
-import ResidencePage from '../pages/residence/ResidencePage';
-import ResidenceCreatePage from '../pages/residence/ResidenceCreatePage';
-import ResidenceDetailsPage from '../pages/residence/ResidenceDetailsPage';
+import ResidenceCreatePage from '../pages/private/residence/ResidenceCreatePage';
+import ResidenceDetailsPage from '../pages/private/residence/ResidenceDetailsPage';
+import HomePage from '../pages/public/HomePage';
+import { RegisterForm } from '../components/user/RegisterForm';
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-   
         <Route
             path="/"
             element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <Dashboard />
-                    </AppLayout>
-                </ProtectedRoute>
+                <HomePage />
             }
         />
-
         <Route
-            path="/residences"
+            path="/register"
             element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <ResidencePage />
-                    </AppLayout>
-                </ProtectedRoute>
+                <RegisterForm />
             }
         />
-
         <Route
-            path="/residences/create"
-            element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <ResidenceCreatePage />
-                    </AppLayout>
-                </ProtectedRoute>
-            }
-        />
-
-        <Route
-            path="/residence/:id"
+            path="/residence"
             element={
                 <ProtectedRoute>
                     <AppLayout>
                         <ResidenceDetailsPage />
+                    </AppLayout>
+                </ProtectedRoute>
+            }
+        />
+        <Route
+            path="/residence/create"
+            element={
+                <ProtectedRoute>
+                    <AppLayout>
+                        <ResidenceCreatePage />
                     </AppLayout>
                 </ProtectedRoute>
             }

@@ -1,23 +1,41 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import useAuthGuard from "../hooks/useAuthGuard";
 import Loader from "../components/ui/Loader";
+import { useLocation, useNavigate } from "react-router-dom";
+import useAuthStore from "../store/authStore"; 
 
 interface Props {
   children: ReactNode;
 }
 
 const ProtectedRoute = ({ children }: Props) => {
-  const { isAuthenticated, initialized } = useAuthGuard();
+  const { isAuthenticated, initialized } = useAuthGuard(); 
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  if (!initialized) return <Loader />;
-  if (!isAuthenticated) return (<section className="flex flex-col gap-4 items-center my-8">
-      <div className="w-16 h-16 border-l-2 border-t-2 border-blue-500 font-bold animate-spin rounded-full"></div>
-      <span className="bg-gradient-to-r from-blue-500 to-slate-300 bg-clip-text text-transparent animate-teleport">
-        <div>Redirecionando para login...</div>
-      </span>
-  </section>);
+  const residenceId = useAuthStore((state) => state.userProfile?.residence?.id); // Acessa o ID do usuário do Zustand
 
-  return <>{children}</>;
+  useEffect(() => {
+    if (initialized && isAuthenticated) {
+      const redirectTo = `/residence/${residenceId}`;
+      if (location.pathname !== redirectTo) {
+        navigate("/residence", { replace: true });
+      }
+    } else if (initialized && !isAuthenticated) {
+     
+      navigate("/SemPermissao", { state: { from: location }, replace: true });
+    }
+  }, [initialized, isAuthenticated, navigate, location]);
+
+  if (!initialized) {
+    return <Loader />;
+  }
+
+  if (isAuthenticated) {
+    return <>{children}</>;
+  }
+
+  return null;
 };
 
 export default ProtectedRoute;
