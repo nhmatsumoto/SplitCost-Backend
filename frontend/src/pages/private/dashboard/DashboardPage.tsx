@@ -1,4 +1,3 @@
-import { ResidenceList } from "../../../components/residence/ResidenceList";
 import useAuthStore from "../../../store/authStore";
 
 const Dashboard = () => {
@@ -7,7 +6,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <ResidenceList />
       {user?.username && (
         <div className="mt-4 text-center">
           <h2 className="text-2xl font-bold text-gray-800">

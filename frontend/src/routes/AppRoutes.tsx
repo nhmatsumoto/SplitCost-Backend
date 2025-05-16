@@ -1,10 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ProtectedRoute from './ProtectedRoute';
-import { AppLayout } from '../components/layout/AppLayout';
-import ResidenceCreatePage from '../pages/private/residence/ResidenceCreatePage';
-import ResidenceDetailsPage from '../pages/private/residence/ResidenceDetailsPage';
 import HomePage from '../pages/public/HomePage';
-import { RegisterForm } from '../components/user/RegisterForm';
+import LoginPage from '../pages/public/LoginPage';
+import ProfilePage from '../pages/private/user/ProfilePage';
+import { AppLayout } from '../components/layout/AppLayout';
 
 const AppRoutes = () => {
   return (
@@ -13,36 +11,25 @@ const AppRoutes = () => {
         <Route
             path="/"
             element={
+              <AppLayout>
                 <HomePage />
+              </AppLayout>
             }
         />
         <Route
-            path="/register"
+            path="/login"
             element={
-                <RegisterForm />
+              <LoginPage />
             }
         />
         <Route
-            path="/residence"
+            path="/profile"
             element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <ResidenceDetailsPage />
-                    </AppLayout>
-                </ProtectedRoute>
+              <AppLayout>
+                <ProfilePage />
+              </AppLayout>  
             }
         />
-        <Route
-            path="/residence/create"
-            element={
-                <ProtectedRoute>
-                    <AppLayout>
-                        <ResidenceCreatePage />
-                    </AppLayout>
-                </ProtectedRoute>
-            }
-        />
-
       </Routes>
     </BrowserRouter>
   );

@@ -1,11 +1,16 @@
+import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { ReactKeycloakProvider } from '@react-keycloak/web'
-import keycloak from './configuration/keycloak'
-import './index.css'
 import AppRoutes from './routes/AppRoutes'
+import { AuthProvider } from 'react-oidc-context';
+import './index.css'
+import UserDataLoader from './components/auth/UserDataLoader';
+import oidcConfig from './configuration/oidcConfig';
 
 createRoot(document.getElementById('root')!).render(
-    <ReactKeycloakProvider authClient={keycloak}>
+  <React.StrictMode>
+    <AuthProvider {...oidcConfig}>
+      <UserDataLoader />
       <AppRoutes />
-    </ReactKeycloakProvider>
+    </AuthProvider>
+  </React.StrictMode>
 )

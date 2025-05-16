@@ -1,11 +1,10 @@
 import { create } from 'zustand';
-import { ResidenceDto } from '../hooks/useResidences';
+
 
 export interface UserProfile {
   id?: string;
   username?: string;
   email?: string;
-  residence: ResidenceDto | null;
 }
 
 export interface UserRoles {
