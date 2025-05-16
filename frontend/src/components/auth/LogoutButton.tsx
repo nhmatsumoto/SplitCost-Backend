@@ -7,11 +7,10 @@ const LogoutButton: React.FC = () => {
     const logoutUser = useUserStore((state) => state.logoutUser);
 
     const handleLogout = () => {
-        signoutRedirect();
-        // Limpa as informações do usuário do store ao fazer logout
         logoutUser();
+        signoutRedirect();
     };
-  return <button onClick={handleLogout}>Sair</button>;
+  return <button className="" onClick={handleLogout}>Sair</button>;
 };
 
 export default LogoutButton;

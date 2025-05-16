@@ -1,6 +1,17 @@
 import { create } from 'zustand';
 
-// Ou definir tipo mais específico para o objeto de usuário
+export interface UserProfile {
+  id?: string;
+  username?: string;
+  email?: string;
+}
+
+export interface UserRoles {
+  isAdmin?: boolean;
+  isOwner?: boolean;
+  isMember?: boolean;
+}
+
 interface UserState {
   user: any | null; 
   setUser: (user: any | null) => void;

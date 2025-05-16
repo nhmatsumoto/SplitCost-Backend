@@ -1,7 +1,10 @@
-import { useKeycloak } from '@react-keycloak/web';
+import { useAuth } from "react-oidc-context";
+import LogoutButton from "../auth/LogoutButton";
+import LoginButton from "../auth/LoginButton";
 
 export const Header = () => {
-  const { keycloak } = useKeycloak();
+
+  const { isAuthenticated, user } = useAuth();
   
   return (
     <header className="bg-[#F4F6F8] border-b border-[#E0E0E0] shadow-sm">
@@ -9,14 +12,17 @@ export const Header = () => {
         <h1 className="text-2xl font-bold text-[#2E2E2E] tracking-tight">Painel</h1>
         <div className="flex items-center gap-5 justify-end">
           <span className="text-sm text-[#9EA7AD]">
-            {keycloak.tokenParsed?.preferred_username || 'Usuário'}
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <span className="text-[#2E2E2E]">{user?.profile.name}</span>
+                <LogoutButton />
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <LoginButton />
+              </div>
+            )}
           </span>
-          <button
-            className="text-sm font-medium text-[#FF6B6B] hover:text-[#C94A4A] transition-colors duration-200"
-            onClick={() => keycloak.logout()}
-          >
-            Sair
-          </button>
         </div>
       </div>
     </header>

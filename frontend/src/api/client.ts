@@ -1,14 +1,17 @@
 import axios from 'axios';
-import Keycloak from 'keycloak-js';
+import { useAuth } from 'react-oidc-context';
 
-export const createApiClient = (keycloak?: Keycloak) => {
+export const createApiClient = () => {
+
+  const { isAuthenticated, user } = useAuth();
+
   const api = axios.create({
     baseURL: 'https://localhost:7041/api',
   });
 
   api.interceptors.request.use((config) => {
-    if (keycloak?.token) {
-      config.headers.Authorization = `Bearer ${keycloak.token}`;
+    if (isAuthenticated && user) {
+      config.headers.Authorization = `Bearer ${user.refresh_token}`;
     }
     return config;
   });

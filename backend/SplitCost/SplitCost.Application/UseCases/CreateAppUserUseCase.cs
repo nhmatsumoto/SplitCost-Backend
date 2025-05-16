@@ -1,4 +1,5 @@
-﻿using SplitCost.Application.Interfaces;
+﻿using SplitCost.Application.DTOs;
+using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Interfaces;
 
@@ -15,15 +16,21 @@ namespace SplitCost.Application.UseCases
             _keycloakService = keycloakService;
         }
 
-        public async Task<Guid> RegisterUserAsync(string name, string email, string password)
+        public async Task<Guid> RegisterUserAsync(RegisterUserDto registerUserDto)
         {
-            var keycloakUserId = await _keycloakService.CreateUserAsync(email, name, password);
+            var keycloakUserId = await _keycloakService.CreateUserAsync(
+                registerUserDto.Username, 
+                registerUserDto.FirstName, 
+                registerUserDto.LastName, 
+                registerUserDto.Email, 
+                registerUserDto.Password
+            );
 
             var usuario = new User
             {
                 Id = Guid.Parse(keycloakUserId),
-                Name = name,
-                Email = email
+                Name = string.Concat(registerUserDto.FirstName, " ", registerUserDto.LastName),
+                Email = registerUserDto.Email
             };
 
             await _usuarioRepository.AddAsync(usuario);

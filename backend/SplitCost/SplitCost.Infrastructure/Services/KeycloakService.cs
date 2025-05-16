@@ -17,7 +17,7 @@ namespace SplitCost.Infrastructure.Services
             _config = config;
         }
 
-        public async Task<string> CreateUserAsync(string email, string nome, string senha)
+        public async Task<string> CreateUserAsync(string username, string firstName, string lastName, string email, string password)
         {
             var token = await GetAdminTokenAsync();
 
@@ -30,13 +30,15 @@ namespace SplitCost.Infrastructure.Services
             {
                 username = email,
                 email = email,
-                firstName = nome,
+                firstName = firstName,
+                lastName = lastName,
                 enabled = true,
+                emailVerified = true,
                 credentials = new[]
                 {
                     new {
                         type = "password",
-                        value = senha,
+                        value = password,
                         temporary = false
                     }
                 }

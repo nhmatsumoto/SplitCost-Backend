@@ -2,6 +2,6 @@
 {
     public interface IKeycloakService
     {
-        Task<string> CreateUserAsync(string email, string userName, string password);
+        Task<string> CreateUserAsync(string username, string firstName, string lastName, string email, string password);
     }
 }

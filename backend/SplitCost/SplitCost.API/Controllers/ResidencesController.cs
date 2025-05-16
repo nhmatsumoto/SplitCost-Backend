@@ -125,19 +125,19 @@ namespace SplitCost.API.Controllers
             }
         }
 
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllResidences()
-        {
-            try
-            {
-                var residences = await _getResidenceUseCase.GetAllAsync();
-                return Ok(residences);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
+        //[HttpGet]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //public async Task<IActionResult> GetAllResidences()
+        //{
+        //    try
+        //    {
+        //        var residences = await _getResidenceUseCase.GetAllAsync();
+        //        return Ok(residences);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { Error = ex.Message });
+        //    }
+        //}
     }
 }

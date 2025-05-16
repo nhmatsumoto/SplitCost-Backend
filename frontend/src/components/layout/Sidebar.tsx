@@ -1,8 +1,11 @@
 import { Link, NavLink } from 'react-router-dom';
-import { HomeIcon, JapaneseYen } from 'lucide-react';
+import { BadgeJapaneseYenIcon, HouseIcon, JapaneseYen, PersonStandingIcon, UserPlusIcon } from 'lucide-react';
 
 const links = [
-  { to: '/residence', label: 'Residence', icon: HomeIcon }
+  { to: '/house', label: 'House', icon: HouseIcon },
+  { to: '/expenses', label: 'Expenses', icon: BadgeJapaneseYenIcon },
+  { to: '/profile', label: 'Profile', icon: PersonStandingIcon },
+  { to: '/register', label: 'Register', icon: UserPlusIcon }
 ];
 
 export const Sidebar = () => {

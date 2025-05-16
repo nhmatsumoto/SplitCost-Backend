@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
 
@@ -17,10 +16,17 @@ namespace SplitCost.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDto dto)
+        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
         {
-            var userId = await _appUserUseCase.RegisterUserAsync(dto.Name, dto.Email, dto.Password);
-            return Ok(new { userId });
+            // Criar validação com fluent Validation para validar informações de criação do usuário
+
+            if(registerUserDto.Password == registerUserDto.ConfirmPassword)
+            {
+                var userId = await _appUserUseCase.RegisterUserAsync(registerUserDto);
+                return Ok(new { userId });
+            }
+
+            return BadRequest("password invalid");
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace SplitCost.Application.Interfaces
+﻿using SplitCost.Application.DTOs;
+
+namespace SplitCost.Application.Interfaces
 {
     public interface IAppUserUseCase
     {
-        Task<Guid> RegisterUserAsync(string nome, string email, string senha);
+        Task<Guid> RegisterUserAsync(RegisterUserDto registerUserDto);
     }
 }

@@ -45,8 +45,8 @@
 // }
 
 // export const useResidences = () => {
-//   const { keycloak } = useKeycloak();
-//   const api = useMemo(() => createApiClient(keycloak), [keycloak]);
+
+//   const api = createApiClient();
 
 //   const create = useCallback(
 //     async (data: CreateResidenceDto) => {
