@@ -6,6 +6,7 @@ import ProtectedRoute from './ProtectedRoute';
 import HousePage from '../pages/private/HousePage';
 import ExpensesPage from '../pages/private/ExpensesPage';
 import RegistrationForm from '../pages/public/RegistrationForm';
+import CreateResidenceForm from '../pages/private/CreateResidenceForm';
 
 const AppRoutes = () => {
   return (
@@ -31,7 +32,7 @@ const AppRoutes = () => {
             path="/register"
             element={
               <AppLayout>
-                <ProtectedRoute children={<RegistrationForm />} />
+                <RegistrationForm />
               </AppLayout>  
             }
         />
@@ -40,6 +41,14 @@ const AppRoutes = () => {
             element={
               <AppLayout>
                 <ProtectedRoute children={<HousePage />} />
+              </AppLayout>  
+            }
+        />
+        <Route
+            path="/house/create"
+            element={
+              <AppLayout>
+                <ProtectedRoute children={<CreateResidenceForm />} />
               </AppLayout>  
             }
         />

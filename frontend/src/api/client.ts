@@ -11,7 +11,7 @@ export const createApiClient = () => {
 
   api.interceptors.request.use((config) => {
     if (isAuthenticated && user) {
-      config.headers.Authorization = `Bearer ${user.refresh_token}`;
+      config.headers.Authorization = `Bearer ${user.access_token}`;
     }
     return config;
   });

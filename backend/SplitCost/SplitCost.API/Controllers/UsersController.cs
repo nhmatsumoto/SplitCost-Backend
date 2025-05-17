@@ -2,31 +2,37 @@
 using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
 
-namespace SplitCost.API.Controllers
+namespace SplitCost.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class UsersController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    private readonly IAppUserUseCase _appUserUseCase;
+
+    public UsersController(IAppUserUseCase appUserUseCase)
     {
-        private readonly IAppUserUseCase _appUserUseCase;
+        _appUserUseCase = appUserUseCase;
+    }
 
-        public UsersController(IAppUserUseCase appUserUseCase)
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
+    {
+        // Criar validação com fluent Validation para validar informações de criação do usuário
+
+        if(registerUserDto.Password == registerUserDto.ConfirmPassword)
         {
-            _appUserUseCase = appUserUseCase;
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
-        {
-            // Criar validação com fluent Validation para validar informações de criação do usuário
-
-            if(registerUserDto.Password == registerUserDto.ConfirmPassword)
+            try
             {
                 var userId = await _appUserUseCase.RegisterUserAsync(registerUserDto);
                 return Ok(new { userId });
             }
-
-            return BadRequest("password invalid");
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
+        return BadRequest();
     }
 }
