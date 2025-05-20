@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { CreateResidenceDto, useResidences } from '../../hooks/useResidences'; 
-import { useAuth } from "react-oidc-context";
+import { AddressDto, CreateResidenceDto, useResidences } from '../../hooks/useResidences';
+import { useAuth } from 'react-oidc-context';
+
 interface CreateResidenceFormProps {
   onSuccess?: () => void;
   onError?: (message: string) => void;
@@ -8,61 +9,90 @@ interface CreateResidenceFormProps {
 
 const CreateResidenceForm: React.FC<CreateResidenceFormProps> = ({ onSuccess, onError }) => {
   const [residenceName, setResidenceName] = useState('');
+  const [address, setAddress] = useState<Omit<AddressDto, 'id'>>({
+    street: '',
+    number: '',
+    apartment: '',
+    city: '',
+    prefecture: '',
+    country: '',
+    postalCode: '',
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { create } = useResidences();
+  const { create: createResidence } = useResidences();
   const { user } = useAuth();
 
   const handleResidenceNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setResidenceName(e.target.value);
   }, []);
 
+  const handleAddressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAddress((prevAddress) => ({
+      ...prevAddress,
+      [name]: value,
+    }));
+  }, []);
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
+      e.preventDefault();
+      setLoading(true);
+      setError(null);
 
-        const userId = user?.profile?.sub;
+      const userId = user?.profile?.sub;
 
-        if (!userId) {
+      if (!userId) {
         setError('ID do usuário não encontrado. Por favor, faça login novamente.');
         setLoading(false);
         return;
-        }
+      }
 
-        const payload: CreateResidenceDto = {
+      const payload: CreateResidenceDto = {
         residenceName: residenceName,
         userId: userId,
-        };
+        address: {
+          ...address
+        },
+      };
 
-        try {
-            await create(payload);
-            console.log('Residência criada com sucesso!', payload);
-            if (onSuccess) {
-                onSuccess();
-            }
-            setResidenceName(''); // Clear residence name input
-        } catch (err: any) {
-            console.error('Erro ao criar residência:', err);
-            setError(err?.response?.data?.message || 'Ocorreu um erro ao criar a residência.');
-            if (onError) {
-                onError(err?.response?.data?.message || 'Ocorreu um erro ao criar a residência.');
-            }
-        } finally {
-            setLoading(false);
+      try {
+        await createResidence(payload);
+        console.log('Residência criada com sucesso!', payload);
+        if (onSuccess) {
+          onSuccess();
         }
+        setResidenceName('');
+        setAddress({
+          street: '',
+          number: '',
+          apartment: '',
+          city: '',
+          prefecture: '',
+          country: '',
+          postalCode: '',
+        });
+      } catch (err: any) {
+        console.error('Erro ao criar residência:', err);
+        setError(err?.response?.data?.message || 'Ocorreu um erro ao criar a residência.');
+        if (onError) {
+          onError(err?.response?.data?.message || 'Ocorreu um erro ao criar a residência.');
+        }
+      } finally {
+        setLoading(false);
+      }
     },
-    [create, residenceName, user?.profile.sub, onSuccess, onError]
+    [createResidence, residenceName, user?.profile?.sub, address, onSuccess, onError]
   );
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
-        <h2 className="block text-gray-700 text-xl font-bold mb-4">Cadastrar Residência</h2>
+      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-lg">
+        <h2 className="block text-gray-700 text-xl font-bold mb-4">Cadastrar Residência com Endereço</h2>
         {error && <p className="text-red-500 text-sm italic mb-4">{error}</p>}
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="mb-4">
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div>
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="residenceName">
               Nome da Residência:
             </label>
@@ -76,6 +106,109 @@ const CreateResidenceForm: React.FC<CreateResidenceFormProps> = ({ onSuccess, on
               required
             />
           </div>
+
+          <div>
+            <h3 className="block text-gray-700 text-lg font-bold mb-2">Endereço da Residência</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="street">
+                  Rua:
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="street"
+                  type="text"
+                  name="street"
+                  value={address.street}
+                  onChange={handleAddressChange}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="number">
+                  Número:
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="number"
+                  type="text"
+                  name="number"
+                  value={address.number}
+                  onChange={handleAddressChange}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="apartment">
+                  Apartamento/Complemento:
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="apartment"
+                  type="text"
+                  name="apartment"
+                  value={address.apartment}
+                  onChange={handleAddressChange}
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="city">
+                  Cidade:
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="city"
+                  type="text"
+                  name="city"
+                  value={address.city}
+                  onChange={handleAddressChange}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="prefecture">
+                  Estado/Província/Prefeitura:
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="prefecture"
+                  type="text"
+                  name="prefecture"
+                  value={address.prefecture}
+                  onChange={handleAddressChange}
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="country">
+                  País:
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="country"
+                  type="text"
+                  name="country"
+                  value={address.country}
+                  onChange={handleAddressChange}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="postalCode">
+                  CEP/Código Postal:
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="postalCode"
+                  type="text"
+                  name="postalCode"
+                  value={address.postalCode}
+                  onChange={handleAddressChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
           <button
             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
               loading ? 'opacity-50 cursor-not-allowed' : ''

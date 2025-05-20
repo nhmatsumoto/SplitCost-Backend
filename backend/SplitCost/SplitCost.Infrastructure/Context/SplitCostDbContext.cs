@@ -9,8 +9,9 @@ public class SplitCostDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Residence> Residences { get; set; }
     public DbSet<ResidenceMember> ResidenceMembers { get; set; }
-    public DbSet<ResidenceExpense> ResidenceExpenses { get; set; }
+    public DbSet<Expense> ResidenceExpenses { get; set; }
     public DbSet<ResidenceExpenseShare> ExpenseShares { get; set; }
+    public DbSet<Address> Addresses { get; set; }
 
     public SplitCostDbContext(DbContextOptions<SplitCostDbContext> options)
         : base(options)
@@ -38,21 +39,21 @@ public class SplitCostDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         // RESIDENCE ⇄ RESIDENCEEXPENSE (One-to-Many)
-        modelBuilder.Entity<ResidenceExpense>()
+        modelBuilder.Entity<Expense>()
             .HasOne(e => e.Residence)
             .WithMany(r => r.Expenses)
             .HasForeignKey(e => e.ResidenceId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // USER ⇄ RESIDENCEEXPENSE (RegisteredBy)
-        modelBuilder.Entity<ResidenceExpense>()
+        modelBuilder.Entity<Expense>()
             .HasOne(e => e.RegisteredBy)
             .WithMany(u => u.ResidenceExpensesRegistered)
             .HasForeignKey(e => e.RegisteredByUserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // USER ⇄ RESIDENCEEXPENSE (PaidBy)
-        modelBuilder.Entity<ResidenceExpense>()
+        modelBuilder.Entity<Expense>()
             .HasOne(e => e.PaidBy)
             .WithMany(u => u.ResidenceExpensesPaid)
             .HasForeignKey(e => e.PaidByUserId)
@@ -78,6 +79,13 @@ public class SplitCostDbContext : DbContext
             .WithMany()
             .HasForeignKey(r => r.CreatedByUserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // ADDRRESS ⇄ RESIDENCE (One-to-One)
+        modelBuilder.Entity<Residence>()
+        .HasOne(r => r.Address)
+        .WithOne(a => a.Residence)
+        .HasForeignKey<Residence>(r => r.AddressId);
+
     }
 
 

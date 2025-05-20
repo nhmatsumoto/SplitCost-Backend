@@ -45,7 +45,7 @@ namespace SplitCost.API.Controllers
                 if (!Guid.TryParse(userIdStr, out var userId))
                     return Unauthorized(new { Error = "Usuário não autenticado corretamente." });
 
-                var residenceDto = await _createResidenceUseCase.CreateResidenceAsync(createResidenceDto);
+                var residenceDto = await _createResidenceUseCase.CreateResidenceAsync(createResidenceDto, userId);
 
                 //Registra o usuário logado como proprietário da residência
                 await _registerOwnerUseCase.RegisterResidenceOwnerAsync(new RegisterOwnerDto

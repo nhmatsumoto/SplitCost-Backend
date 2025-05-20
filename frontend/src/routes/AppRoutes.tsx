@@ -7,6 +7,9 @@ import HousePage from '../pages/private/HousePage';
 import ExpensesPage from '../pages/private/ExpensesPage';
 import RegistrationForm from '../pages/public/RegistrationForm';
 import CreateResidenceForm from '../pages/private/CreateResidenceForm';
+import CreateExpenseForm from '../pages/private/CreateExpenseForm';
+import TransactionsPage from '../pages/private/TransactionsPage';
+import IncomesPage from '../pages/private/IcomesPage';
 
 const AppRoutes = () => {
   return (
@@ -18,6 +21,22 @@ const AppRoutes = () => {
               <AppLayout>
                 <HomePage />
               </AppLayout>
+            }
+        />
+        <Route
+            path="/transactions"
+            element={
+              <AppLayout>
+                <ProtectedRoute children={<TransactionsPage />} />
+              </AppLayout>  
+            }
+        />
+        <Route
+            path="/incomes"
+            element={
+              <AppLayout>
+                <ProtectedRoute children={<IncomesPage />} />
+              </AppLayout>  
             }
         />
         <Route
@@ -57,6 +76,14 @@ const AppRoutes = () => {
             element={
               <AppLayout>
                 <ProtectedRoute children={<ExpensesPage />} />
+              </AppLayout>  
+            }
+        />
+        <Route
+            path="/expense/create"
+            element={
+              <AppLayout>
+                <ProtectedRoute children={<CreateExpenseForm />} />
               </AppLayout>  
             }
         />

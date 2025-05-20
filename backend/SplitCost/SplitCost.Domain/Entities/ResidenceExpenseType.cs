@@ -1,9 +1,8 @@
-﻿namespace SplitCost.Domain.Entities
+﻿namespace SplitCost.Domain.Entities;
+
+public enum ResidenceExpenseType
 {
-    public enum ResidenceExpenseType
-    {
-        Fixed,
-        Variable,
-        Occasional
-    }
+    Fixed,
+    Variable,
+    Occasional
 }

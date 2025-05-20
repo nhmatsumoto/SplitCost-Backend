@@ -1,18 +1,24 @@
 ﻿using SplitCost.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace SplitCost.Domain.Entities
+namespace SplitCost.Domain.Entities;
+
+public class ResidenceExpenseShare : BaseEntity
 {
-    public class ResidenceExpenseShare : BaseEntity
-    {
-        public Guid Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
 
-        public Guid ResidenceExpenseId { get; set; }
-        public ResidenceExpense ResidenceExpense { get; set; } = null!;
+    [ForeignKey("ResidenceExpense")]
+    [Column("ResidenceExpenseId")]
+    public Guid ResidenceExpenseId { get; set; }
+    public Expense ResidenceExpense { get; set; } = null!;
 
-        public Guid UserId { get; set; }
-        public User User { get; set; } = null!;
+    [ForeignKey("User")]
+    [Column("UserId")]
+    public Guid UserId { get; set; }
+    public User User { get; set; } = null!;
 
-        public decimal Amount { get; set; }
-    }
-
+    public decimal Amount { get; set; }
 }

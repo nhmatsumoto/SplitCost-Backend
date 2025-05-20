@@ -1,17 +1,35 @@
 ﻿using SplitCost.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SplitCost.Domain.Entities;
 
+[Table("Residences")]
 public class Residence : BaseEntity
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
+
+    [Required]
+    [MaxLength(200)]
+    [Column("Name")]
     public string Name { get; set; } = null!;
 
     // Navigation EF Core
+    // Foreign Key for Address
+    [ForeignKey("Address")]
+    [Column("AddressId")]
+    public Guid AddressId { get; set; }
+    public Address Address { get; set; } = null!;
+
+    [ForeignKey("CreatedBy")]
+    [Column("CreatedByUserId")]
     public Guid CreatedByUserId { get; set; }
-    public User CreatedBy { get; set; }
+    public User CreatedBy { get; set; } = null!;
+
     public ICollection<ResidenceMember> Members { get; set; } = new List<ResidenceMember>();
-    public ICollection<ResidenceExpense> Expenses { get; set; } = new List<ResidenceExpense>();
+    public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
     private Residence() { }
 
@@ -39,10 +57,16 @@ public class Residence : BaseEntity
         Members.Add(residenceMember);
     }
 
-    public void AddExpense(ResidenceExpense expense)
+    public void AddExpense(Expense expense)
     {
         if (expense == null) throw new ArgumentNullException(nameof(expense));
         expense.ResidenceId = this.Id;
         Expenses.Add(expense);
+    }
+
+    public void AddAdress(Address address)
+    {
+        if(address == null) throw new ArgumentNullException(nameof(address));
+        this.Address = address;
     }
 }

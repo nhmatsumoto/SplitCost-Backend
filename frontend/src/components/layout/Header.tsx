@@ -1,26 +1,28 @@
 import { useAuth } from "react-oidc-context";
 import LogoutButton from "../auth/LogoutButton";
 import LoginButton from "../auth/LoginButton";
+import { Link } from 'react-router-dom';
+import { User as UserIcon } from 'lucide-react'; // Importe o ícone de usuário
 
 export const Header = () => {
-
   const { isAuthenticated, user } = useAuth();
-  
+
   return (
     <header className="bg-[#F4F6F8] border-b border-[#E0E0E0] shadow-sm">
-      <div className="px-6 py-4 flex justify-between items-center"> {/* Removido max-w-7xl */}
-        <h1 className="text-2xl font-bold text-[#2E2E2E] tracking-tight">Painel</h1>
-        <div className="flex items-center gap-5 justify-end">
+      <div className="px-6 py-4 flex justify-between items-center">
+        <Link to="/" className="text-2xl font-bold text-[#2E2E2E] tracking-tight">Painel</Link>
+        <div className="flex items-center gap-5">
+          {isAuthenticated && (
+            <Link to="/profile" className="flex items-center gap-2 text-sm text-[#2E2E2E] hover:underline">
+              <UserIcon className="h-4 w-4" />
+              {user?.profile.name}
+            </Link>
+          )}
           <span className="text-sm text-[#9EA7AD]">
             {isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                <span className="text-[#2E2E2E]">{user?.profile.name}</span>
-                <LogoutButton />
-              </div>
+              <LogoutButton className="bg-red-500 text-white px-4 py-2 rounded" />
             ) : (
-              <div className="flex items-center gap-2">
-                <LoginButton />
-              </div>
+              <LoginButton className="bg-blue-500 text-white px-4 py-2 rounded" />
             )}
           </span>
         </div>

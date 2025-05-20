@@ -41,6 +41,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IResidenceRepository, ResidenceRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAddressRepository, AddressRepository>();
 
         //services.AddScoped<IKeycloakService, KeycloakService>();
 

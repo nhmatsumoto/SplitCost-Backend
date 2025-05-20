@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { createApiClient } from '../api/client';
 
+
 export interface Members {
   userId: string;
   userName: string;
@@ -12,13 +13,23 @@ export interface ExpenseDto {
   expenseType: string;
   amount: number;
   date: string;
-  isShared?: boolean; // se ainda quiser usar futuramente
+  IsSharedAmongMembers?: boolean;
 }
 
 export interface MemberDto {
   userId: string;
   userName: string;
   isPrimary: boolean;
+}
+
+export interface AddressDto {
+  street: string;
+  number: string;
+  apartment: string;
+  city: string;
+  prefecture: string;
+  country: string;
+  postalCode: string;
 }
 
 export interface ResidenceDto {
@@ -33,6 +44,7 @@ export interface ResidenceDto {
 export interface CreateResidenceDto {
   residenceName: string;
   userId: string | undefined;
+  address: AddressDto;
 }
 
 export interface UpdateResidenceDto {

@@ -6,23 +6,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SplitCost.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Residences",
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Number = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Apartment = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Prefecture = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Residences", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -42,17 +48,49 @@ namespace SplitCost.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Residences",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Residences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Residences_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Residences_Users_CreatedByUserId",
+                        column: x => x.CreatedByUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Expenses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResidenceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Category = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSharedAmongMembers = table.Column<bool>(type: "bit", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResidenceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RegisteredByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PaidByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsShared = table.Column<bool>(type: "bit", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,19 +107,28 @@ namespace SplitCost.Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Expenses_Users_RegisteredByUserId",
+                        column: x => x.RegisteredByUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ResidenceMembers",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ResidenceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    JoinedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    JoinedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ResidenceMembers", x => new { x.UserId, x.ResidenceId });
+                    table.PrimaryKey("PK_ResidenceMembers", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ResidenceMembers_Residences_ResidenceId",
                         column: x => x.ResidenceId,
@@ -101,16 +148,18 @@ namespace SplitCost.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExpenseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResidenceExpenseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ExpenseShares", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExpenseShares_Expenses_ExpenseId",
-                        column: x => x.ExpenseId,
+                        name: "FK_ExpenseShares_Expenses_ResidenceExpenseId",
+                        column: x => x.ResidenceExpenseId,
                         principalTable: "Expenses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -119,7 +168,7 @@ namespace SplitCost.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -128,14 +177,19 @@ namespace SplitCost.Infrastructure.Migrations
                 column: "PaidByUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Expenses_RegisteredByUserId",
+                table: "Expenses",
+                column: "RegisteredByUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Expenses_ResidenceId",
                 table: "Expenses",
                 column: "ResidenceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExpenseShares_ExpenseId",
+                name: "IX_ExpenseShares_ResidenceExpenseId",
                 table: "ExpenseShares",
-                column: "ExpenseId");
+                column: "ResidenceExpenseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExpenseShares_UserId",
@@ -146,6 +200,22 @@ namespace SplitCost.Infrastructure.Migrations
                 name: "IX_ResidenceMembers_ResidenceId",
                 table: "ResidenceMembers",
                 column: "ResidenceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ResidenceMembers_UserId",
+                table: "ResidenceMembers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Residences_AddressId",
+                table: "Residences",
+                column: "AddressId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Residences_CreatedByUserId",
+                table: "Residences",
+                column: "CreatedByUserId");
         }
 
         /// <inheritdoc />
@@ -162,6 +232,9 @@ namespace SplitCost.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Residences");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
 
             migrationBuilder.DropTable(
                 name: "Users");
