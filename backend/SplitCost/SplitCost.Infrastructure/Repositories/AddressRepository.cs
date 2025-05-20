@@ -17,16 +17,16 @@ public class AddressRepository : IAddressRepository
     public async Task AddAsync(Address address)
     {
         await _context.Addresses.AddAsync(address);
-        await _context.SaveChangesAsync();
+        // Não chamar SaveChangesAsync aqui
     }
 
     public async Task<Address?> GetByIdAsync(Guid id) =>
         await _context.Addresses.FirstOrDefaultAsync(r => r.Id == id);
-   
+
 
     public async Task UpdateAsync(Address address)
     {
         _context.Addresses.Update(address);
-        await _context.SaveChangesAsync();
+        // Não chamar SaveChangesAsync aqui
     }
 }

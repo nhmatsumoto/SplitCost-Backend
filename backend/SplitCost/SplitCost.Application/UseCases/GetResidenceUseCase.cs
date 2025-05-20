@@ -32,14 +32,14 @@ namespace SplitCost.Application.UseCases
                 })
                 .ToList() ?? new List<ResidenceMemberDto>(),
 
-                Expenses = residence.Expenses.Select(e => new ResidenceExpenseDto
+                Expenses = residence.Expenses.Select(e => new CreateExpenseDto
                 {
                     Id = e.Id,
                     ExpenseCategory = e.Category,
                     Amount = e.Amount,
                     Date = e.Date
                 })
-                .ToList() ?? new List<ResidenceExpenseDto>()
+                .ToList() ?? new List<CreateExpenseDto>()
             };
         }
 
@@ -62,14 +62,14 @@ namespace SplitCost.Application.UseCases
                 })
                 .ToList() ?? new List<ResidenceMemberDto>(),
 
-                Expenses = residence.Expenses.Select(e => new ResidenceExpenseDto
+                Expenses = residence.Expenses.Select(e => new CreateExpenseDto
                 {
                     Id = e.Id,
                     ExpenseCategory = e.Category,
                     Amount = e.Amount,
                     Date = e.Date
                 })
-                .ToList() ?? new List<ResidenceExpenseDto>()
+                .ToList() ?? new List<CreateExpenseDto>()
             };
         }
 
@@ -91,7 +91,7 @@ namespace SplitCost.Application.UseCases
                 })
                 .ToList() ?? new List<ResidenceMemberDto>(),
 
-                Expenses = r.Expenses?.Select(e => new ResidenceExpenseDto
+                Expenses = r.Expenses?.Select(e => new CreateExpenseDto
                 {
                     Id = e.Id,
                     ExpenseCategory = e.Category,
@@ -99,7 +99,7 @@ namespace SplitCost.Application.UseCases
                     Date = e.Date,
                     IsSharedAmongMembers = e.IsSharedAmongMembers
                 })
-                .ToList() ?? new List<ResidenceExpenseDto>()
+                .ToList() ?? new List<CreateExpenseDto>()
 
             });
         }

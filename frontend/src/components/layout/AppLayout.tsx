@@ -9,12 +9,10 @@ export const AppLayout = ({ children }: { children: ReactNode }) => {
       <div className="w-64 shrink-0">
         <Sidebar />
       </div>
-
       <div className="flex-1 flex flex-col min-h-screen">
         <Header />
         <main className="flex-1 p-6 overflow-y-auto">{children}</main>
       </div>
-
       <Toaster position="top-right" />
     </div>
   );

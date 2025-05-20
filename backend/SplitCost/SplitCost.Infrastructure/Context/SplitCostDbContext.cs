@@ -9,7 +9,7 @@ public class SplitCostDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Residence> Residences { get; set; }
     public DbSet<ResidenceMember> ResidenceMembers { get; set; }
-    public DbSet<Expense> ResidenceExpenses { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
     public DbSet<ResidenceExpenseShare> ExpenseShares { get; set; }
     public DbSet<Address> Addresses { get; set; }
 

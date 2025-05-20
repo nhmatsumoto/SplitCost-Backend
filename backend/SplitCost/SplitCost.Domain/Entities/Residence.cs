@@ -1,6 +1,9 @@
 ﻿using SplitCost.Domain.Common;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics.Metrics;
+using System.IO;
 
 namespace SplitCost.Domain.Entities;
 
@@ -64,9 +67,9 @@ public class Residence : BaseEntity
         Expenses.Add(expense);
     }
 
-    public void AddAdress(Address address)
+    public void SetAddress(string street, string number, string apartment, string city, string prefecture, string country, string postalCode)
     {
-        if(address == null) throw new ArgumentNullException(nameof(address));
-        this.Address = address;
+        Address = new Address(street, number, apartment, city, prefecture, country, postalCode);
     }
+    
 }

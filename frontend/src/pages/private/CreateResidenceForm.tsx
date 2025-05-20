@@ -1,13 +1,15 @@
 import React, { useState, useCallback } from 'react';
 import { AddressDto, CreateResidenceDto, useResidences } from '../../hooks/useResidences';
 import { useAuth } from 'react-oidc-context';
+import SuccessToast from '../../components/ui/SuccessToast';
+import ErrorToast from '../../components/ui/ErrorToast';
 
 interface CreateResidenceFormProps {
   onSuccess?: () => void;
   onError?: (message: string) => void;
 }
 
-const CreateResidenceForm: React.FC<CreateResidenceFormProps> = ({ onSuccess, onError }) => {
+const CreateResidenceForm = ({ onSuccess, onError }: CreateResidenceFormProps) => {
   const [residenceName, setResidenceName] = useState('');
   const [address, setAddress] = useState<Omit<AddressDto, 'id'>>({
     street: '',
@@ -19,7 +21,6 @@ const CreateResidenceForm: React.FC<CreateResidenceFormProps> = ({ onSuccess, on
     postalCode: '',
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { create: createResidence } = useResidences();
   const { user } = useAuth();
 
@@ -39,12 +40,12 @@ const CreateResidenceForm: React.FC<CreateResidenceFormProps> = ({ onSuccess, on
     async (e: React.FormEvent) => {
       e.preventDefault();
       setLoading(true);
-      setError(null);
+      
 
       const userId = user?.profile?.sub;
 
       if (!userId) {
-        setError('ID do usuário não encontrado. Por favor, faça login novamente.');
+        ErrorToast('ID do usuário não encontrado. Por favor, faça login novamente.');
         setLoading(false);
         return;
       }
@@ -59,7 +60,7 @@ const CreateResidenceForm: React.FC<CreateResidenceFormProps> = ({ onSuccess, on
 
       try {
         await createResidence(payload);
-        console.log('Residência criada com sucesso!', payload);
+        SuccessToast('Residência criada com sucesso!');
         if (onSuccess) {
           onSuccess();
         }
@@ -74,10 +75,10 @@ const CreateResidenceForm: React.FC<CreateResidenceFormProps> = ({ onSuccess, on
           postalCode: '',
         });
       } catch (err: any) {
-        console.error('Erro ao criar residência:', err);
-        setError(err?.response?.data?.message || 'Ocorreu um erro ao criar a residência.');
+        const errorMessage = err?.response?.data?.message || 'Ocorreu um erro ao criar a residência.';
+        ErrorToast(errorMessage);
         if (onError) {
-          onError(err?.response?.data?.message || 'Ocorreu um erro ao criar a residência.');
+          onError(errorMessage);
         }
       } finally {
         setLoading(false);
@@ -90,7 +91,6 @@ const CreateResidenceForm: React.FC<CreateResidenceFormProps> = ({ onSuccess, on
     <div className="flex flex-col items-center justify-center bg-gray-100">
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-lg">
         <h2 className="block text-gray-700 text-xl font-bold mb-4">Cadastrar Residência com Endereço</h2>
-        {error && <p className="text-red-500 text-sm italic mb-4">{error}</p>}
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="residenceName">

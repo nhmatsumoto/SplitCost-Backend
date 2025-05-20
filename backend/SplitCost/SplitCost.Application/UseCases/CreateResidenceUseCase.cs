@@ -8,38 +8,36 @@ namespace SplitCost.Application.UseCases;
 public class CreateResidenceUseCase : ICreateResidenceUseCase
 {
     private readonly IResidenceRepository _residenceRepository;
-    private readonly IAddressRepository _addressRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateResidenceUseCase(
-        IResidenceRepository residenceRepository, 
-        IAddressRepository addressRepository)
+        IResidenceRepository residenceRepository,
+        IUnitOfWork unitOfWork)
     {
         _residenceRepository = residenceRepository 
             ?? throw new ArgumentNullException(nameof(residenceRepository));
 
-        _addressRepository = addressRepository 
-            ?? throw new ArgumentNullException(nameof(addressRepository));
+        _unitOfWork = unitOfWork
+            ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
     public async Task<ResidenceDto> CreateResidenceAsync(CreateResidenceDto createResidenceDto, Guid userId)
     {
-        var address = new Address(
-             createResidenceDto.Address.Street,
-             createResidenceDto.Address.Number,
-             createResidenceDto.Address.Apartment,
-             createResidenceDto.Address.City,
-             createResidenceDto.Address.Prefecture,
-             createResidenceDto.Address.Country,
-             createResidenceDto.Address.PostalCode
-        );
-
         var residence = new Residence(createResidenceDto.ResidenceName, userId);
 
-        residence.AddAdress(address);
-
-        await _addressRepository.AddAsync(address);
+        residence.SetAddress(
+            createResidenceDto.Address.Street,
+            createResidenceDto.Address.Number,
+            createResidenceDto.Address.Apartment,
+            createResidenceDto.Address.City,
+            createResidenceDto.Address.Prefecture,
+            createResidenceDto.Address.Country,
+            createResidenceDto.Address.PostalCode
+        );
 
         await _residenceRepository.AddAsync(residence);
+
+        await _unitOfWork.SaveChangesAsync();
 
         return new ResidenceDto
         {
@@ -47,18 +45,18 @@ public class CreateResidenceUseCase : ICreateResidenceUseCase
             Name = residence.Name,
             CreatedAt = residence.CreatedAt,
             UpdatedAt = residence.UpdatedAt,
-            Address = new CreateAddressDto
+            Address = new AddressDto 
             {
-                Street = address.Street,
-                Number = address.Number,
-                Apartment = address.Apartment,
-                City = address.City,
-                Prefecture = address.Prefecture,
-                Country = address.Country,
-                PostalCode = address.PostalCode
+                Street = residence.Address.Street,
+                Number = residence.Address.Number,
+                Apartment = residence.Address.Apartment,
+                City = residence.Address.City,
+                Prefecture = residence.Address.Prefecture,
+                Country = residence.Address.Country,
+                PostalCode = residence.Address.PostalCode
             },
             Members = new List<ResidenceMemberDto>(),
-            Expenses = new List<ResidenceExpenseDto>()
+            Expenses = new List<CreateExpenseDto>()
         };
     }
 }

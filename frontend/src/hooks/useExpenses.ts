@@ -32,7 +32,16 @@ export const useExpenses = () => {
     [api]
   );
 
+  const get = useCallback(
+    async (): Promise<ExpenseDto[]> => {
+      const response = await api.get('/expense');
+      return response.data;
+    },
+    [api]
+  );
+
   return { 
     create,
+    get
   };
 };
