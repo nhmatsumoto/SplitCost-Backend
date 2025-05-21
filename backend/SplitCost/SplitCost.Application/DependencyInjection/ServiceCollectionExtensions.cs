@@ -10,8 +10,10 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<ICreateResidenceUseCase, CreateResidenceUseCase>();
         services.AddScoped<IUpdateResidenceUseCase, UpdateResidenceUseCase>();
-        services.AddScoped<IGetResidenceUseCase, GetResidenceUseCase>();
+        services.AddScoped<IReadResidenceUseCase, ReadResidenceUseCase>();
         services.AddScoped<IRegisterResidenceOwnerUseCase, RegisterResidenceOwnerUseCase>();
+        services.AddScoped<ICreateExpenseUseCase, CreateExpenseUseCase>();
+        services.AddScoped<IReadExpenseUseCase, ReadExpenseUseCase>();
 
         services.AddScoped<IAppUserUseCase, CreateAppUserUseCase>();
         

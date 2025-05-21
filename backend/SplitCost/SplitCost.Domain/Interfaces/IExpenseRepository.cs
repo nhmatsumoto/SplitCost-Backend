@@ -6,5 +6,6 @@ namespace SplitCost.Domain.Interfaces
     {
         Task AddAsync(Expense expense);
         Task<Expense?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Expense>> GetByResidenceIdAsync(Guid residenceId);
     }
 }

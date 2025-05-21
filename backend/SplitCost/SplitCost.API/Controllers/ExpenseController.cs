@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SplitCost.Application.DTOs;
+using SplitCost.Application.Interfaces;
+using SplitCost.Domain.Entities;
 
 namespace SplitCost.API.Controllers
 {
@@ -6,14 +9,69 @@ namespace SplitCost.API.Controllers
     [ApiController]
     public class ExpenseController : ControllerBase
     {
-        public IActionResult GetExpenseByResidenceId(Guid residenceId)
+        private readonly ICreateExpenseUseCase _createExpenseUseCase;
+        private readonly IReadExpenseUseCase _readExpenseUseCase;
+
+        public ExpenseController(ICreateExpenseUseCase createExpenseUseCase, IReadExpenseUseCase readExpenseUseCase)
         {
-            return Ok();
+            _createExpenseUseCase = createExpenseUseCase ?? throw new ArgumentNullException(nameof(createExpenseUseCase));
+            _readExpenseUseCase = readExpenseUseCase ?? throw new ArgumentNullException(nameof(readExpenseUseCase));
         }
 
-        public IActionResult GetExpenseByUserId(Guid userId)
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Create([FromBody] CreateExpenseDto expenseDto)
         {
-            return Ok();
+            if (expenseDto == null)
+                return BadRequest();
+
+            var result = await _createExpenseUseCase.CreateExpense(expenseDto);
+            return CreatedAtAction(nameof(result), new { id = result.Id }, result);
+        }
+
+        [HttpGet("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var expense = await _readExpenseUseCase.GetByIdAsync(id);
+            if (expense == null)
+                return NotFound();
+            return Ok(expense);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetByResidenceId(Guid id)
+        {
+            var expense = await _readExpenseUseCase.GetByResidenceIdAsync(id);
+            if (expense == null)
+                return NotFound();
+            return Ok(expense);
+        }
+
+        [HttpGet("categories")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetExpenseCategories()
+        {
+            var categories = Enum.GetValues(typeof(ExpenseCategory))
+                .Cast<ExpenseCategory>()
+                .Select(e => new { Value = (int)e, Name = e.ToString() })
+                .ToList();
+            return Ok(categories);
+        }
+
+        [HttpGet("types")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetExpenseTypes()
+        {
+            var types = Enum.GetValues(typeof(ExpenseType))
+                .Cast<ExpenseType>()
+                .Select(e => new { Value = (int)e, Name = e.ToString() })
+                .ToList();
+            return Ok(types);
         }
     }
 }

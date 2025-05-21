@@ -2,7 +2,7 @@
 
 namespace SplitCost.Application.Interfaces
 {
-    public interface IGetResidenceUseCase
+    public interface IReadResidenceUseCase
     {
         Task<ResidenceDto?> GetByIdAsync(Guid id);
         Task<ResidenceDto?> GetByUserIdAsync(Guid id);

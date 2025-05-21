@@ -13,13 +13,13 @@ namespace SplitCost.API.Controllers
     {
         private readonly ICreateResidenceUseCase _createResidenceUseCase;
         private readonly IUpdateResidenceUseCase _updateResidenceUseCase;
-        private readonly IGetResidenceUseCase _getResidenceUseCase;
+        private readonly IReadResidenceUseCase _getResidenceUseCase;
         private readonly IRegisterResidenceOwnerUseCase _registerOwnerUseCase;
 
         public ResidencesController(
             ICreateResidenceUseCase createResidenceUseCase,
             IUpdateResidenceUseCase updateResidenceUseCase,
-            IGetResidenceUseCase getResidenceUseCase,
+            IReadResidenceUseCase getResidenceUseCase,
             IRegisterResidenceOwnerUseCase registerOwnerUseCase)
         {
             _createResidenceUseCase = createResidenceUseCase;
@@ -31,6 +31,7 @@ namespace SplitCost.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateResidence([FromBody] CreateResidenceDto createResidenceDto)
         {
             if (!ModelState.IsValid)
@@ -64,7 +65,7 @@ namespace SplitCost.API.Controllers
             }
         }
 
-        [HttpPut("{residenceId}")]
+        [HttpPut("{residenceId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -88,9 +89,10 @@ namespace SplitCost.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetResidence(Guid id)
         {
             try
@@ -107,9 +109,10 @@ namespace SplitCost.API.Controllers
         }
 
 
-        [HttpGet("user/{id}")]
+        [HttpGet("user/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetResidenceByUserId(Guid id)
         {
             try

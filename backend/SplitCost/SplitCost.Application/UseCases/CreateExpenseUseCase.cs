@@ -1,10 +1,11 @@
 ﻿using SplitCost.Application.DTOs;
+using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases;
 
-public class CreateExpenseUseCase
+public class CreateExpenseUseCase : ICreateExpenseUseCase
 {
     private readonly IExpenseRepository _expenseRepository;
     private readonly IUnitOfWork _unitOfWork;

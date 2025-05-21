@@ -56,7 +56,7 @@ public class CreateResidenceUseCase : ICreateResidenceUseCase
                 PostalCode = residence.Address.PostalCode
             },
             Members = new List<ResidenceMemberDto>(),
-            Expenses = new List<CreateExpenseDto>()
+            Expenses = new List<ExpenseDto>()
         };
     }
 }
