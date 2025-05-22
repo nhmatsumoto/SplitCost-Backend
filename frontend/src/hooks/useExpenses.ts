@@ -1,18 +1,7 @@
 import { useCallback } from "react";
 import { createApiClient } from "../api/client";
+import { ExpenseDto } from "../types/residenceTypes";
 
-
-export interface ExpenseDto {
-  type: string;
-  category: string;
-  amount: number;
-  date: string;
-  IsSharedAmongMembers?: boolean;
-  description?: string;
-  residenceId: string;
-  registeredByUserId?: string;
-  paidByUserId?: string; 
-}
 
 export interface EnumOptions {
   value: number;

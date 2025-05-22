@@ -31,3 +31,22 @@ export interface ResidenceDto {
   expenses: ExpenseDto[];
   address: AddressDto;
 }
+
+export interface CreateResidenceDto {
+  residenceName: string;
+  userId: string | undefined;
+  address: AddressDto;
+}
+
+export interface UpdateResidenceDto {
+  residenceId: string;
+  name: string;
+  expenses: ExpenseDto[];
+  members?: Members[]; 
+}
+
+export interface Members {
+  userId: string;
+  userName: string;
+  isPrimary: boolean;
+}

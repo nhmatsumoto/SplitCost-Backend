@@ -1,58 +1,46 @@
 import { useCallback } from 'react';
 import { createApiClient } from '../api/client';
+import { 
+  CreateResidenceDto, 
+  ResidenceDto, 
+  UpdateResidenceDto 
+} from '../types/residenceTypes';
 
 
-export interface Members {
-  userId: string;
-  userName: string;
-  isPrimary: boolean;
-}
+// export interface ExpenseDto {
+//   expenseId: string;
+//   expenseType: string;
+//   amount: number;
+//   date: string;
+//   IsSharedAmongMembers?: boolean;
+// }
 
-export interface ExpenseDto {
-  expenseId: string;
-  expenseType: string;
-  amount: number;
-  date: string;
-  IsSharedAmongMembers?: boolean;
-}
+// export interface MemberDto {
+//   userId: string;
+//   userName: string;
+//   isPrimary: boolean;
+// }
 
-export interface MemberDto {
-  userId: string;
-  userName: string;
-  isPrimary: boolean;
-}
+// export interface AddressDto {
+//   street: string;
+//   number: string;
+//   apartment: string;
+//   city: string;
+//   prefecture: string;
+//   country: string;
+//   postalCode: string;
+// }
 
-export interface AddressDto {
-  street: string;
-  number: string;
-  apartment: string;
-  city: string;
-  prefecture: string;
-  country: string;
-  postalCode: string;
-}
+// export interface ResidenceDto {
+//   id: string;
+//   name: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   members: MemberDto[];
+//   expenses: ExpenseDto[];
+// }
 
-export interface ResidenceDto {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  members: MemberDto[];
-  expenses: ExpenseDto[];
-}
 
-export interface CreateResidenceDto {
-  residenceName: string;
-  userId: string | undefined;
-  address: AddressDto;
-}
-
-export interface UpdateResidenceDto {
-  residenceId: string;
-  name: string;
-  expenses: ExpenseDto[];
-  members?: Members[]; 
-}
 
 export const useResidences = () => {
 

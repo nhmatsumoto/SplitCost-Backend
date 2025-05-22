@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { AddressDto, CreateResidenceDto, useResidences } from '../../hooks/useResidences';
+import { useResidences } from '../../hooks/useResidences';
 import { useAuth } from 'react-oidc-context';
 import SuccessToast from '../../components/ui/SuccessToast';
 import ErrorToast from '../../components/ui/ErrorToast';
+import { AddressDto, CreateResidenceDto } from '../../types/residenceTypes';
 
 interface CreateResidenceFormProps {
   onSuccess?: () => void;

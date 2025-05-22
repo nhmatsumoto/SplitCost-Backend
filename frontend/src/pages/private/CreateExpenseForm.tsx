@@ -1,22 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useExpenses, EnumOptions } from '../../hooks/useExpenses';
 import { useAuth } from 'react-oidc-context';
+import { useResidenceStore } from '../../store/residenceStore';
+import { ExpenseDto } from '../../types/expenseTypes';
 
 interface CreateExpenseFormProps {
   onSuccess?: () => void;
   onError?: (message: string) => void;
-}
-
-interface CreateExpenseDto {
-  type: string;
-  category: string;
-  amount: number;
-  date: string;
-  isSharedAmongMembers: boolean;
-  description?: string;
-  residenceId: string;
-  registerByUserId: string;
-  paidByUserId: string;
 }
 
 const CreateExpenseForm = ({ onSuccess, onError }: CreateExpenseFormProps) => {
@@ -25,16 +15,18 @@ const CreateExpenseForm = ({ onSuccess, onError }: CreateExpenseFormProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [expenseData, setExpenseData] = useState<CreateExpenseDto>({
+  const { residence } = useResidenceStore();
+
+  const [expenseData, setExpenseData] = useState<ExpenseDto>({
     type: "",
     category: "",
     amount: 0,
     date: new Date().toISOString().slice(0, 10),
     isSharedAmongMembers: true,
     description: "",
-    residenceId: "",
-    registerByUserId: user?.profile?.sub || "",
-    paidByUserId: user?.profile?.sub || "",
+    residenceId: residence?.id,
+    registerByUserId: user?.profile?.sub,
+    paidByUserId: user?.profile?.sub,
   });
 
   const [typeOptions, setTypeOptions] = useState<EnumOptions[]>([]);
@@ -43,7 +35,6 @@ const CreateExpenseForm = ({ onSuccess, onError }: CreateExpenseFormProps) => {
   useEffect(() => {
     getTypes().then(setTypeOptions);
     getCategories().then(setCategoryOptions);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getTypes, getCategories]);
 
   // Preencher o valor inicial dos selects assim que as opções forem carregadas
@@ -54,7 +45,6 @@ const CreateExpenseForm = ({ onSuccess, onError }: CreateExpenseFormProps) => {
     if (categoryOptions.length && !expenseData.category) {
       setExpenseData(prev => ({ ...prev, category: String(categoryOptions[0].value) }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typeOptions, categoryOptions]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -200,48 +190,6 @@ const CreateExpenseForm = ({ onSuccess, onError }: CreateExpenseFormProps) => {
               onChange={handleChange}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               rows={2}
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="residenceId">
-              Residência (ID):
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="residenceId"
-              type="text"
-              name="residenceId"
-              value={expenseData.residenceId}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="registerByUserId">
-              Usuário que registrou (ID):
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="registerByUserId"
-              type="text"
-              name="registerByUserId"
-              value={expenseData.registerByUserId}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="paidByUserId">
-              Usuário que pagou (ID):
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="paidByUserId"
-              type="text"
-              name="paidByUserId"
-              value={expenseData.paidByUserId}
-              onChange={handleChange}
-              required
             />
           </div>
           <button

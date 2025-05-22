@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import { ResidenceDto } from '../hooks/useResidences';
+import { ResidenceDto } from '../types/residenceTypes';
 
 interface ResidenceState {
   residence: ResidenceDto | null;
-  setResidence: (residence: any | null) => void;
+  setResidence: (residence: ResidenceDto | null) => void;
   clearResidenceState: () => void;
 }
 
