@@ -35,9 +35,9 @@ public class ResidenceRepository : IResidenceRepository
         return await _context.Residences
             .Include(r => r.Members)
                 .ThenInclude(rm => rm.User)
-            .Include(r => r.Expenses)
-                .ThenInclude(e => e.Shares)
-            .FirstOrDefaultAsync(rm => rm.Id == id);
+            .Where(r => r.Members.Any(m => m.UserId == id))
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
     }
 
     public async Task UpdateAsync(Residence residence)
