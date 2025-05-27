@@ -72,6 +72,8 @@ const CreateExpenseForm = ({ onSuccess, onError }: CreateExpenseFormProps) => {
         await createExpense({
           ...expenseData,
           amount: Number(expenseData.amount),
+          expenseId: "", // or generate a temporary ID if needed
+          expenseType: expenseData.type, // or map to the correct value if needed
         });
         if (onSuccess) onSuccess();
         setExpenseData({

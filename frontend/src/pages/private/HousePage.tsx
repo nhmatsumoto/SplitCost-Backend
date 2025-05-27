@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom"
+import { useResidenceStore } from "../../store/residenceStore";
 
 const HousePage = () => {
+
+    const houseInfo = useResidenceStore(state => state.residence);
+
     return (
         <>
             <Link to="/house/create">
@@ -8,6 +12,10 @@ const HousePage = () => {
                     Create House
                 </button>       
             </Link>
+
+            {
+                JSON.stringify(houseInfo)
+            }
         </>
     )
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpitCost.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using SpitCost.Infrastructure.Context;
 namespace SplitCost.Infrastructure.Migrations
 {
     [DbContext(typeof(SplitCostDbContext))]
-    partial class SplitCostDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250527110511_UpdateResidence")]
+    partial class UpdateResidence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

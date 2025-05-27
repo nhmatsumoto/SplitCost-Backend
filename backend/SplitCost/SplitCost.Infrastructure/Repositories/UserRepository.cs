@@ -16,8 +16,15 @@ public class UserRepository : IUserRepository
 
     public async Task AddAsync(User user)
     {
-        await _context.Users.AddAsync(user);
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.Users.AddAsync(user);
+        }catch(Exception ex)
+        {
+            // Log the exception or handle it as needed
+            throw new Exception("An error occurred while adding the user.", ex);
+        }
+
     }
 
     public async Task<User?> GetByIdAsync(Guid userId)
@@ -33,6 +40,5 @@ public class UserRepository : IUserRepository
     public async Task UpdateAsync(User user)
     {
         _context.Users.Update(user);
-        await _context.SaveChangesAsync();
     }
 }

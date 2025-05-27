@@ -17,9 +17,9 @@ const AppInitializer = () => {
 
             // verificar o que está acontecendo com o residence que está fazendo multiplos requests periodicamente 
             if(!residence){
-                const data =  getByUserId(user.profile.sub);
+                const residenceData =  getByUserId(user.profile.sub);
                 try {
-                    data.then((res) => {
+                    residenceData.then((res) => {
                         if (res) {
                             setResidence(res);
                         }

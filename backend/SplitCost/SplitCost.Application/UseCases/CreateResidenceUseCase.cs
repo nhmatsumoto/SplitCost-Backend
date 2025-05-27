@@ -2,6 +2,7 @@
 using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Interfaces;
+using System.Security.Policy;
 
 namespace SplitCost.Application.UseCases;
 
@@ -21,19 +22,43 @@ public class CreateResidenceUseCase : ICreateResidenceUseCase
             ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
-    public async Task<ResidenceDto> CreateResidenceAsync(CreateResidenceDto createResidenceDto, Guid userId)
+    public async Task<bool> CreateEmptyResidence(Guid userId)
     {
-        var residence = new Residence(createResidenceDto.ResidenceName, userId);
+        try
+        {
+            var residence = new Residence()
+           .SetCreatedByUser(userId);
 
-        residence.SetAddress(
-            createResidenceDto.Address.Street,
-            createResidenceDto.Address.Number,
-            createResidenceDto.Address.Apartment,
-            createResidenceDto.Address.City,
-            createResidenceDto.Address.Prefecture,
-            createResidenceDto.Address.Country,
-            createResidenceDto.Address.PostalCode
-        );
+            await _residenceRepository.AddAsync(residence);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+
+    public async Task<ResidenceDto> CreateResidenceAsync(CreateResidenceDto dto, Guid userId)
+    {
+        //Map CreateResidenceDto to Residence
+        //Map CreateAddressDto to Address
+
+        var address = new Address()
+            .SetStreet(dto.Address.Street)
+            .SetNumber(dto.Address.Number)
+            .SetApartment(dto.Address.Apartment)
+            .SetCity(dto.Address.City)
+            .SetPrefecture(dto.Address.Prefecture)
+            .SetCountry(dto.Address.Country)
+            .SetPostalCode(dto.Address.PostalCode);
+
+        var residence = new Residence()
+            .SetName(dto.ResidenceName)
+            .SetCreatedByUser(userId)
+            .SetAddress(address);
 
         await _residenceRepository.AddAsync(residence);
 

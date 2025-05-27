@@ -8,9 +8,9 @@ public class SplitCostDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Residence> Residences { get; set; }
-    public DbSet<ResidenceMember> ResidenceMembers { get; set; }
+    public DbSet<Member> ResidenceMembers { get; set; }
     public DbSet<Expense> Expenses { get; set; }
-    public DbSet<ResidenceExpenseShare> ExpenseShares { get; set; }
+    public DbSet<ExpenseShare> ExpenseShares { get; set; }
     public DbSet<Address> Addresses { get; set; }
 
     public SplitCostDbContext(DbContextOptions<SplitCostDbContext> options)
@@ -23,16 +23,16 @@ public class SplitCostDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // USER ⇄ RESIDENCEMEMBER (Many-to-Many via Entity)
-        modelBuilder.Entity<ResidenceMember>()
+        modelBuilder.Entity<Member>()
             .HasKey(rm => rm.Id);
 
-        modelBuilder.Entity<ResidenceMember>()
+        modelBuilder.Entity<Member>()
             .HasOne(rm => rm.User)
             .WithMany(u => u.Residences)
             .HasForeignKey(rm => rm.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<ResidenceMember>()
+        modelBuilder.Entity<Member>()
             .HasOne(rm => rm.Residence)
             .WithMany(r => r.Members)
             .HasForeignKey(rm => rm.ResidenceId)
@@ -48,7 +48,7 @@ public class SplitCostDbContext : DbContext
         // USER ⇄ RESIDENCEEXPENSE (RegisteredBy)
         modelBuilder.Entity<Expense>()
             .HasOne(e => e.RegisteredBy)
-            .WithMany(u => u.ResidenceExpensesRegistered)
+            .WithMany(u => u.Expenses)
             .HasForeignKey(e => e.RegisteredByUserId)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -60,14 +60,14 @@ public class SplitCostDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         // RESIDENCEEXPENSE ⇄ RESIDENCEEXPENSESHARE (One-to-Many)
-        modelBuilder.Entity<ResidenceExpenseShare>()
+        modelBuilder.Entity<ExpenseShare>()
             .HasOne(s => s.ResidenceExpense)
             .WithMany(e => e.Shares)
             .HasForeignKey(s => s.ResidenceExpenseId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // USER ⇄ RESIDENCEEXPENSESHARE (One-to-Many)
-        modelBuilder.Entity<ResidenceExpenseShare>()
+        modelBuilder.Entity<ExpenseShare>()
             .HasOne(s => s.User)
             .WithMany(u => u.ExpenseShares)
             .HasForeignKey(s => s.UserId)

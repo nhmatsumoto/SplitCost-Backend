@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useExpenses, ExpenseDto } from "../../hooks/useExpenses";
+import { useExpenses } from "../../hooks/useExpenses";
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,6 +10,7 @@ import {
   ColumnDef,
   SortingState,
 } from "@tanstack/react-table";
+import { ExpenseDto } from "../../types/residenceTypes";
 
 const ExpensesPage = () => {
   const { get } = useExpenses();

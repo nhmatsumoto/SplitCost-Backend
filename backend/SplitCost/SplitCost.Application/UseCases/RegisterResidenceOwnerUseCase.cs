@@ -31,12 +31,12 @@ namespace SplitCost.Application.UseCases
 
             residence.CreatedByUserId = user.Id;
 
-            residence.AddMember(new ResidenceMember
-            {
-                User = user,
-                Residence = residence,
-                JoinedAt = DateTime.Now,
-            });
+            var ResidenceMember = new Member()
+                .SetResidenceId(dto.ResidenceId)
+                .SetUserId(dto.UserId)
+                .SetJoinedAt(DateTime.UtcNow);
+
+            residence.AddMember(ResidenceMember);
 
             await _userRepository.UpdateAsync(user);
         }

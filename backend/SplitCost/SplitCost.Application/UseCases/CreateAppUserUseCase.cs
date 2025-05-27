@@ -9,11 +9,15 @@ namespace SplitCost.Application.UseCases
     {
         private readonly IUserRepository _usuarioRepository;
         private readonly IKeycloakService _keycloakService;
-
-        public CreateAppUserUseCase(IUserRepository usuarioRepository, IKeycloakService keycloakService)
+        private readonly IUnitOfWork _unitOfWork;
+        public CreateAppUserUseCase(
+            IUserRepository usuarioRepository, 
+            IKeycloakService keycloakService, 
+            IUnitOfWork unitOfWork)
         {
             _usuarioRepository = usuarioRepository;
             _keycloakService = keycloakService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> RegisterUserAsync(RegisterUserDto registerUserDto)
@@ -26,16 +30,22 @@ namespace SplitCost.Application.UseCases
                 registerUserDto.Password
             );
 
-            var usuario = new User
+            var userId = Guid.Parse(keycloakUserId);
+
+            if (userId != Guid.Empty)
             {
-                Id = Guid.Parse(keycloakUserId),
-                Name = string.Concat(registerUserDto.FirstName, " ", registerUserDto.LastName),
-                Email = registerUserDto.Email
-            };
+                var usuario = new User()
+                    .SetUserId(userId)
+                    .SetName(string.Concat(registerUserDto.FirstName, " ", registerUserDto.LastName))
+                    .SetEmail(registerUserDto.Email);
 
-            await _usuarioRepository.AddAsync(usuario);
+                await _usuarioRepository.AddAsync(usuario);
+                await _unitOfWork.SaveChangesAsync();
 
-            return usuario.Id;
+                return usuario.Id;
+            }
+
+            return Guid.Empty;
         }
 
     }

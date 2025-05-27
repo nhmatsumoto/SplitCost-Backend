@@ -2,12 +2,16 @@ import React, { useState, useCallback } from 'react';
 import { RegisterUserDto, useAppUser } from '../../hooks/useAppUser'; // Adjust the import path as needed
 import SuccessToast from '../../components/ui/SuccessToast'; // Assuming the path to SuccessToast
 import ErrorToast from '../../components/ui/ErrorToast'; // Assuming the path to ErrorToast
+import { useAuth } from 'react-oidc-context';
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
 }
 
-const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess }) => {
+const RegistrationForm = ({ onSuccess } : RegistrationFormProps) => {
+
+  const { signinRedirect } = useAuth();
+
   const [formData, setFormData] = useState<RegisterUserDto>({
     Username: '',
     FirstName: '',
@@ -48,11 +52,11 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess }) => {
 
     try {
       await registerUser(formData);
-      console.log('Usuário cadastrado com sucesso!');
       SuccessToast('Usuário cadastrado com sucesso!');
       resetForm();
       if (onSuccess) {
         onSuccess();
+        signinRedirect();
       }
     } catch (error: any) {
       console.error('Erro no registro:', error);

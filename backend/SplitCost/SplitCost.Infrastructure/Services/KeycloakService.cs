@@ -29,7 +29,7 @@ public class KeycloakService : IKeycloakService
 
         var userPayload = new
         {
-            username = email,
+            username = username,
             email = email,
             firstName = firstName,
             lastName = lastName,
@@ -37,12 +37,12 @@ public class KeycloakService : IKeycloakService
             emailVerified = true,
             credentials = new[]
             {
-            new {
-                type = "password",
-                value = password,
-                temporary = false
+                new {
+                    type = "password",
+                    value = password,
+                    temporary = false
+                }
             }
-        }
         };
 
         var content = new StringContent(JsonSerializer.Serialize(userPayload), Encoding.UTF8, "application/json");
@@ -57,7 +57,13 @@ public class KeycloakService : IKeycloakService
                 throw new KeycloakUserCreationFailedException("Usuário criado, mas ID não retornado.");
             }
             var userId = locationHeader.Split('/').Last();
+
             return userId;
+        }
+
+        if (response.IsSuccessStatusCode.Equals(HttpStatusCode.Conflict))
+        {
+            throw new KeycloakUserConflictException("O Email informado não é valido");
         }
 
         var exceptionMap = new Dictionary<HttpStatusCode, Func<string, string, KeycloakApiException>>
