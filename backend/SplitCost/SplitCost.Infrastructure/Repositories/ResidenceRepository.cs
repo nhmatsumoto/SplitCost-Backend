@@ -55,4 +55,10 @@ public class ResidenceRepository : IResidenceRepository
                 .ThenInclude(e => e.Shares)
             .ToListAsync();
     }
+
+    public async Task<Boolean> UserHasResidence(Guid userId)
+    {
+        return await _context.Residences
+       .AnyAsync(r => r.Members.Any(m => m.UserId == userId));
+    }
 }

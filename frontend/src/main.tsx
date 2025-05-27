@@ -7,7 +7,7 @@ import oidcConfig from './configuration/oidcConfig';
 import { Log } from "oidc-client-ts";
 
 Log.setLevel(Log.DEBUG);
-Log.setLogger(console);
+
 
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

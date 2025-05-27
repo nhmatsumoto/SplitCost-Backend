@@ -4,6 +4,7 @@ import { useAuth } from 'react-oidc-context';
 import SuccessToast from '../../components/ui/SuccessToast';
 import ErrorToast from '../../components/ui/ErrorToast';
 import { AddressDto, CreateResidenceDto } from '../../types/residenceTypes';
+import { useResidenceStore } from '../../store/residenceStore';
 
 interface CreateResidenceFormProps {
   onSuccess?: () => void;
@@ -11,6 +12,7 @@ interface CreateResidenceFormProps {
 }
 
 const CreateResidenceForm = ({ onSuccess, onError }: CreateResidenceFormProps) => {
+
   const [residenceName, setResidenceName] = useState('');
   const [address, setAddress] = useState<Omit<AddressDto, 'id'>>({
     street: '',
@@ -21,9 +23,13 @@ const CreateResidenceForm = ({ onSuccess, onError }: CreateResidenceFormProps) =
     country: '',
     postalCode: '',
   });
+
   const [loading, setLoading] = useState(false);
   const { create: createResidence } = useResidences();
   const { user } = useAuth();
+
+  const { getByUserId } = useResidences();
+  const {setResidence } = useResidenceStore();
 
   const handleResidenceNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setResidenceName(e.target.value);
@@ -41,8 +47,7 @@ const CreateResidenceForm = ({ onSuccess, onError }: CreateResidenceFormProps) =
     async (e: React.FormEvent) => {
       e.preventDefault();
       setLoading(true);
-      
-
+ 
       const userId = user?.profile?.sub;
 
       if (!userId) {
@@ -60,11 +65,20 @@ const CreateResidenceForm = ({ onSuccess, onError }: CreateResidenceFormProps) =
       };
 
       try {
+
         await createResidence(payload);
         SuccessToast('Residência criada com sucesso!');
+
+        var residence = await getByUserId(userId);
+
+        if (residence) {
+          setResidence(residence);
+        }
+        
         if (onSuccess) {
           onSuccess();
         }
+
         setResidenceName('');
         setAddress({
           street: '',

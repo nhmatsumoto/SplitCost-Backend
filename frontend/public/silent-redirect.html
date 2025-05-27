@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Silent Renew</title>
+  </head>
+  <body>
+    <script>
+      window.addEventListener("load", function () {
+        new Oidc.UserManager().signinSilentCallback().catch(console.error);
+      });
+    </script>
+  </body>
+</html>

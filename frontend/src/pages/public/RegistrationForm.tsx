@@ -3,6 +3,7 @@ import { RegisterUserDto, useAppUser } from '../../hooks/useAppUser'; // Adjust 
 import SuccessToast from '../../components/ui/SuccessToast'; // Assuming the path to SuccessToast
 import ErrorToast from '../../components/ui/ErrorToast'; // Assuming the path to ErrorToast
 import { useAuth } from 'react-oidc-context';
+import { Navigate } from 'react-router-dom';
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
@@ -10,7 +11,11 @@ interface RegistrationFormProps {
 
 const RegistrationForm = ({ onSuccess } : RegistrationFormProps) => {
 
-  const { signinRedirect } = useAuth();
+  const { signinRedirect, user, isAuthenticated } = useAuth();
+  
+  if(user && isAuthenticated) {
+    return <Navigate to='/' />
+  }
 
   const [formData, setFormData] = useState<RegisterUserDto>({
     Username: '',

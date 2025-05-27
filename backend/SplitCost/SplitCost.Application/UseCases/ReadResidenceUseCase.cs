@@ -1,5 +1,6 @@
 ﻿using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
+using SplitCost.Domain.Entities;
 using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases;
@@ -25,12 +26,12 @@ public class ReadResidenceUseCase : IReadResidenceUseCase
             CreatedAt = residence.CreatedAt,
             UpdatedAt = residence.UpdatedAt,
 
-            Members = residence.Members.Select(x => new ResidenceMemberDto
+            Members = residence.Members.Select(x => new CreateResidenceMemberDto
             {
                 UserId = x.UserId,
-                UserName = x.User.Name
+                ResidenceId = x.ResidenceId,
             })
-            .ToList() ?? new List<ResidenceMemberDto>(),
+            .ToList() ?? new List<CreateResidenceMemberDto>(),
 
             Expenses = residence.Expenses.Select(e => new ExpenseDto
             {
@@ -55,12 +56,12 @@ public class ReadResidenceUseCase : IReadResidenceUseCase
             CreatedAt = residence.CreatedAt,
             UpdatedAt = residence.UpdatedAt,
 
-            Members = residence.Members.Select(x => new ResidenceMemberDto
+            Members = residence.Members.Select(x => new CreateResidenceMemberDto
             {
                 UserId = x.UserId,
-                UserName = x.User.Name
+                ResidenceId = x.ResidenceId,
             })
-            .ToList() ?? new List<ResidenceMemberDto>(),
+            .ToList() ?? new List<CreateResidenceMemberDto>(),
 
             Expenses = residence.Expenses.Select(e => new ExpenseDto
             {
@@ -84,12 +85,12 @@ public class ReadResidenceUseCase : IReadResidenceUseCase
             CreatedAt = r.CreatedAt,
             UpdatedAt = r.UpdatedAt,
 
-            Members = r.Members?.Select(m => new ResidenceMemberDto
+            Members = r.Members?.Select(m => new CreateResidenceMemberDto
             {
                 UserId = m.UserId,
-                UserName = m.User?.Name ?? string.Empty,
+                ResidenceId = m.ResidenceId,
             })
-            .ToList() ?? new List<ResidenceMemberDto>(),
+            .ToList() ?? new List<CreateResidenceMemberDto>(),
 
             Expenses = r.Expenses?.Select(e => new ExpenseDto
             {
@@ -103,4 +104,8 @@ public class ReadResidenceUseCase : IReadResidenceUseCase
 
         });
     }
+
+    public async Task<Boolean> UserHasResidence(Guid userId)
+        => await _residenceRepository.UserHasResidence(userId);
+
 }

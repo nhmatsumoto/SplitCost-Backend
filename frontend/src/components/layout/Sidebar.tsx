@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { ArrowRightLeftIcon, BanknoteArrowUpIcon, HouseIcon, JapaneseYen, PersonStandingIcon, UserPlusIcon, WalletIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
+import { ArrowRightLeftIcon, BanknoteArrowUpIcon, HouseIcon, JapaneseYen, UserPlusIcon, WalletIcon, ChevronDownIcon, ChevronUpIcon, Coins } from 'lucide-react';
+import { useAuth } from 'react-oidc-context';
 
 interface LinkItem {
   to?: string;
@@ -9,8 +10,8 @@ interface LinkItem {
   children?: Omit<LinkItem, 'children'>[];
 }
 
-const links: LinkItem[] = [
-  { to: '/house', label: 'House', icon: HouseIcon },
+const initialLinks: LinkItem[] = [
+  { to: '/residence', label: 'Residence', icon: HouseIcon },
   {
     label: 'Transactions',
     icon: ArrowRightLeftIcon,
@@ -24,6 +25,18 @@ const links: LinkItem[] = [
 
 export const Sidebar = () => {
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
+  const { user } = useAuth();
+  const [linksToDisplay, setLinksToDisplay] = useState<LinkItem[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      // Se o usuário está logado, exibe todos os links (exceto talvez Register, dependendo da sua necessidade)
+      setLinksToDisplay(initialLinks);
+    } else {
+      // Se o usuário não está logado, exibe apenas o link de "Register"
+      setLinksToDisplay(initialLinks.filter(link => link.label === 'Register'));
+    }
+  }, [user]);
 
   const toggleSubMenu = (label: string) => {
     setOpenSubMenu((prev) => (prev === label ? null : label));
@@ -32,18 +45,16 @@ export const Sidebar = () => {
   return (
     <aside className="w-64 bg-[#F4F6F8] border-r border-[#E0E0E0] h-screen p-6 flex flex-col">
       <div className="flex items-center gap-3 mb-8">
-        <JapaneseYen className="h-7 w-7 text-[#00796B]" />
+        <Coins className="h-7 w-7 text-[#00796B]" />
         <h1 className="text-2xl font-bold text-[#2E2E2E] tracking-tight">
-          <Link to="/">
-            Split-Cost
+          <Link to="/" className="no-underline focus:no-underline hover:no-underline">
+            経費フロー
           </Link>
         </h1>
       </div>
-
       <div className="border-b border-[#E0E0E0] mb-6" />
-
       <nav className="flex flex-col gap-1">
-        {links.map((link) => {
+        {linksToDisplay.map((link) => {
           if (link.children) {
             const isSubMenuOpen = openSubMenu === link.label;
             return (
@@ -103,7 +114,6 @@ export const Sidebar = () => {
           }
         })}
       </nav>
-
       <div className="mt-auto pt-6 border-t border-[#E0E0E0] text-xs text-[#9EA7AD]">
         <p>© {new Date().getFullYear()} Design By NHMatsumoto</p>
       </div>

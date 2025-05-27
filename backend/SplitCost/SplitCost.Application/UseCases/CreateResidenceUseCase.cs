@@ -80,7 +80,7 @@ public class CreateResidenceUseCase : ICreateResidenceUseCase
                 Country = residence.Address.Country,
                 PostalCode = residence.Address.PostalCode
             },
-            Members = new List<ResidenceMemberDto>(),
+            Members = new List<CreateResidenceMemberDto>(),
             Expenses = new List<ExpenseDto>()
         };
     }

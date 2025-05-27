@@ -3,7 +3,7 @@ import HomePage from '../pages/public/HomePage';
 import ProfilePage from '../pages/private/ProfilePage';
 import { AppLayout } from '../components/layout/AppLayout';
 import ProtectedRoute from './ProtectedRoute';
-import HousePage from '../pages/private/HousePage';
+import ResidencePage from '../pages/private/ResidencePage';
 import ExpensesPage from '../pages/private/ExpensesPage';
 import RegistrationForm from '../pages/public/RegistrationForm';
 import CreateResidenceForm from '../pages/private/CreateResidenceForm';
@@ -58,15 +58,15 @@ const AppRoutes = () => {
             }
         />
         <Route
-            path="/house"
+            path="/residence"
             element={
               <AppLayout>
-                <ProtectedRoute children={<HousePage />} />
+                <ProtectedRoute children={<ResidencePage />} />
               </AppLayout>  
             }
         />
         <Route
-            path="/house/create"
+            path="/residence/create"
             element={
               <AppLayout>
                 <ProtectedRoute children={<CreateResidenceForm />} />

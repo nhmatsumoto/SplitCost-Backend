@@ -2,7 +2,7 @@ import { useAuth } from "react-oidc-context";
 import LogoutButton from "../auth/LogoutButton";
 import LoginButton from "../auth/LoginButton";
 import { Link } from 'react-router-dom';
-import { User as UserIcon } from 'lucide-react'; // Importe o ícone de usuário
+import { Coins } from 'lucide-react';
 
 export const Header = () => {
   const { isAuthenticated, user } = useAuth();
@@ -14,7 +14,7 @@ export const Header = () => {
         <div className="flex items-center gap-5">
           {isAuthenticated && (
             <Link to="/profile" className="flex items-center gap-2 text-sm text-[#2E2E2E] hover:underline">
-              <UserIcon className="h-4 w-4" />
+              <Coins className="h-4 w-4" />
               {user?.profile.name}
             </Link>
           )}

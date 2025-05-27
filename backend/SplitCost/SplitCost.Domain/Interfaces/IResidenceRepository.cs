@@ -9,4 +9,6 @@ public interface IResidenceRepository
     Task<Residence?> GetByUserIdAsync(Guid id);
     Task<IEnumerable<Residence>> GetAllAsync();
     Task UpdateAsync(Residence residence);
+
+    Task<Boolean> UserHasResidence(Guid userId);
 }

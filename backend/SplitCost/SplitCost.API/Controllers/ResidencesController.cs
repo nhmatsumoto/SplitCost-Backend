@@ -14,18 +14,18 @@ namespace SplitCost.API.Controllers
         private readonly ICreateResidenceUseCase _createResidenceUseCase;
         private readonly IUpdateResidenceUseCase _updateResidenceUseCase;
         private readonly IReadResidenceUseCase _getResidenceUseCase;
-        private readonly IRegisterResidenceOwnerUseCase _registerOwnerUseCase;
+        private readonly ICreateResidenceMemberUseCase _createResidenceMemberUseCase;
 
         public ResidencesController(
             ICreateResidenceUseCase createResidenceUseCase,
             IUpdateResidenceUseCase updateResidenceUseCase,
             IReadResidenceUseCase getResidenceUseCase,
-            IRegisterResidenceOwnerUseCase registerOwnerUseCase)
+            ICreateResidenceMemberUseCase createResidenceMemberUseCase)
         {
             _createResidenceUseCase = createResidenceUseCase;
             _updateResidenceUseCase = updateResidenceUseCase;
             _getResidenceUseCase = getResidenceUseCase;
-            _registerOwnerUseCase = registerOwnerUseCase;
+            _createResidenceMemberUseCase = createResidenceMemberUseCase;
         }
 
         [HttpPost]
@@ -39,21 +39,22 @@ namespace SplitCost.API.Controllers
 
             try
             {
+
                 var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
-                var username = User.Identity?.Name ?? "unknown";
-                var email = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
 
                 if (!Guid.TryParse(userIdStr, out var userId))
                     return Unauthorized(new { Error = "Usuário não autenticado corretamente." });
 
+                var hasResidence = await _getResidenceUseCase.UserHasResidence(userId);
+
+                if(hasResidence)
+                    return BadRequest(new { Error = "Usuário já possui uma residência." });
+
                 var residenceDto = await _createResidenceUseCase.CreateResidenceAsync(createResidenceDto, userId);
 
-                //Registra o usuário logado como proprietário da residência
-                await _registerOwnerUseCase.RegisterResidenceOwnerAsync(new RegisterOwnerDto
+                await _createResidenceMemberUseCase.RegisterResidenceMemberAsync(new CreateResidenceMemberDto
                 {
                     UserId = userId,
-                    Username = username,
-                    Email = email,
                     ResidenceId = residenceDto.Id
                 });
 
