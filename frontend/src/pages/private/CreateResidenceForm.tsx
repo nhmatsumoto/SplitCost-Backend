@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { useResidences } from '../../hooks/useResidences';
 import { useAuth } from 'react-oidc-context';
-import SuccessToast from '../../components/ui/SuccessToast';
-import ErrorToast from '../../components/ui/ErrorToast';
 import { AddressDto, CreateResidenceDto } from '../../types/residenceTypes';
 import { useResidenceStore } from '../../store/residenceStore';
+import toast from 'react-hot-toast';
 
 interface CreateResidenceFormProps {
   onSuccess?: () => void;
@@ -51,7 +50,7 @@ const CreateResidenceForm = ({ onSuccess, onError }: CreateResidenceFormProps) =
       const userId = user?.profile?.sub;
 
       if (!userId) {
-        ErrorToast('ID do usuário não encontrado. Por favor, faça login novamente.');
+        toast.error('ID do usuário não encontrado. Por favor, faça login novamente.');
         setLoading(false);
         return;
       }
@@ -67,7 +66,7 @@ const CreateResidenceForm = ({ onSuccess, onError }: CreateResidenceFormProps) =
       try {
 
         await createResidence(payload);
-        SuccessToast('Residência criada com sucesso!');
+        toast.success('Residência criada com sucesso!');
 
         var residence = await getByUserId(userId);
 
@@ -91,7 +90,7 @@ const CreateResidenceForm = ({ onSuccess, onError }: CreateResidenceFormProps) =
         });
       } catch (err: any) {
         const errorMessage = err?.response?.data?.message || 'Ocorreu um erro ao criar a residência.';
-        ErrorToast(errorMessage);
+        toast.error(errorMessage);
         if (onError) {
           onError(errorMessage);
         }

@@ -1,6 +1,8 @@
 import { useCallback } from "react";
 import { createApiClient } from "../api/client";
 import { ExpenseDto } from "../types/residenceTypes";
+import { UsersDictionary } from "../types/expenseTypes";
+import { Result } from "../types/commonTypes";
 
 
 export interface EnumOptions {
@@ -43,10 +45,25 @@ export const useExpenses = () => {
     [api]
   );
 
+  //Carrega os usuários que podem pagar a despesa
+  const getUsers = useCallback(
+    async (): Promise<UsersDictionary> => {
+    const response = await api.get<Result<UsersDictionary>>('/expense/users');
+
+      if (!response.data.success) {
+        throw new Error(response.data.error ?? 'Erro desconhecido ao buscar usuários');
+      }
+
+      return response.data.data!;
+    },
+    [api]
+  );
+
   return { 
     create,
     get,
     getTypes,
-    getCategories
+    getCategories,
+    getUsers
   };
 };

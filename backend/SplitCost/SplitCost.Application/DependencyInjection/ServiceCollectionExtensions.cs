@@ -14,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICreateResidenceMemberUseCase, CreateResidenceMember>();
         services.AddScoped<ICreateExpenseUseCase, CreateExpenseUseCase>();
         services.AddScoped<IReadExpenseUseCase, ReadExpenseUseCase>();
+        services.AddScoped<IReadMemberUseCase, ReadMemberUseCase>();
 
         services.AddScoped<IAppUserUseCase, CreateAppUserUseCase>();
         

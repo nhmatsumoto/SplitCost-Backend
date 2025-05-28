@@ -3,6 +3,7 @@ import { useAuth } from 'react-oidc-context';
 import { useLocation } from 'react-router-dom';
 import Loader from '../components/ui/Loader';
 
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }

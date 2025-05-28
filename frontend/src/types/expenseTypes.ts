@@ -22,3 +22,5 @@ export interface CreateExpenseDto {
   registerByUserId: string; 
   paidByUserId: string;
 }
+
+export type UsersDictionary = Record<string, string>;

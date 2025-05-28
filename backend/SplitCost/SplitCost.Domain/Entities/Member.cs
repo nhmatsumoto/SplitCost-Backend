@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SplitCost.Domain.Entities;
 
+[Table("Members")]
 public class Member : BaseEntity
 {
     [Key]

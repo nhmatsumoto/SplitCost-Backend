@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SpitCost.Infrastructure.Context;
 using SplitCost.Domain.Interfaces;
 using SplitCost.Infrastructure.Repositories;
-using SplitCost.Infrastructure.Services;
 
 namespace Playground.Infrastructure.DependencyInjection;
 
@@ -43,6 +42,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();   
+        services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();  
 
         //services.AddScoped<IKeycloakService, KeycloakService>();

@@ -10,17 +10,17 @@ public class ExpenseShare : BaseEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; private set; }
 
-    [ForeignKey("ResidenceExpense")]
-    [Column("ResidenceExpenseId")]
-    public Guid ResidenceExpenseId { get; private set; }
-    public Expense ResidenceExpense { get; private set; }
+    [ForeignKey("Expense")]
+    [Column("ExpenseId")]
+    public Guid ExpenseId { get; private set; }
+    public Expense Expense { get; private set; }
 
     [ForeignKey("User")]
     [Column("UserId")]
     public Guid UserId { get; private set; }
     public User User { get; private set; }
 
-    
+    [Column("Amount")]
     public decimal Amount { get; private set; }
 
     public ExpenseShare()

@@ -1,9 +1,11 @@
-﻿using SpitCost.Infrastructure.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using SpitCost.Infrastructure.Context;
 using SplitCost.Domain.Entities;
+using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Infrastructure.Repositories;
 
-public class MemberRepository
+public class MemberRepository : IMemberRepository
 {
     private readonly SplitCostDbContext _context;
 
@@ -14,43 +16,17 @@ public class MemberRepository
 
     public async Task AddAsync(Member member)
     {
-        await _context.ResidenceMembers.AddAsync(member);
+        await _context.Members.AddAsync(member);
         await _context.SaveChangesAsync();
     }
 
-    //public async Task<Residence?> GetByIdAsync(Guid id)
-    //{
-    //    return await _context.Residences
-    //        .Include(r => r.Members)
-    //            .ThenInclude(rm => rm.User)
-    //        .Include(r => r.Expenses)
-    //            .ThenInclude(e => e.Shares)
-    //        .FirstOrDefaultAsync(r => r.Id == id);
-    //}
-
-    //public async Task<Residence?> GetByUserIdAsync(Guid id)
-    //{
-    //    return await _context.Residences
-    //        .Include(r => r.Members)
-    //            .ThenInclude(rm => rm.User)
-    //        .Where(r => r.Members.Any(m => m.UserId == id))
-    //        .AsNoTracking()
-    //        .FirstOrDefaultAsync();
-    //}
-
-    //public async Task UpdateAsync(Residence residence)
-    //{
-    //    _context.Residences.Update(residence);
-    //    await _context.SaveChangesAsync();
-    //}
-
-    //public async Task<IEnumerable<Residence>> GetAllAsync()
-    //{
-    //    return await _context.Residences
-    //        .Include(r => r.Members)
-    //            .ThenInclude(rm => rm.User)
-    //        .Include(r => r.Expenses)
-    //            .ThenInclude(e => e.Shares)
-    //        .ToListAsync();
-    //}
+    // Obtem dicionario id, nome dos usuários que pertencem a uma residência
+    // Usado para exibir os membros de uma residência no dropdown de despesas
+    public async Task<Dictionary<Guid, string>> GetUsersByResidenceId(Guid residenceId)
+    {
+        return await _context.Members
+            .Where(rm => rm.ResidenceId == residenceId)
+            .Select(rm => new { rm.UserId, rm.User.Name })
+            .ToDictionaryAsync(x => x.UserId, x => x.Name);
+    }
 }

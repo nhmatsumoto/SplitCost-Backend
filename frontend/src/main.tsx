@@ -1,4 +1,3 @@
-import React from 'react'
 import { createRoot } from 'react-dom/client'
 import AppRoutes from './routes/AppRoutes'
 import { AuthProvider } from 'react-oidc-context';
@@ -8,11 +7,8 @@ import { Log } from "oidc-client-ts";
 
 Log.setLevel(Log.DEBUG);
 
-
 createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <AuthProvider {...oidcConfig}>
-      <AppRoutes />
-    </AuthProvider>
-  </React.StrictMode>
+  <AuthProvider {...oidcConfig}>
+    <AppRoutes />
+  </AuthProvider>
 )

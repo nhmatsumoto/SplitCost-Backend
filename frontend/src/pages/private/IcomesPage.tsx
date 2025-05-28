@@ -8,7 +8,7 @@ const IncomesPage = () => {
          <>
             <h1>Incomes</h1>
             <p>Incomes page</p>
-
+        
             <Link to="/">Go to Home</Link>
         </>
     )

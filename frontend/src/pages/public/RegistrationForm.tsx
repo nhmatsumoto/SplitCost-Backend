@@ -1,9 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { RegisterUserDto, useAppUser } from '../../hooks/useAppUser'; // Adjust the import path as needed
-import SuccessToast from '../../components/ui/SuccessToast'; // Assuming the path to SuccessToast
-import ErrorToast from '../../components/ui/ErrorToast'; // Assuming the path to ErrorToast
+import { RegisterUserDto, useAppUser } from '../../hooks/useAppUser';
 import { useAuth } from 'react-oidc-context';
 import { Navigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
@@ -25,7 +24,6 @@ const RegistrationForm = ({ onSuccess } : RegistrationFormProps) => {
     Password: '',
     ConfirmPassword: '',
   });
-  const [passwordMatchError, setPasswordMatchError] = useState<string | null>(null);
   const { create: registerUser } = useAppUser();
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,14 +48,13 @@ const RegistrationForm = ({ onSuccess } : RegistrationFormProps) => {
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.Password !== formData.ConfirmPassword) {
-      setPasswordMatchError('As senhas não coincidem.');
+      toast.error('As senhas não coincidem.');
       return;
     }
-    setPasswordMatchError(null);
-
+    
     try {
       await registerUser(formData);
-      SuccessToast('Usuário cadastrado com sucesso!');
+      toast.success('Usuário cadastrado com sucesso!');
       resetForm();
       if (onSuccess) {
         onSuccess();
@@ -65,17 +62,15 @@ const RegistrationForm = ({ onSuccess } : RegistrationFormProps) => {
       }
     } catch (error: any) {
       console.error('Erro no registro:', error);
-      ErrorToast(error?.response?.data?.message || 'Ocorreu um erro ao cadastrar o usuário.');
+      toast.error(error?.response?.data?.message || 'Ocorreu um erro ao cadastrar o usuário.');
     }
-  }, [formData, registerUser, onSuccess, resetForm, ErrorToast, SuccessToast]);
+  }, [formData, registerUser, onSuccess, resetForm]);
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-100">
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
         <h2 className="block text-gray-700 text-xl font-bold mb-4">Cadastrar Usuário</h2>
-        {passwordMatchError && <p className="text-red-500 text-sm italic mb-4">{passwordMatchError}</p>}
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* ... campos do formulário ... */}
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="Username">
               Nome de Usuário:
