@@ -1,24 +1,28 @@
 ﻿using Mapster;
 using SplitCost.Application.DTOs;
 using SplitCost.Domain.Entities;
+using SplitCost.Domain.Factories;
 
 namespace SplitCost.Application.Mappers;
-
 public class ExpenseMappingConfig : IRegister
 {
+    /// <summary>
+    /// Registra o mapeamento entre CreateExpenseDto e Expense.
+    /// Atenção a ordem dos parâmetros no construtor
+    /// </summary>
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<CreateExpenseDto, Expense>()
-            .MapWith(src => new Expense(
-                type: src.Type,
-                category: src.Category,
-                amount: src.Amount,
-                date: src.Date,
-                isSharedAmongMembers: src.IsSharedAmongMembers,
-                description: src.Description,
-                residenceId: src.ResidenceId,
-                registeredByUserId: src.RegisterByUserId,
-                paidByUserId: src.PaidByUserId
+            .MapWith(src => ExpenseFactory.Create(
+                src.Type,
+                src.Category,
+                src.Amount,
+                src.Date,
+                src.Description,
+                src.IsSharedAmongMembers,
+                src.ResidenceId,
+                src.RegisterByUserId,
+                src.PaidByUserId
             ));
     }
 }

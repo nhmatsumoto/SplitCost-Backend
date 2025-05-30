@@ -1,32 +1,17 @@
 ﻿using SplitCost.Domain.Common;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace SplitCost.Domain.Entities;
 
-[Table("Members")]
 public class Member : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; private set; }
-
-    [ForeignKey("User")]
-    [Column("UserId")]
     public Guid UserId { get; private set; }
     public User User { get; private set; }
-
-    [ForeignKey("Residence")]
-    [Column("ResidenceId")]
     public Guid ResidenceId { get; private set; }
     public Residence Residence { get; private set; }
+    public DateTime JoinedAt { get; private set; }
 
-    public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
-
-    public Member()
-    {
-        
-    }
+    private Member() { }
 
     public Member(Guid userId, Guid residenceId, DateTime joinedAt)
     {
@@ -37,24 +22,25 @@ public class Member : BaseEntity
 
     public Member SetUserId(Guid userId)
     {
-        if (userId == Guid.Empty) 
-            throw new ArgumentNullException("É necessário informar um usuário");
+        if (userId == Guid.Empty)
+            throw new ArgumentException("Usuário inválido.");
         UserId = userId;
         return this;
     }
 
     public Member SetResidenceId(Guid residenceId)
     {
-        if (residenceId == Guid.Empty) 
-            throw new ArgumentNullException("É necessário informar uma residência");
+        if (residenceId == Guid.Empty)
+            throw new ArgumentException("Residência inválida.");
         ResidenceId = residenceId;
         return this;
     }
 
     public Member SetJoinedAt(DateTime joinedAt)
     {
+        if (joinedAt == default)
+            throw new ArgumentException("Data de entrada inválida.");
         JoinedAt = joinedAt;
         return this;
     }
-
 }

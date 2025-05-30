@@ -1,4 +1,4 @@
-﻿namespace SplitCost.Domain.Entities;
+﻿namespace SplitCost.Domain.Enums;
 
 public enum ExpenseCategory
 {

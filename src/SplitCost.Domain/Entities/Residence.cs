@@ -1,74 +1,41 @@
 ﻿using SplitCost.Domain.Common;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SplitCost.Domain.Entities;
 
-[Table("Residences")]
 public class Residence : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
+    public Guid Id { get; private set; }
+    public string Name { get; private set; }
+    public Guid? AddressId { get; private set; }
+    public Address? Address { get; private set; }
+    public Guid? CreatedByUserId { get; private set; }
+    public User? CreatedBy { get; private set; }
 
-    [MaxLength(200)]
-    [Column("Name")]
-    public string? Name { get; set; }
+    private readonly List<Member> _members = new();
+    public IReadOnlyCollection<Member> Members => _members;
 
-    [ForeignKey("Address")]
-    [Column("AddressId")]
-    public Guid? AddressId { get; set; }
-    public Address? Address { get; set; }
+    private readonly List<Expense> _expenses = new();
+    public IReadOnlyCollection<Expense> Expenses => _expenses;
 
-    [ForeignKey("CreatedBy")]
-    [Column("CreatedByUserId")]
-    public Guid? CreatedByUserId { get; set; }
-    public User? CreatedBy { get; set; }
+    private Residence() { }
 
-    public ICollection<Member> Members { get; set; } = new List<Member>();
-    public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
-
-    public Residence() { }
-
-    public void UpdateName(string name)
+    public Residence(string name, Guid createdByUserId)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("O nome da casa não pode ser vazio.");
-        Name = name;
-    }
-
-    public void AddMember(Member residenceMember)
-    {
-        if (residenceMember == null) 
-            throw new ArgumentNullException(nameof(residenceMember));
-        Members.Add(residenceMember);
-    }
-
-    public void RemoveMember(Member residenceMember)
-    {
-        if (!Members.Remove(residenceMember)) 
-            throw new ArgumentException(nameof(residenceMember));
-    }
-
-    public void AddExpense(Expense expense)
-    {
-        if (expense == null) 
-            throw new ArgumentNullException(nameof(expense));
-        expense.ResidenceId = this.Id;
-        Expenses.Add(expense);
+        SetName(name);
+        SetCreatedByUser(createdByUserId);
     }
 
     public Residence SetName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("O nome da casa não pode ser vazio.");
-        Name = name;
+            throw new ArgumentException("O nome da residência não pode ser vazio.");
+        Name = name.Trim();
         return this;
     }
 
     public Residence SetAddress(Address address)
     {
-        if (address == null) 
+        if (address == null)
             throw new ArgumentNullException(nameof(address));
         Address = address;
         AddressId = address.Id;
@@ -78,9 +45,38 @@ public class Residence : BaseEntity
     public Residence SetCreatedByUser(Guid userId)
     {
         if (userId == Guid.Empty)
-            throw new ArgumentException("É necessário informar um usuário");
+            throw new ArgumentException("Usuário criador inválido.");
         CreatedByUserId = userId;
+        return this;
+    }
 
+    public Residence AddMember(Member member)
+    {
+        if (member == null)
+            throw new ArgumentNullException(nameof(member));
+        if (_members.Any(m => m.UserId == member.UserId))
+            throw new InvalidOperationException("Usuário já é membro da residência.");
+        _members.Add(member);
+        return this;
+    }
+
+    public Residence RemoveMember(Guid userId)
+    {
+        var member = _members.FirstOrDefault(m => m.UserId == userId);
+        if (member == null)
+            throw new InvalidOperationException("Membro não encontrado.");
+        _members.Remove(member);
+        return this;
+    }
+
+    public Residence AddExpense(Expense expense)
+    {
+        if (expense == null)
+            throw new ArgumentNullException(nameof(expense));
+        if (expense.ResidenceId != Id)
+            throw new InvalidOperationException("Despesa não pertence a esta residência.");
+        _expenses.Add(expense);
         return this;
     }
 }
+

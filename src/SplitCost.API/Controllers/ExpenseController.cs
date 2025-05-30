@@ -2,7 +2,7 @@
 using SplitCost.Application.Common;
 using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
-using SplitCost.Domain.Entities;
+using SplitCost.Domain.Enums;
 
 namespace SplitCost.API.Controllers
 {

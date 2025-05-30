@@ -1,4 +1,4 @@
-﻿using SplitCost.Domain.Entities;
+﻿using SplitCost.Domain.Enums;
 
 namespace SplitCost.Application.DTOs
 {

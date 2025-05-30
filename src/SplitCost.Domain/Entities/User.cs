@@ -52,7 +52,7 @@ namespace SplitCost.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException("Email cannot be empty.", nameof(email));
-            // Poderia adicionar validação de formato de email aqui
+            // validação de formato de email
             Email = email;
             return this;
         }

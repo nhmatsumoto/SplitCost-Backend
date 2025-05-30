@@ -1,107 +1,83 @@
 ﻿using SplitCost.Domain.Common;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SplitCost.Domain.Entities;
 
-[Table("Addresses")]
 public class Address : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; private set; }
-
-    [Required]
-    [MaxLength(200)]
-    [Column("Street")]
     public string Street { get; private set; }
-
-    [Required]
-    [MaxLength(20)]
-    [Column("Number")]
     public string Number { get; private set; }
-
-    [MaxLength(200)]
-    [Column("Apartment")]
     public string Apartment { get; private set; }
-
-    [Required]
-    [MaxLength(200)]
-    [Column("City")]
     public string City { get; private set; }
-
-    [MaxLength(200)]
-    [Column("Prefecture")] 
     public string Prefecture { get; private set; }
-
-    [MaxLength(200)]
-    [Column("Country")]
     public string Country { get; private set; }
-
-    [Required]
-    [MaxLength(20)]
-    [Column("PostalCode")]
-    public string PostalCode { get; private set; } 
+    public string PostalCode { get; private set; }
 
     public Residence Residence { get; private set; }
 
-    public Address()
-    {
+    private Address() { }
 
+    private Address(string street, string number, string apartment, string city, string prefecture, string country, string postalCode)
+    {
+        SetStreet(street);
+        SetNumber(number);
+        SetApartment(apartment);
+        SetCity(city);
+        SetPrefecture(prefecture);
+        SetCountry(country);
+        SetPostalCode(postalCode);
+    }
+
+    public static Address Create(string street, string number, string apartment, string city, string prefecture, string country, string postalCode)
+    {
+        return new Address(street, number, apartment, city, prefecture, country, postalCode);
     }
 
     public Address SetStreet(string street)
     {
-        if (string.IsNullOrWhiteSpace(street))
-            throw new ArgumentException("O nome da rua não pode ser vazio.");
-        Street = street;
+        if (string.IsNullOrWhiteSpace(street)) throw new ArgumentException("O nome da rua não pode ser vazio.");
+        Street = street.Trim();
         return this;
     }
 
     public Address SetNumber(string number)
     {
-        if (string.IsNullOrWhiteSpace(number))
-            throw new ArgumentException("O número do endereço não pode ser vazio.");
-        Number = number;
+        if (string.IsNullOrWhiteSpace(number)) throw new ArgumentException("O número do endereço não pode ser vazio.");
+        Number = number.Trim();
         return this;
     }
 
-    // Apartamento pode ser nulo ou vazio
     public Address SetApartment(string apartment)
     {
-        Apartment = apartment ?? ""; 
+        Apartment = apartment?.Trim() ?? string.Empty;
         return this;
     }
 
     public Address SetCity(string city)
     {
-        if (string.IsNullOrWhiteSpace(city))
-            throw new ArgumentException("A cidade não pode ser vazia.");
-        City = city;
+        if (string.IsNullOrWhiteSpace(city)) throw new ArgumentException("A cidade não pode ser vazia.");
+        City = city.Trim();
         return this;
     }
 
     public Address SetPrefecture(string prefecture)
     {
-        if (string.IsNullOrWhiteSpace(prefecture))
-            throw new ArgumentException("A província/estado não pode ser vazio.");
-        Prefecture = prefecture;
+        if (string.IsNullOrWhiteSpace(prefecture)) throw new ArgumentException("A província não pode ser vazia.");
+        Prefecture = prefecture.Trim();
         return this;
     }
 
     public Address SetCountry(string country)
     {
-        if (string.IsNullOrWhiteSpace(country))
-            throw new ArgumentException("O país não pode ser vazio.");
-        Country = country;
+        if (string.IsNullOrWhiteSpace(country)) throw new ArgumentException("O país não pode ser vazio.");
+        Country = country.Trim();
         return this;
     }
 
     public Address SetPostalCode(string postalCode)
     {
-        if (string.IsNullOrWhiteSpace(postalCode))
-            throw new ArgumentException("O código postal não pode ser vazio.");
-        PostalCode = postalCode;
+        if (string.IsNullOrWhiteSpace(postalCode)) throw new ArgumentException("O código postal não pode ser vazio.");
+        PostalCode = postalCode.Trim();
         return this;
     }
 }

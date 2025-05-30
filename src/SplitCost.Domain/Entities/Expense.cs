@@ -1,14 +1,10 @@
 ﻿using SplitCost.Domain.Common;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using SplitCost.Domain.Enums;
 
 namespace SplitCost.Domain.Entities;
 
-[Table("Expenses")]
 public class Expense : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; private set; }
     public ExpenseType Type { get; private set; }
     public ExpenseCategory Category { get; private set; }
@@ -16,50 +12,40 @@ public class Expense : BaseEntity
     public DateTime Date { get; private set; }
     public string Description { get; private set; }
 
-    // A residência a qual a despesa pertence
-    [ForeignKey("Residence")]
-    [Column("ResidenceId")]
-    public Guid ResidenceId { get; set; }
-    public Residence Residence { get; set; }
+    public Guid ResidenceId { get; private set; }
+    public Residence Residence { get; private set; }
 
-    // Quem registrou a despesa
-    [ForeignKey("RegisteredBy")]
-    [Column("RegisteredByUserId")]
-    public Guid RegisteredByUserId { get; set; }
-    public User RegisteredBy { get; set; } = null!;
+    public Guid RegisteredByUserId { get; private set; }
+    public User RegisteredBy { get; private set; }
 
-    // Quem pagou a despesa
-    [ForeignKey("PaidBy")]
-    [Column("PaidByUserId")]
-    public Guid PaidByUserId { get; set; }
-    public User PaidBy { get; set; } = null!;
+    public Guid PaidByUserId { get; private set; }
+    public User PaidBy { get; private set; }
 
     public bool IsSharedAmongMembers { get; private set; }
-    public ICollection<ExpenseShare> Shares { get; set; } = new List<ExpenseShare>();
+    public ICollection<ExpenseShare> Shares { get; private set; } = new List<ExpenseShare>();
 
-    public Expense()
-    {
-        
-    }
+    internal Expense() { }
 
-    public Expense(
+    internal Expense(
         ExpenseType type,
         ExpenseCategory category,
         decimal amount,
         DateTime date,
-        bool isSharedAmongMembers,
         string description,
+        bool isSharedAmongMembers,
         Guid residenceId,
         Guid registeredByUserId,
         Guid paidByUserId)
     {
         SetType(type);
         SetCategory(category);
-        SetDescription(description);
         SetAmount(amount);
+        SetDate(date);
+        SetDescription(description);
+        SetSharedAmongMembers(isSharedAmongMembers);
         SetResidenceId(residenceId);
-        SetWhoPaidExpense(paidByUserId);
-        SetWhoRegisterExpense(registeredByUserId);
+        SetWhoRegistered(registeredByUserId);
+        SetWhoPaid(paidByUserId);
     }
 
     public Expense SetType(ExpenseType type)
@@ -76,53 +62,56 @@ public class Expense : BaseEntity
 
     public Expense SetAmount(decimal amount)
     {
-        if (amount <= 0)
-            throw new ArgumentOutOfRangeException("O valor da despesa deve ser maior que zero.");
+        if (amount <= 0) throw new ArgumentOutOfRangeException("O valor da despesa deve ser maior que zero.");
         Amount = amount;
         return this;
     }
 
     public Expense SetDate(DateTime date)
     {
+        if (date == default) throw new ArgumentException("Data inválida.");
         Date = date;
-        return this;
-    }
-
-    public Expense SetSharedAmongMembers(bool sharedAmongMembers)
-    {
-        IsSharedAmongMembers = sharedAmongMembers;
         return this;
     }
 
     public Expense SetDescription(string description)
     {
-        if (string.IsNullOrWhiteSpace(description))
-            throw new ArgumentException("A descrição da despesa não pode ser vazia.");
-        Description = description;
+        if (string.IsNullOrWhiteSpace(description)) throw new ArgumentException("A descrição não pode ser vazia.");
+        Description = description.Trim();
+        return this;
+    }
+
+    public Expense SetSharedAmongMembers(bool shared)
+    {
+        IsSharedAmongMembers = shared;
         return this;
     }
 
     public Expense SetResidenceId(Guid residenceId)
     {
-        if (residenceId == Guid.Empty)
-            throw new ArgumentException("É necessário informar uma residência.");
+        if (residenceId == Guid.Empty) throw new ArgumentException("Residência inválida.");
         ResidenceId = residenceId;
         return this;
     }
 
-    public Expense SetWhoRegisterExpense(Guid userId)
+    public Expense SetWhoRegistered(Guid userId)
     {
-        if (userId == Guid.Empty)
-            throw new ArgumentException("É necessário informar um usuário que registrou a despesa.");
+        if (userId == Guid.Empty) throw new ArgumentException("Usuário inválido para registro.");
         RegisteredByUserId = userId;
         return this;
     }
 
-    public Expense SetWhoPaidExpense(Guid userId)
+    public Expense SetWhoPaid(Guid userId)
     {
-        if (userId == Guid.Empty)
-            throw new ArgumentException("É necessário informar um usuário que pagou a despesa.");
+        if (userId == Guid.Empty) throw new ArgumentException("Usuário inválido para pagamento.");
         PaidByUserId = userId;
+        return this;
+    }
+
+    public Expense AddShare(ExpenseShare share)
+    {
+        if (share == null) throw new ArgumentNullException(nameof(share));
+        Shares.Add(share);
         return this;
     }
 }
