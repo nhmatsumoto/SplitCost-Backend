@@ -2,6 +2,7 @@
 using SplitCost.Application.Common;
 using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
+using SplitCost.Domain.Entities;
 using SplitCost.Domain.Enums;
 
 namespace SplitCost.API.Controllers
@@ -70,13 +71,13 @@ namespace SplitCost.API.Controllers
             }
         }
 
-        [HttpGet("/residence/{id:guid}")]
+        [HttpGet("residence/{residenceId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByResidenceId(Guid id)
+        public async Task<IActionResult> GetExpensesByResidenceId(Guid residenceId)
         {
-            var result = await _readExpenseUseCase.GetExpensesByResidenceIdAsync(id);
+            var result = await _readExpenseUseCase.GetExpensesByResidenceIdAsync(residenceId);
 
             if (result.IsSuccess)
             {
@@ -117,7 +118,7 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetExpenseUsers(Guid residenceId)
+        public async Task<IActionResult> GetUsersByResidenceId(Guid residenceId)
         {
             var result = await _readMemberUseCase.GetByResidenceIdAsync(residenceId);
 

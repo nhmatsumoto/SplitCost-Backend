@@ -1,5 +1,4 @@
-﻿using Mapster;
-using MapsterMapper;
+﻿using MapsterMapper;
 using Moq;
 using SplitCost.Application.Common;
 using SplitCost.Application.DTOs;
@@ -8,7 +7,6 @@ using SplitCost.Domain.Entities;
 using SplitCost.Domain.Enums;
 using SplitCost.Domain.Factories;
 using SplitCost.Domain.Interfaces;
-using SplitCost.Infrastructure.Entities;
 
 namespace SplitCost.UnitTests.Application.UseCases;
 
