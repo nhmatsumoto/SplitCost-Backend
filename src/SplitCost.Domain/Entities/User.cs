@@ -1,79 +1,91 @@
 ﻿using SplitCost.Domain.Common;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SplitCost.Domain.Entities;
-
-public class User : BaseEntity
+namespace SplitCost.Domain.Entities
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; private set; }
-
-    [Required]
-    [MaxLength(200)]
-    [Column("Name")]
-    public string Name { get; private set; }
-
-    [Required]
-    [EmailAddress]
-    [Column("Email")]
-    public string Email { get; private set; }
-
-    [Column("AvatarUrl")]
-    public string AvatarUrl { get; private set; } = string.Empty;
-
-    // Navigation
-
-    // Participação em residências (via tabela intermediária)
-    public ICollection<Member> Residences { get; set; } = new List<Member>();
-
-    // Despesas registradas por este usuário
-    public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
-
-    // Despesas pagas por este usuário
-    public ICollection<Expense> ResidenceExpensesPaid { get; set; } = new List<Expense>();
-
-    // Compartilhamentos de despesas em que este usuário está envolvido
-    public ICollection<ExpenseShare> ExpenseShares { get; set; } = new List<ExpenseShare>();
-
-    public User()
+    public class User : BaseEntity
     {
-        
-    }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string Email { get; private set; }
+        public string AvatarUrl { get; private set; }
 
-    public User(string name, string email, string avatarUrl)
-    {
-        SetName(name);
-        SetEmail(email);
-        SetAvatarUrl(avatarUrl);
-    }
+        private readonly List<Member> _residences = new();
+        public IReadOnlyCollection<Member> Residences => _residences.AsReadOnly();
 
-    public User SetUserId(Guid userId)
-    {
-        if(userId == Guid.Empty) throw new ArgumentNullException("userId");
-        this.Id = userId;
-        return this;
-    }
+        private readonly List<Expense> _expenses = new();
+        public IReadOnlyCollection<Expense> Expenses => _expenses.AsReadOnly();
 
-    public User SetName(string name)
-    {
-        if(string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException("name");
-        Name = name;
-        return this;
-    }
+        private readonly List<Expense> _residenceExpensesPaid = new();
+        public IReadOnlyCollection<Expense> ResidenceExpensesPaid => _residenceExpensesPaid.AsReadOnly();
 
-    public User SetEmail(string email)
-    {
-        if(string.IsNullOrWhiteSpace(email)) throw new ArgumentNullException("email");
-        Email = email;
-        return this;
-    }
+        private readonly List<ExpenseShare> _expenseShares = new();
+        public IReadOnlyCollection<ExpenseShare> ExpenseShares => _expenseShares.AsReadOnly();
 
-    public User SetAvatarUrl(string avatarUrl)
-    {
-        if (string.IsNullOrWhiteSpace(avatarUrl)) throw new ArgumentNullException("avatarUrl");
-        AvatarUrl = avatarUrl; 
-        return this;
+        public User(Guid id, string name, string email, string avatarUrl = "")
+        {
+            SetId(id);
+            SetName(name);
+            SetEmail(email);
+            SetAvatarUrl(avatarUrl);
+        }
+
+        // Apenas para frameworks de serialização/deserialização
+        protected User() { }
+
+        public User SetId(Guid id)
+        {
+            if (id == Guid.Empty)
+                throw new ArgumentException("User Id cannot be empty.", nameof(id));
+            Id = id;
+            return this;
+        }
+
+        public User SetName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Name cannot be empty.", nameof(name));
+            Name = name;
+            return this;
+        }
+
+        public User SetEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ArgumentException("Email cannot be empty.", nameof(email));
+            // Poderia adicionar validação de formato de email aqui
+            Email = email;
+            return this;
+        }
+
+        public User SetAvatarUrl(string avatarUrl)
+        {
+            AvatarUrl = avatarUrl ?? string.Empty;
+            return this;
+        }
+
+        // Métodos para manipular coleções podem ser expostos aqui se houver lógica de negócio relevante
+        public void AddResidence(Member member)
+        {
+            if (member == null) throw new ArgumentNullException(nameof(member));
+            _residences.Add(member);
+        }
+
+        public void AddExpense(Expense expense)
+        {
+            if (expense == null) throw new ArgumentNullException(nameof(expense));
+            _expenses.Add(expense);
+        }
+
+        public void AddResidenceExpensePaid(Expense expense)
+        {
+            if (expense == null) throw new ArgumentNullException(nameof(expense));
+            _residenceExpensesPaid.Add(expense);
+        }
+
+        public void AddExpenseShare(ExpenseShare expenseShare)
+        {
+            if (expenseShare == null) throw new ArgumentNullException(nameof(expenseShare));
+            _expenseShares.Add(expenseShare);
+        }
     }
 }
