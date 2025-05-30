@@ -43,7 +43,6 @@ public class CreateExpenseUseCaseTests
         // Arrange
         var expenseDto = new CreateExpenseDto
         {
-            Id = Guid.NewGuid(),
             Amount = 10.00m,
             Category = ExpenseCategory.Food,
             Date = DateTime.UtcNow,
@@ -56,7 +55,6 @@ public class CreateExpenseUseCaseTests
         };
 
         var expenseEntity = ExpenseFactory.Create(
-               Guid.NewGuid(),
                expenseDto.Type,
                expenseDto.Category,
                expenseDto.Amount,
@@ -66,7 +64,9 @@ public class CreateExpenseUseCaseTests
                expenseDto.ResidenceId,
                expenseDto.RegisterByUserId,
                expenseDto.PaidByUserId
-           );
+        );
+
+        expenseEntity.SetId(Guid.NewGuid());
 
         _mockMapper.Setup(m => m.Map<Expense>(expenseDto)).Returns(expenseEntity);
         _mockResidenceRepository.Setup(repo => repo.ExistsAsync(expenseDto.ResidenceId)).ReturnsAsync(true);
@@ -105,7 +105,6 @@ public class CreateExpenseUseCaseTests
         };
 
         var expense = ExpenseFactory.Create(
-            Guid.NewGuid(),
             ExpenseType.Fixed,
             ExpenseCategory.Food,
             10.00m,
@@ -142,7 +141,6 @@ public class CreateExpenseUseCaseTests
         };
 
         var expense = ExpenseFactory.Create(
-            Guid.NewGuid(),
             ExpenseType.Fixed,
             ExpenseCategory.Food,
             10.00m,
@@ -181,7 +179,6 @@ public class CreateExpenseUseCaseTests
         };
 
         var expense = ExpenseFactory.Create(
-            Guid.NewGuid(),
             ExpenseType.Fixed,
             ExpenseCategory.Food,
             10.00m,

@@ -18,9 +18,9 @@ namespace SplitCost.API.Controllers
             IReadExpenseUseCase readExpenseUseCase,
             IReadMemberUseCase readMemberUseCase)
         {
-            _createExpenseUseCase = createExpenseUseCase ?? throw new ArgumentNullException(nameof(createExpenseUseCase));
-            _readExpenseUseCase = readExpenseUseCase ?? throw new ArgumentNullException(nameof(readExpenseUseCase));
-            _readMemberUseCase = readMemberUseCase ?? throw new ArgumentNullException(nameof(readMemberUseCase));
+            _createExpenseUseCase   = createExpenseUseCase  ?? throw new ArgumentNullException(nameof(createExpenseUseCase));
+            _readExpenseUseCase     = readExpenseUseCase    ?? throw new ArgumentNullException(nameof(readExpenseUseCase));
+            _readMemberUseCase      = readMemberUseCase     ?? throw new ArgumentNullException(nameof(readMemberUseCase));
         }
 
         [HttpPost]

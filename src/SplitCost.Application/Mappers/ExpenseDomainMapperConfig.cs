@@ -11,7 +11,6 @@ public class ExpenseDomainMapperConfig : IRegister
         // DTO -> Domain
         config.NewConfig<CreateExpenseDto, Expense>()
             .MapWith(src => ExpenseFactory.Create(
-                src.Id,
                 src.Type,
                 src.Category,
                 src.Amount,

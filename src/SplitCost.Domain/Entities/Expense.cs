@@ -27,7 +27,6 @@ public class Expense : BaseEntity
     internal Expense() { }
 
     internal Expense(
-        Guid id,
         ExpenseType type,
         ExpenseCategory category,
         decimal amount,
@@ -38,7 +37,6 @@ public class Expense : BaseEntity
         Guid registeredByUserId,
         Guid paidByUserId)
     {
-        SetId(id);
         SetType(type);
         SetCategory(category);
         SetAmount(amount);
