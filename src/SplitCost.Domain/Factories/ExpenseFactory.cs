@@ -18,6 +18,7 @@ public static class ExpenseFactory
     /// <param name="paidByUserId"></param>
     /// <returns></returns>
     public static Expense Create(
+        Guid id,
         ExpenseType type,
         ExpenseCategory category,
         decimal amount,
@@ -28,6 +29,6 @@ public static class ExpenseFactory
         Guid registeredByUserId,
         Guid paidByUserId)
     {
-        return new Expense(type, category, amount, date, description, isSharedAmongMembers, residenceId, registeredByUserId, paidByUserId);
+        return new Expense(id, type, category, amount, date, description, isSharedAmongMembers, residenceId, registeredByUserId, paidByUserId);
     }
 }

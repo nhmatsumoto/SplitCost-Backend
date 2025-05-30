@@ -4,6 +4,7 @@ namespace SplitCost.Application.DTOs
 {
     public class CreateExpenseDto
     {
+        public Guid Id { get; set; }
         public ExpenseType Type { get; set; }
         public ExpenseCategory Category { get; set; }
         public decimal Amount { get; set; }

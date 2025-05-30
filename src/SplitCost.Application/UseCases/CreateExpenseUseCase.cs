@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using MapsterMapper;
 using SplitCost.Application.Common;
 using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
@@ -13,23 +14,26 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
     private readonly IUnitOfWork _unitOfWork;
     private readonly IResidenceRepository _residenceRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
     public CreateExpenseUseCase(
         IExpenseRepository expenseRepository,
         IUnitOfWork unitOfWork,
         IResidenceRepository residenceRepository,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IMapper mapper)
     {
         _expenseRepository      = expenseRepository     ?? throw new ArgumentNullException(nameof(expenseRepository));
         _unitOfWork             = unitOfWork            ?? throw new ArgumentNullException(nameof(unitOfWork));
         _residenceRepository    = residenceRepository   ?? throw new ArgumentNullException(nameof(residenceRepository));
         _userRepository         = userRepository        ?? throw new ArgumentNullException(nameof(userRepository));
+        _mapper                 = mapper                ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<Result<ExpenseDto>> CreateExpense(CreateExpenseDto expenseDto)
     {
         //Map DTO To Domain Entity
-        Expense expense = expenseDto.Adapt<Expense>();
+        var expense = _mapper.Map<Expense>(expenseDto);
 
         // Valida a entidade
         var residenceExists = await _residenceRepository.ExistsAsync(expense.ResidenceId);

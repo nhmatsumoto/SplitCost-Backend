@@ -27,6 +27,7 @@ public class Expense : BaseEntity
     internal Expense() { }
 
     internal Expense(
+        Guid id,
         ExpenseType type,
         ExpenseCategory category,
         decimal amount,
@@ -37,6 +38,7 @@ public class Expense : BaseEntity
         Guid registeredByUserId,
         Guid paidByUserId)
     {
+        SetId(id);
         SetType(type);
         SetCategory(category);
         SetAmount(amount);
@@ -46,6 +48,13 @@ public class Expense : BaseEntity
         SetResidenceId(residenceId);
         SetWhoRegistered(registeredByUserId);
         SetWhoPaid(paidByUserId);
+    }
+
+    public Expense SetId(Guid id)
+    {
+        if (id == Guid.Empty) throw new ArgumentException("Id inválido.");
+        Id = id;
+        return this;
     }
 
     public Expense SetType(ExpenseType type)
