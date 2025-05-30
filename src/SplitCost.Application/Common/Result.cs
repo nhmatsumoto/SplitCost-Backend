@@ -7,14 +7,19 @@ public class Result
     public string? ErrorMessage { get; }
     public ErrorType? ErrorType { get; }
     public object? Data { get; }
+    public Dictionary<string, string[]>? ValidationErrors { get; }
 
-    private Result(bool isSuccess, string? errorMessage, object? data = null)
+    private Result(bool isSuccess, string? errorMessage, ErrorType? errorType, object? data = null, Dictionary<string, string[]>? validationErrors = null)
     {
         IsSuccess = isSuccess;
         ErrorMessage = errorMessage;
+        ErrorType = errorType;
         Data = data;
+        ValidationErrors = validationErrors;
     }
 
-    public static Result Success(object? data = null) => new Result(true, null, data);
-    public static Result Failure(string errorMessage, ErrorType errorType) => new Result(false, errorMessage, errorType);
+    public static Result Success(object? data = null) => new Result(true, null, null, data, null);
+    public static Result Failure(string errorMessage, ErrorType errorType) => new Result(false, errorMessage, errorType, null, null);
+    public static Result Failure(string errorMessage, ErrorType errorType, Dictionary<string, string[]> validationErrors) => new Result(false, errorMessage, errorType, null, validationErrors);
+    public static Result Invalid(string errorMessage, Dictionary<string, string[]> validationErrors) => new Result(false, errorMessage, ErrorType.Validation, null, validationErrors);
 }

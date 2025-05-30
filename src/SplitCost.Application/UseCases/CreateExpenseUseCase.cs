@@ -19,10 +19,10 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
         IResidenceRepository residenceRepository,
         IUserRepository userRepository)
     {
-        _expenseRepository = expenseRepository ?? throw new ArgumentNullException(nameof(expenseRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
-        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _expenseRepository      = expenseRepository     ?? throw new ArgumentNullException(nameof(expenseRepository));
+        _unitOfWork             = unitOfWork            ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _residenceRepository    = residenceRepository   ?? throw new ArgumentNullException(nameof(residenceRepository));
+        _userRepository         = userRepository        ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
     public async Task<Result> CreateExpense(CreateExpenseDto expenseDto)

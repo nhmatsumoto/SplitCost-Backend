@@ -29,11 +29,6 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] CreateExpenseDto expenseDto)
         {
-            if (expenseDto == null)
-            {
-                return BadRequest();
-            }
-
             var result = await _createExpenseUseCase.CreateExpense(expenseDto);
 
             if (result.IsSuccess)
@@ -45,8 +40,10 @@ namespace SplitCost.API.Controllers
                 return result.ErrorType switch
                 {
                     ErrorType.NotFound => NotFound(new { Message = result.ErrorMessage }),
-                    ErrorType.Validation => BadRequest(new { Message = result.ErrorMessage }),
-                    _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An unexpected error occurred." }) 
+                    ErrorType.Validation => result.ValidationErrors != null
+                        ? BadRequest(result.ValidationErrors)
+                        : BadRequest(new { Message = result.ErrorMessage }),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An unexpected error occurred." })
                 };
             }
         }

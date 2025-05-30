@@ -22,7 +22,7 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
     {
-        if (!ModelState.IsValid)
+        if (ModelState.IsValid)
         {
             try
             {
