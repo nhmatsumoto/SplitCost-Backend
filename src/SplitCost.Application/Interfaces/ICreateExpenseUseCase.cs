@@ -1,8 +1,9 @@
-﻿using SplitCost.Application.DTOs;
+﻿using SplitCost.Application.Common;
+using SplitCost.Application.DTOs;
 
 namespace SplitCost.Application.Interfaces;
 
 public interface ICreateExpenseUseCase
 {
-    Task<ExpenseDto> CreateExpense(CreateExpenseDto expenseDto);
+    Task<Result> CreateExpense(CreateExpenseDto expenseDto);
 }

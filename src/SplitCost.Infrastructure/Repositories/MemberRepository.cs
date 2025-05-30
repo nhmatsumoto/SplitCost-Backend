@@ -25,4 +25,9 @@ public class MemberRepository : IMemberRepository
             .Where(rm => rm.ResidenceId == residenceId)
             .Select(rm => new { rm.UserId, rm.User.Name })
             .ToDictionaryAsync(x => x.UserId, x => x.Name);
+
+    //verificar se membro existe em uma residência
+    public async Task<bool> ExistsAsync(Guid userId, Guid residenceId)
+        => await _context.Members
+            .AnyAsync(m => m.UserId == userId && m.ResidenceId == residenceId);
 }

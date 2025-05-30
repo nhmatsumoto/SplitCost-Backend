@@ -1,4 +1,5 @@
-﻿using SplitCost.Application.DTOs;
+﻿using SplitCost.Application.Common;
+using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Interfaces;
@@ -9,14 +10,22 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
 {
     private readonly IExpenseRepository _expenseRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IResidenceRepository _residenceRepository;
+    private readonly IUserRepository _userRepository;
 
-    public CreateExpenseUseCase(IExpenseRepository expenseRepository, IUnitOfWork unitOfWork)
+    public CreateExpenseUseCase(
+        IExpenseRepository expenseRepository,
+        IUnitOfWork unitOfWork,
+        IResidenceRepository residenceRepository,
+        IUserRepository userRepository)
     {
         _expenseRepository = expenseRepository ?? throw new ArgumentNullException(nameof(expenseRepository));
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
-    public async Task<ExpenseDto> CreateExpense(CreateExpenseDto expenseDto)
+    public async Task<Result> CreateExpense(CreateExpenseDto expenseDto)
     {
         var expense = new Expense(
             expenseDto.Type,
@@ -30,11 +39,28 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
             expenseDto.RegisterByUserId
         );
 
-        await _expenseRepository.AddAsync(expense);
+        var residenceExists = await _residenceRepository.ExistsAsync(expense.ResidenceId);
+        if (!residenceExists)
+        {
+            return Result.Failure($"Residence not found.", ErrorType.NotFound);
+        }
 
+        var payingUserExists = await _userRepository.ExistsAsync(expense.PaidByUserId);
+        if (!payingUserExists)
+        {
+            return Result.Failure($"Paying user not found.", ErrorType.NotFound);
+        }
+
+        var registeredUserExists = await _userRepository.ExistsAsync(expense.RegisteredByUserId);
+        if (!registeredUserExists)
+        {
+            return Result.Failure($"Registered user not found.", ErrorType.NotFound);
+        }
+
+        await _expenseRepository.AddAsync(expense);
         await _unitOfWork.SaveChangesAsync();
 
-        return new ExpenseDto
+        var expenseDtoResult = new ExpenseDto
         {
             Amount = expense.Amount,
             Category = expense.Category,
@@ -47,6 +73,8 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
             ResidenceId = expense.ResidenceId,
             Type = expense.Type
         };
+
+        return Result.Success(expenseDtoResult);
     }
-    
+
 }

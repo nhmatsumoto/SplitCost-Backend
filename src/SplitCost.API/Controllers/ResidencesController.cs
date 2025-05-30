@@ -22,10 +22,10 @@ namespace SplitCost.API.Controllers
             IReadResidenceUseCase getResidenceUseCase,
             ICreateResidenceMemberUseCase createResidenceMemberUseCase)
         {
-            _createResidenceUseCase = createResidenceUseCase;
-            _updateResidenceUseCase = updateResidenceUseCase;
-            _getResidenceUseCase = getResidenceUseCase;
-            _createResidenceMemberUseCase = createResidenceMemberUseCase;
+            _createResidenceUseCase = createResidenceUseCase ?? throw new ArgumentNullException(nameof(createResidenceUseCase));
+            _updateResidenceUseCase = updateResidenceUseCase ?? throw new ArgumentNullException(nameof(updateResidenceUseCase));
+            _getResidenceUseCase = getResidenceUseCase ?? throw new ArgumentNullException(nameof(getResidenceUseCase));
+            _createResidenceMemberUseCase = createResidenceMemberUseCase ?? throw new ArgumentNullException(nameof(createResidenceMemberUseCase));
         }
 
         [HttpPost]

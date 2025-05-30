@@ -6,4 +6,5 @@ public interface IMemberRepository
 {
     Task AddAsync(Member member);
     Task<Dictionary<Guid, string>> GetUsersByResidenceId(Guid residenceId);
+    Task<bool> ExistsAsync(Guid userId, Guid residenceId);
 }

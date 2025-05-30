@@ -13,8 +13,8 @@ public class UsersController : ControllerBase
 
     public UsersController(IAppUserUseCase appUserUseCase, ICreateResidenceUseCase createResidenceUseCase)
     {
-        _appUserUseCase = appUserUseCase;
-        _createResidenceUseCase = createResidenceUseCase;
+        _appUserUseCase = appUserUseCase ?? throw new ArgumentNullException(nameof(appUserUseCase));
+        _createResidenceUseCase = createResidenceUseCase ?? throw new ArgumentNullException(nameof(createResidenceUseCase));
     }
 
     [HttpPost("register")]

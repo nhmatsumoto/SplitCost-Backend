@@ -12,7 +12,6 @@ public class ReadMemberUseCase : IReadMemberUseCase
         _memberRepository = memberRepository ?? throw new ArgumentException(nameof(memberRepository));
     }
 
-
     // Retornar objeto mapeado para um DTO, não expor a entidade diretamente
     public async Task<Result> GetByResidenceIdAsync(Guid residenceId)
     {

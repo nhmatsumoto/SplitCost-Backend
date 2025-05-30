@@ -32,11 +32,9 @@ public class ResidenceRepository : IResidenceRepository
             .Where(r => r.Members.Any(m => m.UserId == id))
             .AsNoTracking()
             .FirstOrDefaultAsync();
-
-    public async Task UpdateAsync(Residence residence)
+    public void UpdateAsync(Residence residence)
         => _context.Residences
         .Update(residence);
-
     public async Task<IEnumerable<Residence>> GetAllAsync()
         => await _context.Residences
             .Include(r => r.Members)
@@ -44,9 +42,11 @@ public class ResidenceRepository : IResidenceRepository
             .Include(r => r.Expenses)
                 .ThenInclude(e => e.Shares)
             .ToListAsync();
-
-    public async Task<Boolean> UserHasResidence(Guid userId)
+    public async Task<bool> UserHasResidence(Guid userId)
         => await _context.Residences
             .AnyAsync(r => r.Members
             .Any(m => m.UserId == userId));
+    public async Task<bool> ExistsAsync(Guid id) 
+        => await _context.Residences
+            .AnyAsync(r => r.Id == id);
 }
