@@ -35,7 +35,7 @@ namespace SplitCost.Application.UseCases
 
             residence.AddMember(member);
 
-            await _residenceRepository.UpdateAsync(residence);
+            _residenceRepository.UpdateAsync(residence);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace SplitCost.Application.UseCases
                 throw new InvalidOperationException("Residência não encontrada.");
 
             residence.Name = residenceDto.Name;
-            await _residenceRepository.UpdateAsync(residence);
+            _residenceRepository.UpdateAsync(residence);
 
             return new ResidenceDto
             {
