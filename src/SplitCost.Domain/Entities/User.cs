@@ -21,7 +21,7 @@ namespace SplitCost.Domain.Entities
         private readonly List<ExpenseShare> _expenseShares = new();
         public IReadOnlyCollection<ExpenseShare> ExpenseShares => _expenseShares.AsReadOnly();
 
-        public User(Guid id, string name, string email, string avatarUrl = "")
+        internal User(Guid id, string name, string email, string avatarUrl = "")
         {
             SetId(id);
             SetName(name);

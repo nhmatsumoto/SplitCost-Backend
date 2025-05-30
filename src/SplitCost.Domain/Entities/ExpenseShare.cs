@@ -11,9 +11,9 @@ public class ExpenseShare : BaseEntity
     public User User { get; private set; }
     public decimal Amount { get; private set; }
 
-    private ExpenseShare() { }
+    internal ExpenseShare() { }
 
-    public ExpenseShare(Guid expenseId, Guid userId, decimal amount)
+    internal ExpenseShare(Guid expenseId, Guid userId, decimal amount)
     {
         SetExpense(expenseId);
         SetUser(userId);

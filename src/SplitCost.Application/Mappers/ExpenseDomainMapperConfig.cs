@@ -4,14 +4,11 @@ using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
 
 namespace SplitCost.Application.Mappers;
-public class ExpenseMappingConfig : IRegister
+public class ExpenseDomainMapperConfig : IRegister
 {
-    /// <summary>
-    /// Registra o mapeamento entre CreateExpenseDto e Expense.
-    /// Atenção a ordem dos parâmetros no construtor
-    /// </summary>
     public void Register(TypeAdapterConfig config)
     {
+        // DTO -> Domain
         config.NewConfig<CreateExpenseDto, Expense>()
             .MapWith(src => ExpenseFactory.Create(
                 src.Type,

@@ -1,4 +1,5 @@
-﻿using SplitCost.Application.Common;
+﻿using Mapster;
+using SplitCost.Application.Common;
 using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Entities;
@@ -28,17 +29,7 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
     public async Task<Result> CreateExpense(CreateExpenseDto expenseDto)
     {
         //Map DTO To Domain Entity
-        var expense = new Expense(
-            expenseDto.Type,
-            expenseDto.Category,
-            expenseDto.Amount,
-            expenseDto.Date,
-            expenseDto.IsSharedAmongMembers,
-            expenseDto.Description,
-            expenseDto.ResidenceId,
-            expenseDto.PaidByUserId,
-            expenseDto.RegisterByUserId
-        );
+        Expense expense = expenseDto.Adapt<Expense>();
 
         // Valida a entidade
         var residenceExists = await _residenceRepository.ExistsAsync(expense.ResidenceId);

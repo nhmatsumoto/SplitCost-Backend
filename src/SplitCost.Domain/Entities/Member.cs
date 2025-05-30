@@ -11,9 +11,9 @@ public class Member : BaseEntity
     public Residence Residence { get; private set; }
     public DateTime JoinedAt { get; private set; }
 
-    private Member() { }
+    internal Member() { }
 
-    public Member(Guid userId, Guid residenceId, DateTime joinedAt)
+    internal Member(Guid userId, Guid residenceId, DateTime joinedAt)
     {
         SetUserId(userId);
         SetResidenceId(residenceId);

@@ -15,9 +15,9 @@ public class Address : BaseEntity
 
     public Residence Residence { get; private set; }
 
-    private Address() { }
+    internal Address() { }
 
-    private Address(string street, string number, string apartment, string city, string prefecture, string country, string postalCode)
+    internal Address(string street, string number, string apartment, string city, string prefecture, string country, string postalCode)
     {
         SetStreet(street);
         SetNumber(number);
@@ -27,12 +27,6 @@ public class Address : BaseEntity
         SetCountry(country);
         SetPostalCode(postalCode);
     }
-
-    public static Address Create(string street, string number, string apartment, string city, string prefecture, string country, string postalCode)
-    {
-        return new Address(street, number, apartment, city, prefecture, country, postalCode);
-    }
-
     public Address SetStreet(string street)
     {
         if (string.IsNullOrWhiteSpace(street)) throw new ArgumentException("O nome da rua não pode ser vazio.");

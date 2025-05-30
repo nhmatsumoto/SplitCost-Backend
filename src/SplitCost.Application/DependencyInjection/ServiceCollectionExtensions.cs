@@ -1,6 +1,8 @@
 ﻿using Mapster;
+using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using SplitCost.Application.Interfaces;
+using SplitCost.Application.Mappers;
 using SplitCost.Application.UseCases;
 
 namespace SplitCost.Application.DependencyInjection;
@@ -19,10 +21,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IReadMemberUseCase, ReadMemberUseCase>();
         services.AddScoped<IAppUserUseCase, CreateAppUserUseCase>();
 
-        // Mapster configuration
-        TypeAdapterConfig.GlobalSettings.Scan(AppDomain.CurrentDomain.GetAssemblies());
+        // Registra as configurações de mapeamento
+        var config = TypeAdapterConfig.GlobalSettings;
+        config.Scan(typeof(ExpenseDomainMapperConfig).Assembly);
 
-        services.AddMapster();
+        // Registra IMapper do Mapster
+        services.AddSingleton(config);
+        services.AddScoped<IMapper, ServiceMapper>();
 
         return services;
     }

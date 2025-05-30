@@ -17,9 +17,9 @@ public class Residence : BaseEntity
     private readonly List<Expense> _expenses = new();
     public IReadOnlyCollection<Expense> Expenses => _expenses;
 
-    private Residence() { }
+    internal Residence() { }
 
-    public Residence(string name, Guid createdByUserId)
+    internal Residence(string name, Guid createdByUserId)
     {
         SetName(name);
         SetCreatedByUser(createdByUserId);
