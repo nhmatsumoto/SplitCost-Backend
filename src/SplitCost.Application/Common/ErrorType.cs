@@ -6,5 +6,6 @@ public enum ErrorType
     NotFound,
     Unauthorized,
     InternalError,
+    
     // outros tipos que fizerem sentido
 }

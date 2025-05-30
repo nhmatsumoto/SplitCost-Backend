@@ -19,7 +19,10 @@ public class Result
     }
 
     public static Result Success(object? data = null) => new Result(true, null, null, data, null);
-    public static Result Failure(string errorMessage, ErrorType errorType) => new Result(false, errorMessage, errorType, null, null);
-    public static Result Failure(string errorMessage, ErrorType errorType, Dictionary<string, string[]> validationErrors) => new Result(false, errorMessage, errorType, null, validationErrors);
-    public static Result Invalid(string errorMessage, Dictionary<string, string[]> validationErrors) => new Result(false, errorMessage, ErrorType.Validation, null, validationErrors);
+    public static Result Failure(string errorMessage, ErrorType errorType) 
+        => new Result(false, errorMessage, errorType, null, null);
+    public static Result Failure(string errorMessage, ErrorType errorType, Dictionary<string, string[]> validationErrors) 
+        => new Result(false, errorMessage, errorType, null, validationErrors);
+    public static Result Invalid(string errorMessage, ErrorType errorType, Dictionary<string, string[]> validationErrors) 
+        => new Result(false, errorMessage, errorType, null, validationErrors);
 }

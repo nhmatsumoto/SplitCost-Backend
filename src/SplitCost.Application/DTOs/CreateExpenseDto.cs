@@ -8,7 +8,7 @@ namespace SplitCost.Application.DTOs
         public ExpenseCategory Category { get; set; }
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
-        public string? Description { get; set; }
+        public string Description { get; set; }
         public Guid ResidenceId { get; set; }
         public Guid RegisterByUserId { get; set; }
         public Guid PaidByUserId { get; set; }

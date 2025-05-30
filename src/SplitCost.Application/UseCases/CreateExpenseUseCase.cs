@@ -27,6 +27,7 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
 
     public async Task<Result> CreateExpense(CreateExpenseDto expenseDto)
     {
+        //Map DTO To Domain Entity
         var expense = new Expense(
             expenseDto.Type,
             expenseDto.Category,
@@ -39,6 +40,7 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
             expenseDto.RegisterByUserId
         );
 
+        // Valida a entidade
         var residenceExists = await _residenceRepository.ExistsAsync(expense.ResidenceId);
         if (!residenceExists)
         {
@@ -57,6 +59,7 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
             return Result.Failure($"Registered user not found.", ErrorType.NotFound);
         }
 
+        // Adiciona ao repositório e salva as mudanças
         await _expenseRepository.AddAsync(expense);
         await _unitOfWork.SaveChangesAsync();
 
