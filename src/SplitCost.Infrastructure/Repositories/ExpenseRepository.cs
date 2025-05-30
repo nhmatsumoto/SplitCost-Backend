@@ -1,29 +1,42 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using SpitCost.Infrastructure.Context;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Interfaces;
+using SplitCost.Infrastructure.Entities;
 
 namespace SplitCost.Infrastructure.Repositories;
 
 public class ExpenseRepository : IExpenseRepository
 {
     private readonly SplitCostDbContext _context;
+    private readonly IMapper _mapper;
 
-    public ExpenseRepository(SplitCostDbContext context)
+    public ExpenseRepository(SplitCostDbContext context, IMapper mapper)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task AddAsync(Expense expense)
-        => await _context.Expenses
-            .AddAsync(expense);
+    public async Task AddAsync(Expense expenseDomain)
+    {
+        var expenseEntity = _mapper.Map<ExpenseEntity>(expenseDomain);
+        await _context.Expenses.AddAsync(expenseEntity);
+    }
 
-    public async Task<Expense?> GetByIdAsync(Guid id) 
-        => await _context.Expenses
-            .FirstOrDefaultAsync(r => r.Id == id);
+    public async Task<Expense?> GetByIdAsync(Guid id)
+    {
+        var expenseEntity = await _context.Expenses.FirstOrDefaultAsync(r => r.Id == id);
+        return _mapper.Map<Expense>(expenseEntity);
+    }
 
-    public async Task<IEnumerable<Expense>> GetByResidenceIdAsync(Guid residenceId) 
-        => await _context.Expenses
+    public async Task<IEnumerable<Expense>> GetByResidenceIdAsync(Guid residenceId)
+    {
+        var expensesEntity = await _context.Expenses
             .Where(e => e.ResidenceId == residenceId)
             .ToListAsync();
+
+        return _mapper.Map<IEnumerable<Expense>>(expensesEntity);
+    }
+       
 }

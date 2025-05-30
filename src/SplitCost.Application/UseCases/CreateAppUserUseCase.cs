@@ -1,6 +1,7 @@
 ﻿using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Entities;
+using SplitCost.Domain.Factories;
 using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases
@@ -34,10 +35,12 @@ namespace SplitCost.Application.UseCases
 
             if (userId != Guid.Empty)
             {
-                var usuario = new User()
-                    .SetUserId(userId)
-                    .SetName(string.Concat(registerUserDto.FirstName, " ", registerUserDto.LastName))
-                    .SetEmail(registerUserDto.Email);
+                var name = string.Concat(registerUserDto.FirstName, " ", registerUserDto.LastName);
+
+                var usuario = UserFactory.Create(
+                    userId,
+                    name,
+                    registerUserDto.Email);
 
                 await _usuarioRepository.AddAsync(usuario);
                 await _unitOfWork.SaveChangesAsync();

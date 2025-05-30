@@ -26,7 +26,7 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
         _userRepository         = userRepository        ?? throw new ArgumentNullException(nameof(userRepository));
     }
 
-    public async Task<Result> CreateExpense(CreateExpenseDto expenseDto)
+    public async Task<Result<ExpenseDto>> CreateExpense(CreateExpenseDto expenseDto)
     {
         //Map DTO To Domain Entity
         Expense expense = expenseDto.Adapt<Expense>();
@@ -35,19 +35,19 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
         var residenceExists = await _residenceRepository.ExistsAsync(expense.ResidenceId);
         if (!residenceExists)
         {
-            return Result.Failure($"Residence not found.", ErrorType.NotFound);
+            return Result<ExpenseDto>.Failure($"Residence not found.", ErrorType.NotFound);
         }
 
         var payingUserExists = await _userRepository.ExistsAsync(expense.PaidByUserId);
         if (!payingUserExists)
         {
-            return Result.Failure($"Paying user not found.", ErrorType.NotFound);
+            return Result<ExpenseDto>.Failure($"Paying user not found.", ErrorType.NotFound);
         }
 
         var registeredUserExists = await _userRepository.ExistsAsync(expense.RegisteredByUserId);
         if (!registeredUserExists)
         {
-            return Result.Failure($"Registered user not found.", ErrorType.NotFound);
+            return Result<ExpenseDto>.Failure($"Registered user not found.", ErrorType.NotFound);
         }
 
         // Adiciona ao repositório e salva as mudanças
@@ -68,7 +68,7 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
             Type = expense.Type
         };
 
-        return Result.Success(expenseDtoResult);
+        return Result<ExpenseDto>.Success(expenseDtoResult);
     }
 
 }

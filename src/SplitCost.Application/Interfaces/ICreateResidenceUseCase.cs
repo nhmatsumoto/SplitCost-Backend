@@ -1,10 +1,10 @@
-﻿using SplitCost.Application.DTOs;
+﻿using SplitCost.Application.Common;
+using SplitCost.Application.DTOs;
 
 namespace SplitCost.Application.Interfaces
 {
     public interface ICreateResidenceUseCase
     {
-        Task<ResidenceDto> CreateResidenceAsync(CreateResidenceDto dto, Guid userId);
-        Task<bool> CreateEmptyResidence(Guid userId);
+        Task<Result<ResidenceDto>> CreateResidenceAsync(CreateResidenceDto dto, Guid userId);
     }
 }

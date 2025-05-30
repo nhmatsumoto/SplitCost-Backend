@@ -1,6 +1,6 @@
 ﻿using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
-using SplitCost.Domain.Entities;
+using SplitCost.Domain.Factories;
 using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases
@@ -26,12 +26,9 @@ namespace SplitCost.Application.UseCases
             if (residence == null)
                 throw new InvalidOperationException("Residência não encontrada.");
 
-            residence.CreatedByUserId = user.Id;
+            residence.SetCreatedByUser(user.Id);
 
-            var member = new Member()
-                .SetResidenceId(residenceMember.ResidenceId)
-                .SetUserId(residenceMember.UserId)
-                .SetJoinedAt(DateTime.UtcNow);
+            var member = MemberFactory.Create(residenceMember.ResidenceId, residenceMember.UserId, DateTime.UtcNow);
 
             residence.AddMember(member);
 

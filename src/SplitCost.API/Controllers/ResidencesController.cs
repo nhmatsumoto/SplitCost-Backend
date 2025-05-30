@@ -50,15 +50,19 @@ namespace SplitCost.API.Controllers
                 if(hasResidence)
                     return BadRequest(new { Error = "Usuário já possui uma residência." });
 
-                var residenceDto = await _createResidenceUseCase.CreateResidenceAsync(createResidenceDto, userId);
+                var result = await _createResidenceUseCase.CreateResidenceAsync(createResidenceDto, userId);
 
-                await _createResidenceMemberUseCase.RegisterResidenceMemberAsync(new CreateResidenceMemberDto
+
+                if (result.IsSuccess)
                 {
-                    UserId = userId,
-                    ResidenceId = residenceDto.Id
-                });
+                    await _createResidenceMemberUseCase.RegisterResidenceMemberAsync(new CreateResidenceMemberDto
+                    {
+                        UserId = userId,
+                        ResidenceId = result.Data.Id
+                    });
+                }
 
-                return CreatedAtAction(nameof(GetResidence), new { id = residenceDto.Id }, residenceDto);
+                return CreatedAtAction(nameof(GetResidence), new { id = result.Data.Id }, result.Data);
             }
             catch (Exception ex)
             {

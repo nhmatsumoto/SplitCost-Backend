@@ -76,7 +76,7 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByResidenceId(Guid id)
         {
-            var result = await _readExpenseUseCase.GetByResidenceIdAsync(id);
+            var result = await _readExpenseUseCase.GetExpensesByResidenceIdAsync(id);
 
             if (result.IsSuccess)
             {

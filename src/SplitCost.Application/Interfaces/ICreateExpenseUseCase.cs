@@ -5,5 +5,5 @@ namespace SplitCost.Application.Interfaces;
 
 public interface ICreateExpenseUseCase
 {
-    Task<Result> CreateExpense(CreateExpenseDto expenseDto);
+    Task<Result<ExpenseDto>> CreateExpense(CreateExpenseDto expenseDto);
 }

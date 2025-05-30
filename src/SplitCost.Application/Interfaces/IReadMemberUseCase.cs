@@ -4,5 +4,5 @@ namespace SplitCost.Application.Interfaces;
 
 public interface IReadMemberUseCase
 {
-    Task<Result> GetByResidenceIdAsync(Guid residenceId);
+    Task<Result<Dictionary<Guid, string>>> GetByResidenceIdAsync(Guid residenceId);
 }

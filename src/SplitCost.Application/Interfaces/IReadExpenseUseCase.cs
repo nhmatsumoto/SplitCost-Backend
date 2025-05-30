@@ -1,9 +1,10 @@
 ﻿using SplitCost.Application.Common;
+using SplitCost.Application.DTOs;
 
 namespace SplitCost.Application.Interfaces;
 
 public interface IReadExpenseUseCase
 {
-    Task<Result> GetByIdAsync(Guid id);
-    Task<Result> GetByResidenceIdAsync(Guid residenceId);
+    Task<Result<ExpenseDto>> GetByIdAsync(Guid id);
+    Task<Result<IEnumerable<ExpenseDto>>> GetExpensesByResidenceIdAsync(Guid residenceId);
 }

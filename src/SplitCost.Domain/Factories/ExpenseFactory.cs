@@ -2,7 +2,6 @@
 using SplitCost.Domain.Enums;
 
 namespace SplitCost.Domain.Factories;
-
 public static class ExpenseFactory
 {
     /// <summary>

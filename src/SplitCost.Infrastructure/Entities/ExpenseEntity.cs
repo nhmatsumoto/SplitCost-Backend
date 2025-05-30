@@ -1,5 +1,5 @@
 ﻿using SplitCost.Domain.Common;
-using SplitCost.Infrastructure.Enums;
+using SplitCost.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

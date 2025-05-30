@@ -14,12 +14,12 @@ public class ReadExpenseUseCase : IReadExpenseUseCase
         _expenseRepository = expenseRepository ?? throw new ArgumentException(nameof(expenseRepository));
     }
 
-    public async Task<Result> GetByIdAsync(Guid id)
+    public async Task<Result<ExpenseDto>> GetByIdAsync(Guid id)
     {
         var expense = await _expenseRepository.GetByIdAsync(id);
         if (expense == null)
         {
-            return Result.Failure($"Expense not found.", ErrorType.NotFound);
+            return Result<ExpenseDto>.Failure($"Expense not found.", ErrorType.NotFound);
         }
 
         var expenseDto = new ExpenseDto
@@ -36,16 +36,17 @@ public class ReadExpenseUseCase : IReadExpenseUseCase
             Type = expense.Type
         };
 
-        return Result.Success(expenseDto);
+        return Result<ExpenseDto>.Success(expenseDto);
     }
 
-    public async Task<Result> GetByResidenceIdAsync(Guid residenceId)
+    //Mudar o nome, GetExpensesByResidenceIdAsync é mais claro
+    public async Task<Result<IEnumerable<ExpenseDto>>> GetExpensesByResidenceIdAsync(Guid residenceId)
     {
         var expenses = await _expenseRepository.GetByResidenceIdAsync(residenceId);
 
         if (expenses == null || !expenses.Any())
         {
-            return Result.Failure($"No expenses found for residence ID '{residenceId}'.", ErrorType.NotFound);
+            return Result<IEnumerable<ExpenseDto>>.Failure($"No expenses found for residence ID '{residenceId}'.", ErrorType.NotFound);
         }
 
         var expenseDtos = expenses.Select(expense => new ExpenseDto
@@ -62,6 +63,6 @@ public class ReadExpenseUseCase : IReadExpenseUseCase
             Type = expense.Type
         });
 
-        return Result.Success(expenseDtos);
+        return Result<IEnumerable<ExpenseDto>>.Success(expenseDtos);
     }
 }
