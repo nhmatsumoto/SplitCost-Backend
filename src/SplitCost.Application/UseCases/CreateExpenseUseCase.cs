@@ -67,7 +67,7 @@ public class CreateExpenseUseCase : ICreateExpenseUseCase
             Id = expense.Id,
             IsSharedAmongMembers = expense.IsSharedAmongMembers,
             PaidByUserId = expense.PaidByUserId,
-            RegisterByUserId = expense.RegisteredByUserId,
+            RegisteredByUserId = expense.RegisteredByUserId,
             ResidenceId = expense.ResidenceId,
             Type = expense.Type
         };

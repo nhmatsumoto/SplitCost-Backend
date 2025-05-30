@@ -31,6 +31,6 @@ public class ExpenseEntityMapperConfig : IRegister
                 src.ResidenceId,
                 src.RegisteredByUserId,
                 src.PaidByUserId
-            ));
+            ).SetId(src.Id));
     }
 }

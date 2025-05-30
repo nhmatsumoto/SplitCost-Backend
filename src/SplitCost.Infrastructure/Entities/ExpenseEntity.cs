@@ -31,12 +31,14 @@ public class ExpenseEntity : BaseEntity
 
     [Required]
     [ForeignKey("Residence")]
+    [Column("ResidenceId")]
     public Guid ResidenceId { get; set; }
 
     public ResidenceEntity Residence { get; set; } = null!;
 
     [Required]
     [ForeignKey("RegisteredBy")]
+    [Column("RegisteredByUserId")]
     public Guid RegisteredByUserId { get; set; }
 
     public UserEntity RegisteredBy { get; set; } = null!;

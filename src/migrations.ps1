@@ -1,16 +1,13 @@
 # Caminho para o projeto que contém o contexto do Entity Framework Core
-$projetoDataPath = "C:\Repositorio\SplitCost\backend\SplitCost\SplitCost.Infrastructure\SplitCost.Infrastructure.csproj"
+$infrastructureProjectPathRelative = "SplitCost.Infrastructure\SplitCost.Infrastructure.csproj"
+$infrastructureProjectPathFull = Join-Path $PSScriptRoot $infrastructureProjectPathRelative
 
-# Caminho para o projeto de inicialização (onde reside a configuração, como string de conexão)
-$projetoStartupPath = "C:\Repositorio\SplitCost\backend\SplitCost\SplitCost.Infrastructure\SplitCost.Infrastructure.csproj"
-
-
-# Comando para adicionar uma nova migration (opcional, se você já tem a migration criada)
+# Comando para adicionar uma nova migration (opcional)
 $migrationName = Read-Host "Digite o nome da nova migration (ou deixe em branco para apenas aplicar as existentes)"
 
 if ($migrationName) {
     Write-Host "Adicionando migration '$migrationName'..."
-    dotnet ef migrations add $migrationName --project $projetoDataPath --startup-project $projetoStartupPath
+    dotnet ef migrations add $migrationName --project "$infrastructureProjectPathFull" --startup-project "$infrastructureProjectPathFull"
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Erro ao adicionar a migration."
         exit 1
@@ -21,7 +18,7 @@ if ($migrationName) {
 
 # Comando para aplicar as migrations pendentes ao banco de dados
 Write-Host "Aplicando as migrations..."
-dotnet ef database update --project $projetoDataPath --startup-project $projetoStartupPath
+dotnet ef database update --project "$infrastructureProjectPathFull" --startup-project "$infrastructureProjectPathFull"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Erro ao aplicar as migrations."

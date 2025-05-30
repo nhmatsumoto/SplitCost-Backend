@@ -12,7 +12,7 @@ public class ExpenseDto
     public bool IsSharedAmongMembers { get; set; }
     public string? Description { get; set; }
     public Guid ResidenceId { get; set; }
-    public Guid RegisterByUserId { get; set; }
+    public Guid RegisteredByUserId { get; set; }
     public Guid PaidByUserId { get; set; }
 
     public ExpenseDto()
