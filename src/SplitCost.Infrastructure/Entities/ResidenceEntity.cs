@@ -13,19 +13,19 @@ public class ResidenceEntity : BaseEntity
 
     [MaxLength(200)]
     [Column("Name")]
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     [ForeignKey("Address")]
     [Column("AddressId")]
-    public Guid? AddressId { get; set; }
+    public Guid AddressId { get; set; }
 
-    public AddressEntity? Address { get; set; }
+    public AddressEntity Address { get; set; }
 
     [ForeignKey("CreatedBy")]
     [Column("CreatedByUserId")]
-    public Guid? CreatedByUserId { get; set; }
+    public Guid CreatedByUserId { get; set; }
 
-    public UserEntity? CreatedBy { get; set; }
+    public UserEntity CreatedBy { get; set; }
 
     public ICollection<MemberEntity> Members { get; set; } = new List<MemberEntity>();
 
