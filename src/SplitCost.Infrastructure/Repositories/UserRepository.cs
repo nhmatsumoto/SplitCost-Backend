@@ -39,7 +39,18 @@ public class UserRepository : IUserRepository
         var userEntity = _mapper.Map<UserEntity>(user);
         _context.Users.Update(userEntity);
     }
-    public async Task<bool> ExistsAsync(Guid userId)
-        => await _context.Users
-            .AnyAsync(u => u.Id == userId);
+    public async Task<bool> ExistsByUsernameAsync(string username, CancellationToken ct)
+    {
+        return await _context.Users.AnyAsync(x => x.Username == username);
+    }
+    public async Task<bool> ExistsByEmailAsync(string email , CancellationToken ct)
+    {
+        return await _context.Users.AnyAsync(x => x.Email == email);
+    }
+    public async Task<bool> ExistsAsync(Guid userId, CancellationToken ct)
+    {
+        return await _context.Users.AnyAsync(x => x.Id == userId);
+    }
+
+
 }

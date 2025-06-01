@@ -67,7 +67,7 @@ public class ResidenceRepository : IResidenceRepository
         => await _context.Residences
             .AnyAsync(r => r.Members
             .Any(m => m.UserId == userId));
-    public async Task<bool> ExistsAsync(Guid id) 
+    public async Task<bool> ExistsAsync(Guid id, CancellationToken ct) 
         => await _context.Residences
             .AnyAsync(r => r.Id == id);
 }

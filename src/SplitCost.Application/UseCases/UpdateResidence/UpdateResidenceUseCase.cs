@@ -2,7 +2,7 @@
 using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Interfaces;
 
-namespace SplitCost.Application.UseCases
+namespace SplitCost.Application.UseCases.UpdateResidence
 {
     public class UpdateResidenceUseCase : IUpdateResidenceUseCase
     {

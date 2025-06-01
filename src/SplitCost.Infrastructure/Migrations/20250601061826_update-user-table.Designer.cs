@@ -12,8 +12,8 @@ using SpitCost.Infrastructure.Context;
 namespace SplitCost.Infrastructure.Migrations
 {
     [DbContext(typeof(SplitCostDbContext))]
-    [Migration("20250530224520_Update2")]
-    partial class Update2
+    [Migration("20250601061826_update-user-table")]
+    partial class updateusertable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,10 +107,12 @@ namespace SplitCost.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("RegisteredByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("RegisteredByUserId");
 
                     b.Property<Guid>("ResidenceId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ResidenceId");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -253,6 +255,10 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

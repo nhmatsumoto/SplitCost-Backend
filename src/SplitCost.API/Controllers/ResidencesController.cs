@@ -14,6 +14,9 @@ namespace SplitCost.API.Controllers
         private readonly ICreateResidenceUseCase _createResidenceUseCase;
         private readonly IUpdateResidenceUseCase _updateResidenceUseCase;
         private readonly IReadResidenceUseCase _getResidenceUseCase;
+
+        //private readonly IUseCase<AddResidenceMemberInput, int>
+
         private readonly ICreateResidenceMemberUseCase _createResidenceMemberUseCase;
 
         public ResidencesController(

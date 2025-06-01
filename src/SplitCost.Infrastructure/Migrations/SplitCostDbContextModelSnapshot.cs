@@ -104,10 +104,12 @@ namespace SplitCost.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("RegisteredByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("RegisteredByUserId");
 
                     b.Property<Guid>("ResidenceId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ResidenceId");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -250,6 +252,10 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

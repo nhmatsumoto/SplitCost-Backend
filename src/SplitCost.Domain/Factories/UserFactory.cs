@@ -12,8 +12,8 @@ public static class UserFactory
     /// <param name="email"></param>
     /// <param name="avatarUrl"></param>
     /// <returns></returns>
-    public static User Create(Guid id, string name, string email, string avatarUrl = "")
+    public static User Create(Guid id, string username, string name, string email, string avatarUrl = "")
     {
-        return new User(id, name, email, avatarUrl);
+        return new User(id, username, name, email, avatarUrl);
     }
 }

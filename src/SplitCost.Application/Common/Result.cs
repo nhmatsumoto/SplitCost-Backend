@@ -1,5 +1,7 @@
 ﻿namespace SplitCost.Application.Common;
 
+using FluentValidation.Results;
+
 public class Result<T>
 {
     public bool IsSuccess { get; }
@@ -19,7 +21,7 @@ public class Result<T>
     }
 
     public static Result<T> Success(T? data = default) =>
-        new Result<T>(true, null, null, data, null);
+        new Result<T>(true, null, null, data);
 
     public static Result<T> Failure(string errorMessage, ErrorType errorType) =>
         new Result<T>(false, errorMessage, errorType);
@@ -29,4 +31,23 @@ public class Result<T>
 
     public static Result<T> Invalid(string errorMessage, ErrorType errorType, Dictionary<string, string[]> validationErrors) =>
         new Result<T>(false, errorMessage, errorType, default, validationErrors);
+
+    public static Result<T> FromFluentValidation(string errorMessage, IEnumerable<ValidationFailure> failures)
+    {
+        var validationErrors = failures
+            .GroupBy(f => f.PropertyName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(f => f.ErrorMessage).ToArray()
+            );
+
+        return new Result<T>(
+            false,
+            errorMessage,
+            Common.ErrorType.Validation, 
+            default,
+            validationErrors
+        );
+    }
 }
+

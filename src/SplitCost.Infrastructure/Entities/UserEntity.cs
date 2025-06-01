@@ -19,6 +19,9 @@ public class UserEntity : BaseEntity
     [EmailAddress]
     public string Email { get; set; } = null!;
 
+    [Required]
+    public string Username { get; set; } = null!;
+
     public string AvatarUrl { get; set; } = string.Empty;
 
     // Navigation properties

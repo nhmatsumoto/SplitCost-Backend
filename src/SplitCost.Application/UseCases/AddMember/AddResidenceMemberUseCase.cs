@@ -1,0 +1,54 @@
+﻿using FluentValidation;
+using MapsterMapper;
+using SplitCost.Application.Common;
+using SplitCost.Application.Interfaces;
+using SplitCost.Domain.Entities;
+using SplitCost.Domain.Factories;
+using SplitCost.Domain.Interfaces;
+
+namespace SplitCost.Application.UseCases.CreateMember;
+
+public class AddResidenceMemberUseCase : IUseCase<AddResidenceMemberInput, Result<int>>
+{
+    private readonly IResidenceRepository _residenceRepository;
+    private readonly IValidator<AddResidenceMemberInput> _validator;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public AddResidenceMemberUseCase(
+        IUserRepository userRepository, 
+        IResidenceRepository residenceRepository, 
+        IValidator<AddResidenceMemberInput> validator,
+        IUnitOfWork unitOfWork,
+        IMapper mapper)
+    {
+        _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
+        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    }
+
+    public async Task<Result<int>> ExecuteAsync(AddResidenceMemberInput residenceMemberInput)
+    {
+        var validationResult = await _validator.ValidateAsync(residenceMemberInput);
+
+        if(!validationResult.IsValid)
+        {
+            return Result<int>.FromFluentValidation("Dados inválidos", validationResult.Errors);
+        }
+
+        var residence = _mapper.Map<Residence>(residenceMemberInput);
+
+        residence.SetCreatedByUser(residenceMemberInput.UserId);
+
+        var member = MemberFactory.Create(residenceMemberInput.ResidenceId, residenceMemberInput.UserId, DateTime.UtcNow);
+
+        residence.AddMember(member);
+
+        _residenceRepository.UpdateAsync(residence);
+
+        var rows = await _unitOfWork.SaveChangesAsync();
+
+        return Result<int>.Success(rows);
+    }
+}

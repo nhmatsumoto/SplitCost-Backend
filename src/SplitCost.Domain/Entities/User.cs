@@ -6,6 +6,7 @@ namespace SplitCost.Domain.Entities
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; }
+        public string Username { get; private set; }
         public string Email { get; private set; }
         public string AvatarUrl { get; private set; }
 
@@ -21,9 +22,10 @@ namespace SplitCost.Domain.Entities
         private readonly List<ExpenseShare> _expenseShares = new();
         public IReadOnlyCollection<ExpenseShare> ExpenseShares => _expenseShares.AsReadOnly();
 
-        internal User(Guid id, string name, string email, string avatarUrl = "")
+        internal User(Guid id, string username, string name, string email, string avatarUrl = "")
         {
             SetId(id);
+            SetUsername(username);
             SetName(name);
             SetEmail(email);
             SetAvatarUrl(avatarUrl);
@@ -45,6 +47,14 @@ namespace SplitCost.Domain.Entities
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Name cannot be empty.", nameof(name));
             Name = name;
+            return this;
+        }
+
+        public User SetUsername(string username)
+        {
+            if(string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException("Username cannot be empty.", nameof(username));
+            Username = username;
             return this;
         }
 

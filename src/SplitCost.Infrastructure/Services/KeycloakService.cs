@@ -15,11 +15,11 @@ public class KeycloakService : IKeycloakService
 
     public KeycloakService(HttpClient httpClient, IConfiguration config)
     {
-        _httpClient = httpClient;
-        _config = config;
+        _httpClient     = httpClient    ?? throw new ArgumentNullException(nameof(httpClient));
+        _config         = config        ?? throw new ArgumentNullException(nameof(config));
     }
 
-    public async Task<string> CreateUserAsync(string username, string firstName, string lastName, string email, string password)
+    public async Task<Guid> CreateUserAsync(string username, string firstName, string lastName, string email, string password)
     {
         var token = await GetApplicationAdminTokenAsync();
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -57,8 +57,8 @@ public class KeycloakService : IKeycloakService
                 throw new KeycloakUserCreationFailedException("Usuário criado, mas ID não retornado.");
             }
             var userId = locationHeader.Split('/').Last();
-
-            return userId;
+            
+            return Guid.Parse(userId);
         }
 
         if (response.IsSuccessStatusCode.Equals(HttpStatusCode.Conflict))

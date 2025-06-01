@@ -2,7 +2,7 @@
 using Moq;
 using SplitCost.Application.Common;
 using SplitCost.Application.DTOs;
-using SplitCost.Application.UseCases;
+using SplitCost.Application.UseCases.CreateExpense;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Enums;
 using SplitCost.Domain.Factories;

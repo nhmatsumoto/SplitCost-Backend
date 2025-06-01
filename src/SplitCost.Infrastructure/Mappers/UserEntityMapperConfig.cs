@@ -17,9 +17,10 @@ public class UserEntityMapperConfig : IRegister
             .Map(dest => dest.Id, src => src.Id);
 
         // Entity -> Domain
-        config.NewConfig<Entities.UserEntity, Domain.Entities.User>()
+        config.NewConfig<UserEntity, User>()
             .MapWith(src => UserFactory.Create(
                 src.Id,
+                src.Username,
                 src.Name,
                 src.Email,
                 src.AvatarUrl));

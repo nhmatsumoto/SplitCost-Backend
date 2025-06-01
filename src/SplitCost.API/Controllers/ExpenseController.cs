@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common;
-using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
-using SplitCost.Domain.Entities;
+using SplitCost.Application.UseCases.CreateExpense;
+using SplitCost.Application.UseCases.GetExpense;
 using SplitCost.Domain.Enums;
 
 namespace SplitCost.API.Controllers
@@ -11,86 +11,86 @@ namespace SplitCost.API.Controllers
     [ApiController]
     public class ExpenseController : ControllerBase
     {
-        private readonly ICreateExpenseUseCase _createExpenseUseCase;
-        private readonly IReadExpenseUseCase _readExpenseUseCase;
-        private readonly IReadMemberUseCase _readMemberUseCase;
+        private readonly IUseCase<CreateExpenseInput, Result<CreateExpenseOutput>> _createExpenseUseCase;
+        private readonly IUseCase<Guid, Result<GetExpenseByIdOutput>> _getExpenseByIdUseCase;
+        private readonly IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>> _getExpenseByResidenceIdUseCase;
+        private readonly IUseCase<Guid, Result<Dictionary<Guid, string>>> _getMemberByResidenceIdUseCase;
+      
         public ExpenseController(
-            ICreateExpenseUseCase createExpenseUseCase, 
-            IReadExpenseUseCase readExpenseUseCase,
-            IReadMemberUseCase readMemberUseCase)
+            IUseCase<CreateExpenseInput, Result<CreateExpenseOutput>> createExpenseUseCase,
+            IUseCase<Guid, Result<GetExpenseByIdOutput>> getExpenseByIdUseCase,
+            IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>> getExpenseByResidenceIdUseCase,
+            IUseCase<Guid, Result<Dictionary<Guid, string>>> getMemberByResidenceIdUseCase)
         {
-            _createExpenseUseCase   = createExpenseUseCase  ?? throw new ArgumentNullException(nameof(createExpenseUseCase));
-            _readExpenseUseCase     = readExpenseUseCase    ?? throw new ArgumentNullException(nameof(readExpenseUseCase));
-            _readMemberUseCase      = readMemberUseCase     ?? throw new ArgumentNullException(nameof(readMemberUseCase));
+            _createExpenseUseCase           = createExpenseUseCase              ?? throw new ArgumentNullException(nameof(createExpenseUseCase));
+            _getExpenseByIdUseCase          = getExpenseByIdUseCase             ?? throw new ArgumentNullException(nameof(getExpenseByIdUseCase));
+            _getExpenseByResidenceIdUseCase = getExpenseByResidenceIdUseCase    ?? throw new ArgumentNullException(nameof(getExpenseByResidenceIdUseCase));
+            _getMemberByResidenceIdUseCase  = getMemberByResidenceIdUseCase     ?? throw new ArgumentNullException(nameof(getMemberByResidenceIdUseCase));
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CreateExpenseDto expenseDto)
+        public async Task<IActionResult> Create([FromBody] CreateExpenseInput createExpenseInput)
         {
-            var result = await _createExpenseUseCase.CreateExpense(expenseDto);
+            var result = await _createExpenseUseCase.ExecuteAsync(createExpenseInput);
 
-            if (result.IsSuccess)
-            {
-                return CreatedAtAction(nameof(GetById), new { id = ((ExpenseDto)result.Data!).Id }, result.Data);
-            }
-            else
+            if (!result.IsSuccess)
             {
                 return result.ErrorType switch
                 {
-                    ErrorType.NotFound => NotFound(new { Message = result.ErrorMessage }),
-                    ErrorType.Validation => result.ValidationErrors != null
-                        ? BadRequest(result.ValidationErrors)
-                        : BadRequest(new { Message = result.ErrorMessage }),
-                    _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An unexpected error occurred." })
+                    ErrorType.NotFound => NotFound(result),
+                    ErrorType.Validation => BadRequest(result),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, result)
                 };
             }
+
+            return CreatedAtAction(nameof(GetById), new { id = ((CreateExpenseOutput)result.Data!).Id }, result);
         }
 
+
+        //TODO ADICIONAR VALIDATOR PARA TRATAR ID do Expense
         [HttpGet("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid expenseIdInput)
         {
-            var result = await _readExpenseUseCase.GetByIdAsync(id);
+            var result = await _getExpenseByIdUseCase.ExecuteAsync(expenseIdInput);
 
             if (result.IsSuccess)
             {
-                return Ok(result.Data);
+                return Ok(result);
             }
             else
             {
                 return result.ErrorType switch
                 {
-                    ErrorType.NotFound => NotFound(new { Message = result.ErrorMessage }),
-                    _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An unexpected error occurred." })
+                    ErrorType.NotFound => NotFound(result),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, result)
                 };
             }
         }
 
+        //ADICIONAR VALIDATOR PARA TRATAR ID DO RESIDENCE
         [HttpGet("residence/{residenceId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetExpensesByResidenceId(Guid residenceId)
+        public async Task<IActionResult> GetExpensesByResidenceId(Guid residenceIdInput)
         {
-            var result = await _readExpenseUseCase.GetExpensesByResidenceIdAsync(residenceId);
+            var result = await _getExpenseByResidenceIdUseCase.ExecuteAsync(residenceIdInput);
 
-            if (result.IsSuccess)
-            {
-                return Ok(result.Data);
-            }
-            else
+            if (!result.IsSuccess)
             {
                 return result.ErrorType switch
                 {
-                    ErrorType.NotFound => NotFound(new { Message = result.ErrorMessage }),
-                    _ => StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An unexpected error occurred." })
+                    ErrorType.NotFound => NotFound(result),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, result)
                 };
             }
+
+            return Ok(result.Data);
         }
 
         [HttpGet("categories")]
@@ -113,6 +113,8 @@ namespace SplitCost.API.Controllers
                 .ToList());
         }
 
+
+        //ADICIONAR VALIDATOR PARA TRATAR ID DO RESIDENCE
         [HttpGet("users/{residenceId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -120,19 +122,19 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUsersByResidenceId(Guid residenceId)
         {
-            var result = await _readMemberUseCase.GetByResidenceIdAsync(residenceId);
+            var result = await _getMemberByResidenceIdUseCase.ExecuteAsync(residenceId);
 
             if (result.IsError)
             {
                 return result.ErrorType switch
                 {
-                    ErrorType.NotFound => NotFound(new { success = false, error = result.ErrorMessage }),
-                    ErrorType.Validation => BadRequest(new { success = false, error = result.ErrorMessage }),
-                    _ => StatusCode(StatusCodes.Status500InternalServerError, new { success = false, error = "Erro inesperado" })
+                    ErrorType.NotFound => NotFound(result),
+                    ErrorType.Validation => BadRequest(result),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, result)
                 };
             }
 
-            return Ok(result.Data);
+            return Ok(result);
         }
     }
 }

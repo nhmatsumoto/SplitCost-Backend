@@ -2,7 +2,7 @@
 using Moq;
 using SplitCost.Application.Common;
 using SplitCost.Application.DTOs;
-using SplitCost.Application.UseCases;
+using SplitCost.Application.UseCases.GetExpense;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Enums;
 using SplitCost.Domain.Factories;
@@ -14,13 +14,13 @@ public class ReadExpenseUseCaseTests
 {
     private readonly Mock<IExpenseRepository> _mockExpenseRepository;
     private readonly Mock<IMapper> _mockMapper;
-    private readonly ReadExpenseUseCase _useCase;
+    private readonly GetExpenseByIdUseCase _useCase;
 
     public ReadExpenseUseCaseTests()
     {
         _mockExpenseRepository = new Mock<IExpenseRepository>();
         _mockMapper = new Mock<IMapper>();
-        _useCase = new ReadExpenseUseCase(_mockExpenseRepository.Object, _mockMapper.Object);
+        _useCase = new GetExpenseByIdUseCase(_mockExpenseRepository.Object, _mockMapper.Object);
     }
 
     [Fact]

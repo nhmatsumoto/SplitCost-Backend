@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SplitCost.Application.DTOs;
+using SplitCost.Application.Common;
 using SplitCost.Application.Interfaces;
+using SplitCost.Application.UseCases.CreateApplicationUser;
+using SplitCost.Application.UseCases.GetApplicationUser;
 
 namespace SplitCost.API.Controllers;
 
@@ -8,46 +10,56 @@ namespace SplitCost.API.Controllers;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly IAppUserUseCase _appUserUseCase;
-    private readonly ICreateResidenceUseCase _createResidenceUseCase;
-
-    public UsersController(IAppUserUseCase appUserUseCase, ICreateResidenceUseCase createResidenceUseCase)
+    private readonly IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> _createApplicationUserUseCase;
+    private readonly IUseCase<Guid, Result<GetApplicationUserByIdOutput>> _getApplicationUserUseCase;
+    
+    public UsersController(
+        IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> createApplicationUserUseCase,
+        IUseCase<Guid, Result<GetApplicationUserByIdOutput>> getApplicationUserUseCase)
     {
-        _appUserUseCase = appUserUseCase ?? throw new ArgumentNullException(nameof(appUserUseCase));
-        _createResidenceUseCase = createResidenceUseCase ?? throw new ArgumentNullException(nameof(createResidenceUseCase));
+        _createApplicationUserUseCase   = createApplicationUserUseCase  ?? throw new ArgumentNullException(nameof(createApplicationUserUseCase));
+        _getApplicationUserUseCase      = getApplicationUserUseCase     ?? throw new ArgumentNullException(nameof(getApplicationUserUseCase));
     }
 
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] RegisterUserDto registerUserDto)
+    public async Task<IActionResult> RegisterApplicationUser([FromBody] CreateApplicationUserInput createApplicationUserInput)
     {
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                var userId = await _appUserUseCase.RegisterUserAsync(registerUserDto);
 
-                if(userId != Guid.Empty)
-                {
-                    return Created();
-                }
-            }
-            catch (Exception ex)
+        var result = await _createApplicationUserUseCase.ExecuteAsync(createApplicationUserInput);
+        if (!result.IsSuccess)
+        {
+            return result.ErrorType switch
             {
-                return BadRequest(ex.Message);
-            }
+                ErrorType.NotFound => NotFound(result),
+                ErrorType.Validation => BadRequest(result),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
+            };
         }
 
-        return BadRequest(new
-        {
-            message = "Erro de validação",
-            errors = ModelState
-            .Where(x => x.Value?.Errors.Count > 0)
-            .ToDictionary(
-                kvp => kvp.Key,
-                kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
-            )
-        });
+        return CreatedAtAction(nameof(GetById), new { id = result.Data?.Id }, result);
     }
+
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetById(Guid userIdInput)
+    {
+        var result = await _getApplicationUserUseCase.ExecuteAsync(userIdInput);
+
+        if (!result.IsSuccess)
+        {
+            return result.ErrorType switch
+            {
+                ErrorType.NotFound => NotFound(result),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
+            };
+            
+        }
+
+        return Ok(result);
+    }
+
 }
