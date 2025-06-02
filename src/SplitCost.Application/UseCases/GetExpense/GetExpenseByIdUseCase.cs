@@ -16,9 +16,9 @@ public class GetExpenseByIdUseCase : IUseCase<Guid, Result<GetExpenseByIdOutput>
         _mapper = mapper ?? throw new ArgumentException(nameof(mapper));
     }
 
-    public async Task<Result<GetExpenseByIdOutput>> ExecuteAsync(Guid input)
+    public async Task<Result<GetExpenseByIdOutput>> ExecuteAsync(Guid input, CancellationToken cancellationToken)
     {
-        var expense = await _expenseRepository.GetByIdAsync(input);
+        var expense = await _expenseRepository.GetByIdAsync(input, cancellationToken);
 
         if (expense == null)
         {

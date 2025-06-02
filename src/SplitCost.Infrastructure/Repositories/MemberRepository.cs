@@ -4,6 +4,7 @@ using SpitCost.Infrastructure.Context;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Interfaces;
 using SplitCost.Infrastructure.Entities;
+using System.Threading;
 
 namespace SplitCost.Infrastructure.Repositories;
 
@@ -18,24 +19,19 @@ public class MemberRepository : IMemberRepository
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task AddAsync(Member member)
+    public async Task AddAsync(Member member, CancellationToken cancellationToken)
     {
         var memberEntity = _mapper.Map<MemberEntity>(member);
-        await _context.Members.AddAsync(memberEntity);
+        await _context.Members.AddAsync(memberEntity, cancellationToken);
     }
-       
-    // Obtem dicionario id, nome dos usuários que pertencem a uma residência
-    // Usado para exibir os membros de uma residência no dropdown de despesas
-    public async Task<Dictionary<Guid, string>> GetUsersByResidenceId(Guid residenceId)
+    public async Task<Dictionary<Guid, string>> GetUsersByResidenceId(Guid residenceId, CancellationToken cancellationToken)
     {
         return await _context.Members
             .Where(rm => rm.ResidenceId == residenceId)
             .Select(rm => new { rm.UserId, rm.User.Name })
-            .ToDictionaryAsync(x => x.UserId, x => x.Name);
+            .ToDictionaryAsync(x => x.UserId, x => x.Name, cancellationToken);
     }
-
-    //verificar se membro existe em uma residência
-    public async Task<bool> ExistsAsync(Guid userId, Guid residenceId)
+    public async Task<bool> ExistsAsync(Guid userId, Guid residenceId, CancellationToken cancellationToken)
         => await _context.Members
-            .AnyAsync(m => m.UserId == userId && m.ResidenceId == residenceId);
+            .AnyAsync(m => m.UserId == userId && m.ResidenceId == residenceId, cancellationToken);
 }

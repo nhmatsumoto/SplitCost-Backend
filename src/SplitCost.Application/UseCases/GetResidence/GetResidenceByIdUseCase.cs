@@ -3,6 +3,7 @@ using MapsterMapper;
 using SplitCost.Application.Common;
 using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Interfaces;
+using System.Threading;
 
 namespace SplitCost.Application.UseCases.GetResidence;
 
@@ -22,7 +23,7 @@ public class GetResidenceByIdUseCase : IUseCase<GetResidenceByIdInput, Result<Ge
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<Result<GetResidenceByIdOutput>> ExecuteAsync(GetResidenceByIdInput userIdInput)
+    public async Task<Result<GetResidenceByIdOutput>> ExecuteAsync(GetResidenceByIdInput userIdInput, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(userIdInput);
 
@@ -31,7 +32,7 @@ public class GetResidenceByIdUseCase : IUseCase<GetResidenceByIdInput, Result<Ge
             return Result<GetResidenceByIdOutput>.FromFluentValidation("Validation failed", validationResult.Errors);
         }
 
-        var residence = await _residenceRepository.GetByIdAsync(userIdInput.ResidenceId);
+        var residence = await _residenceRepository.GetByIdAsync(userIdInput.ResidenceId, cancellationToken);
 
         var output = _mapper.Map<GetResidenceByIdOutput>(residence);
 

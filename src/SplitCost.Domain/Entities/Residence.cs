@@ -25,6 +25,21 @@ public class Residence : BaseEntity
         SetCreatedByUser(createdByUserId);
     }
 
+    public Residence SetId(Guid id)
+    {
+        if (id == Guid.Empty)
+            throw new ArgumentException("O ID da residência não pode ser vazio.");
+        Id = id;
+        return this;
+    }
+
+    public Residence SetAddressId(Guid id)
+    {
+        if (id == Guid.Empty)
+            throw new ArgumentException("O ID do endereço não pode ser vazio.");
+        AddressId = id;
+        return this;
+    }
     public Residence SetName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

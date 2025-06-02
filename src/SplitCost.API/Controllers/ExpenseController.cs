@@ -31,9 +31,9 @@ namespace SplitCost.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreateExpenseInput createExpenseInput)
+        public async Task<IActionResult> Create([FromBody] CreateExpenseInput createExpenseInput, CancellationToken cancellationToken)
         {
-            var result = await _createExpenseUseCase.ExecuteAsync(createExpenseInput);
+            var result = await _createExpenseUseCase.ExecuteAsync(createExpenseInput, cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -54,9 +54,9 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetById(Guid expenseIdInput)
+        public async Task<IActionResult> GetById(Guid expenseIdInput, CancellationToken cancellationToken)
         {
-            var result = await _getExpenseByIdUseCase.ExecuteAsync(expenseIdInput);
+            var result = await _getExpenseByIdUseCase.ExecuteAsync(expenseIdInput, cancellationToken);
 
             if (result.IsSuccess)
             {
@@ -77,9 +77,9 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetExpensesByResidenceId(Guid residenceIdInput)
+        public async Task<IActionResult> GetExpensesByResidenceId(Guid residenceIdInput, CancellationToken cancellationToken)
         {
-            var result = await _getExpenseByResidenceIdUseCase.ExecuteAsync(residenceIdInput);
+            var result = await _getExpenseByResidenceIdUseCase.ExecuteAsync(residenceIdInput, cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -120,9 +120,9 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUsersByResidenceId(Guid residenceId)
+        public async Task<IActionResult> GetUsersByResidenceId(Guid residenceId, CancellationToken cancellationToken)
         {
-            var result = await _getMemberByResidenceIdUseCase.ExecuteAsync(residenceId);
+            var result = await _getMemberByResidenceIdUseCase.ExecuteAsync(residenceId, cancellationToken);
 
             if (result.IsError)
             {

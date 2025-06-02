@@ -24,10 +24,10 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegisterApplicationUser([FromBody] CreateApplicationUserInput createApplicationUserInput)
+    public async Task<IActionResult> RegisterApplicationUser([FromBody] CreateApplicationUserInput createApplicationUserInput, CancellationToken cancellationToken)
     {
 
-        var result = await _createApplicationUserUseCase.ExecuteAsync(createApplicationUserInput);
+        var result = await _createApplicationUserUseCase.ExecuteAsync(createApplicationUserInput, cancellationToken);
         if (!result.IsSuccess)
         {
             return result.ErrorType switch
@@ -45,9 +45,9 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetById(Guid userIdInput)
+    public async Task<IActionResult> GetById(Guid userIdInput, CancellationToken cancellationToken)
     {
-        var result = await _getApplicationUserUseCase.ExecuteAsync(userIdInput);
+        var result = await _getApplicationUserUseCase.ExecuteAsync(userIdInput, cancellationToken);
 
         if (!result.IsSuccess)
         {

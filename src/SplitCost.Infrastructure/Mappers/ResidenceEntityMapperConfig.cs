@@ -18,8 +18,18 @@ public class ResidenceEntityMapperConfig : IRegister
 
         // Entity -> Domain
         config.NewConfig<ResidenceEntity, Residence>()
-            .MapWith(src => ResidenceFactory.Create(
-                src.Name,
-                src.CreatedByUserId));
+            .MapWith(src => ResidenceFactory.Create(src.Name, src.CreatedByUserId)
+                .SetId(src.Id)
+                .SetAddressId(src.AddressId));
+
+         //     .Map(src => src.Address.Id, dest => dest.AddressId)
+         //   .Map(src => src.Address.Street, dest => dest.Address.Street)
+         //   .Map(src => src.Address.Number, dest => dest.Address.Number)
+         //   .Map(src => src.Address.Apartment, dest => dest.Address.Apartment)
+         //   .Map(src => src.Address.City, dest => dest.Address.City)
+         //   .Map(src => src.Address.Prefecture, dest => dest.Address.Prefecture)
+         //   .Map(src => src.Address.Country, dest => dest.Address.Country)
+         //   .Map(src => src.Address.PostalCode, dest => dest.Address.PostalCode)
+
     }
 }

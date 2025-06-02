@@ -1,10 +1,11 @@
-﻿using SplitCost.Application.DTOs;
+﻿using SplitCost.Application.Common;
+using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
 using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases.UpdateResidence
 {
-    public class UpdateResidenceUseCase : IUpdateResidenceUseCase
+    public class UpdateResidenceUseCase : IUseCase<UpdateResidenceInput, Result<UpdateResidenceOutput>>
     {
         private readonly IResidenceRepository _residenceRepository;
 
@@ -13,22 +14,34 @@ namespace SplitCost.Application.UseCases.UpdateResidence
             _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
         }
 
-        public async Task<ResidenceDto> UpdateResidenceAsync(Guid residenceId, UpdateResidenceDto residenceDto)
+
+#warning finalizar esta implementação
+        public async Task<Result<UpdateResidenceOutput>> ExecuteAsync(UpdateResidenceInput updateResidenceInput, CancellationToken cancellationToken)
         {
-            var residence = await _residenceRepository.GetByIdAsync(residenceId);
+            var residence = await _residenceRepository.GetByIdAsync(updateResidenceInput.ResidenceId, cancellationToken);
             if (residence == null)
                 throw new InvalidOperationException("Residência não encontrada.");
 
-            residence.SetName(residenceDto.Name);
-            _residenceRepository.UpdateAsync(residence);
+            residence.SetName(updateResidenceInput.Name);
+            _residenceRepository.Update(residence);
 
-            return new ResidenceDto
+            //return new ResidenceDto
+            //{
+            //    Id = residence.Id,
+            //    Name = residence.Name,
+            //    CreatedAt = residence.CreatedAt,
+            //    UpdatedAt = residence.UpdatedAt
+            //};
+
+            var result = new UpdateResidenceOutput
             {
                 Id = residence.Id,
                 Name = residence.Name,
-                CreatedAt = residence.CreatedAt,
-                UpdatedAt = residence.UpdatedAt
             };
+
+            return Result<UpdateResidenceOutput>.Success(result);
         }
+
+       
     }
 }

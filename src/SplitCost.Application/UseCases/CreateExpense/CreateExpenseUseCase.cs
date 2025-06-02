@@ -26,9 +26,9 @@ public class CreateExpenseUseCase : IUseCase<CreateExpenseInput, Result<CreateEx
         _validator              = validator             ?? throw new ArgumentNullException(nameof(validator));
     }
 
-    public async Task<Result<CreateExpenseOutput>> ExecuteAsync(CreateExpenseInput input)
+    public async Task<Result<CreateExpenseOutput>> ExecuteAsync(CreateExpenseInput input, CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(input);
+        var validationResult = await _validator.ValidateAsync(input, cancellationToken);
 
         if (!validationResult.IsValid)
         {
@@ -39,7 +39,7 @@ public class CreateExpenseUseCase : IUseCase<CreateExpenseInput, Result<CreateEx
         var expense = _mapper.Map<Expense>(input);
 
         // Adiciona ao repositório e salva as mudanças
-        await _expenseRepository.AddAsync(expense);
+        await _expenseRepository.AddAsync(expense, cancellationToken);
         await _unitOfWork.SaveChangesAsync();
 
         var result = _mapper.Map<CreateExpenseOutput>(expense);

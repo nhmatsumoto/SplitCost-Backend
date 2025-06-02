@@ -28,7 +28,7 @@ public class AddResidenceMemberUseCase : IUseCase<AddResidenceMemberInput, Resul
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<Result<int>> ExecuteAsync(AddResidenceMemberInput residenceMemberInput)
+    public async Task<Result<int>> ExecuteAsync(AddResidenceMemberInput residenceMemberInput, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(residenceMemberInput);
 
@@ -45,7 +45,10 @@ public class AddResidenceMemberUseCase : IUseCase<AddResidenceMemberInput, Resul
 
         residence.AddMember(member);
 
-        _residenceRepository.UpdateAsync(residence);
+        await _residenceRepository.AddAsync(residence, cancellationToken);
+
+        //var residenceEntity = await _residenceRepository.GetByIdAsync(residenceMemberInput.ResidenceId);
+
 
         var rows = await _unitOfWork.SaveChangesAsync();
 

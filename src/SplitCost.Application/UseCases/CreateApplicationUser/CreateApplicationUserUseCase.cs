@@ -25,7 +25,7 @@ namespace SplitCost.Application.UseCases.CreateApplicationUser
             _validator              = validator             ?? throw new ArgumentNullException(nameof(validator));
         }
 
-        public async Task<Result<CreateApplicationUserOutput>> ExecuteAsync(CreateApplicationUserInput input)
+        public async Task<Result<CreateApplicationUserOutput>> ExecuteAsync(CreateApplicationUserInput input, CancellationToken cancellationToken)
         {
             var validationResult = _validator.ValidateAsync(input);
 
@@ -39,7 +39,8 @@ namespace SplitCost.Application.UseCases.CreateApplicationUser
                 input.FirstName,
                 input.LastName,
                 input.Email,
-                input.Password
+                input.Password,
+                cancellationToken
             );
 
             if (keycloakUserId != Guid.Empty)
@@ -53,7 +54,7 @@ namespace SplitCost.Application.UseCases.CreateApplicationUser
                     input.Email
                 );
 
-                await _usuarioRepository.AddAsync(usuario);
+                await _usuarioRepository.AddAsync(usuario, cancellationToken);
                 await _unitOfWork.SaveChangesAsync();
 
                 var response = new CreateApplicationUserOutput

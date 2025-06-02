@@ -22,7 +22,7 @@ public class GetResidenceByUserIdUseCase : IUseCase<GetResidenceByUserIdInput, R
         _validator              = validator             ?? throw new ArgumentNullException(nameof(validator));
     }
 
-    public async Task<Result<GetResidenceByUserIdOutput>> ExecuteAsync(GetResidenceByUserIdInput getResidenceByUserIdInput)
+    public async Task<Result<GetResidenceByUserIdOutput>> ExecuteAsync(GetResidenceByUserIdInput getResidenceByUserIdInput, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(getResidenceByUserIdInput);
 
@@ -31,7 +31,7 @@ public class GetResidenceByUserIdUseCase : IUseCase<GetResidenceByUserIdInput, R
             return Result<GetResidenceByUserIdOutput>.FromFluentValidation("Dados inválidos", validationResult.Errors);
         }
 
-        var residence = await _residenceRepository.GetByUserIdAsync(getResidenceByUserIdInput.UserId);
+        var residence = await _residenceRepository.GetByUserIdAsync(getResidenceByUserIdInput.UserId, cancellationToken);
         
         var output = _mapper.Map<GetResidenceByUserIdOutput>(residence);
 

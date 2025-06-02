@@ -4,10 +4,10 @@ namespace SplitCost.Domain.Interfaces;
 
 public interface IUserRepository
 {
-    Task AddAsync(User user);
-    Task<User?> GetByIdAsync(Guid userId);
+    Task AddAsync(User user, CancellationToken cancellationToken);
+    Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
     void Update(User user);
-    Task<bool> ExistsByUsernameAsync(string username, CancellationToken ct);
-    Task<bool> ExistsByEmailAsync(string email, CancellationToken ct);
-    Task<bool> ExistsAsync(Guid userId, CancellationToken ct);
+    Task<bool> ExistsByUsernameAsync(string username, CancellationToken cancellationToken);
+    Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<bool> ExistsAsync(Guid userId, CancellationToken cancellationToken);
 }

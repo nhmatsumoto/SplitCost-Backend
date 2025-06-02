@@ -19,13 +19,16 @@ public class KeycloakService : IKeycloakService
         _config         = config        ?? throw new ArgumentNullException(nameof(config));
     }
 
-    public async Task<Guid> CreateUserAsync(string username, string firstName, string lastName, string email, string password)
+    public async Task<Guid> CreateUserAsync(string username, string firstName, string lastName, string email, string password, CancellationToken cancellationToken)
     {
-        var token = await GetApplicationAdminTokenAsync();
+        var token = await GetApplicationAdminTokenAsync(cancellationToken);
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var realm = _config["Keycloak:Realm"];
         var createUserUrl = $"{_config["Keycloak:BaseUrl"]}/admin/realms/{realm}/users";
+
+
+#warning adicionar mapeamento aqui
 
         var userPayload = new
         {
@@ -46,8 +49,8 @@ public class KeycloakService : IKeycloakService
         };
 
         var content = new StringContent(JsonSerializer.Serialize(userPayload), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync(createUserUrl, content);
-        var responseContent = await response.Content.ReadAsStringAsync();
+        var response = await _httpClient.PostAsync(createUserUrl, content, cancellationToken);
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (response.IsSuccessStatusCode)
         {
@@ -84,7 +87,7 @@ public class KeycloakService : IKeycloakService
         }
     }
 
-    private async Task<string> GetApplicationAdminTokenAsync()
+    private async Task<string> GetApplicationAdminTokenAsync(CancellationToken cancellationToken)
     {
         using var client = new HttpClient();
         
@@ -97,8 +100,8 @@ public class KeycloakService : IKeycloakService
             new KeyValuePair<string, string>("grant_type", "client_credentials")
         });
 
-        var response = await client.PostAsync(tokenEndpoint, content);
-        var responseBody = await response.Content.ReadAsStringAsync();
+        var response = await client.PostAsync(tokenEndpoint, content, cancellationToken);
+        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Erro ao obter token do Keycloak: {responseBody}");

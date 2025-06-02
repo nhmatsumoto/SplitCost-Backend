@@ -12,8 +12,8 @@ using SpitCost.Infrastructure.Context;
 namespace SplitCost.Infrastructure.Migrations
 {
     [DbContext(typeof(SplitCostDbContext))]
-    [Migration("20250601035104_initial")]
-    partial class initial
+    [Migration("20250602061459_UpdateDatabase")]
+    partial class UpdateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,7 +190,8 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.HasIndex("ResidenceId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Members");
                 });
@@ -256,6 +257,10 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -266,13 +271,13 @@ namespace SplitCost.Infrastructure.Migrations
                     b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "PaidBy")
                         .WithMany("ResidenceExpensesPaid")
                         .HasForeignKey("PaidByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "RegisteredBy")
                         .WithMany("Expenses")
                         .HasForeignKey("RegisteredByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SplitCost.Infrastructure.Entities.ResidenceEntity", "Residence")
@@ -299,7 +304,7 @@ namespace SplitCost.Infrastructure.Migrations
                     b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "User")
                         .WithMany("ExpenseShares")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Expense");
@@ -316,8 +321,8 @@ namespace SplitCost.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "User")
-                        .WithMany("Residences")
-                        .HasForeignKey("UserId")
+                        .WithOne("Member")
+                        .HasForeignKey("SplitCost.Infrastructure.Entities.MemberEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -337,7 +342,7 @@ namespace SplitCost.Infrastructure.Migrations
                     b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Address");
@@ -369,9 +374,10 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.Navigation("Expenses");
 
-                    b.Navigation("ResidenceExpensesPaid");
+                    b.Navigation("Member")
+                        .IsRequired();
 
-                    b.Navigation("Residences");
+                    b.Navigation("ResidenceExpensesPaid");
                 });
 #pragma warning restore 612, 618
         }

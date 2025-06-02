@@ -29,10 +29,8 @@ public static class ServiceCollectionExtensions
     {
         // Residences
         services.AddScoped<IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>>, CreateResidenceUseCase>();
-
-        // TODO
-        services.AddScoped<IUpdateResidenceUseCase, UpdateResidenceUseCase>();
-        services.AddScoped<IReadResidenceUseCase, GetResidenceByIdUseCase>();
+        services.AddScoped<IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>>, GetResidenceByIdUseCase>();
+        services.AddScoped<IUseCase<UpdateResidenceInput, Result<UpdateResidenceOutput>>, UpdateResidenceUseCase>();
 
         // Member
         services.AddScoped<IUseCase<Guid, Result<Dictionary<Guid, string>>>, GetMemberByResidenceIdUseCase>();

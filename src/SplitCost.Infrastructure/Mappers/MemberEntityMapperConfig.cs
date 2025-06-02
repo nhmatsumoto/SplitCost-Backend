@@ -3,7 +3,7 @@ using SplitCost.Domain.Entities;
 using SplitCost.Infrastructure.Entities;
 
 namespace SplitCost.Infrastructure.Mappers;
-public class MemberEntityMapperConfiguration : IRegister
+public class MemberEntityMapperConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {

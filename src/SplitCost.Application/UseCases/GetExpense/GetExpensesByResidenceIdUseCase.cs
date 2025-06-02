@@ -16,9 +16,9 @@ public class GetExpensesByResidenceIdUseCase : IUseCase<Guid, Result<IEnumerable
         _mapper             = mapper            ?? throw new ArgumentNullException(nameof(mapper));
         _expenseRepository  = expenseRepository ?? throw new ArgumentNullException(nameof(expenseRepository));
     }
-    public async Task<Result<IEnumerable<GetExpenseByIdOutput>>> ExecuteAsync(Guid input)
+    public async Task<Result<IEnumerable<GetExpenseByIdOutput>>> ExecuteAsync(Guid input, CancellationToken cancellationToken)
     {
-        var expense = await _expenseRepository.GetByResidenceIdAsync(input);
+        var expense = await _expenseRepository.GetByResidenceIdAsync(input, cancellationToken);
 
         if (expense == null || !expense.Any())
         {

@@ -12,12 +12,12 @@ public class GetMemberByResidenceIdUseCase : IUseCase<Guid, Result<Dictionary<Gu
         _memberRepository = memberRepository ?? throw new ArgumentException(nameof(memberRepository));
     }
 
-    public async Task<Result<Dictionary<Guid, string>>> ExecuteAsync(Guid residenceId)
+    public async Task<Result<Dictionary<Guid, string>>> ExecuteAsync(Guid residenceId, CancellationToken cancellationToken)
     {
         if (residenceId == Guid.Empty)
             return Result<Dictionary<Guid, string>>.Failure("Invalid Residence", ErrorType.Validation);
 
-        var members = await _memberRepository.GetUsersByResidenceId(residenceId);
+        var members = await _memberRepository.GetUsersByResidenceId(residenceId, cancellationToken);
 
         if (members is null || !members.Any())
             return Result<Dictionary<Guid, string>>.Failure("No member found for this residence", ErrorType.NotFound);

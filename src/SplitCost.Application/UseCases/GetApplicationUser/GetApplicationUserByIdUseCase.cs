@@ -16,9 +16,9 @@ public class GetApplicationUserByIdUseCase : IUseCase<Guid, Result<GetApplicatio
         _mapper             = mapper            ?? throw new ArgumentException(nameof(mapper));
     }
 
-    public async Task<Result<GetApplicationUserByIdOutput>> ExecuteAsync(Guid id)
+    public async Task<Result<GetApplicationUserByIdOutput>> ExecuteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var result = await _userRepository.GetByIdAsync(id);
+        var result = await _userRepository.GetByIdAsync(id, cancellationToken);
 
         if (result == null)
         {

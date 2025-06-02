@@ -26,7 +26,7 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Crea
         _validator              = validator             ?? throw new ArgumentNullException(nameof(validator));
     }
 
-    public async Task<Result<CreateResidenceOutput>> ExecuteAsync(CreateResidenceInput input)
+    public async Task<Result<CreateResidenceOutput>> ExecuteAsync(CreateResidenceInput input, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(input);
 
@@ -42,14 +42,18 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Crea
             input.Address.City,
             input.Address.Prefecture,
             input.Address.Country,
-            input.Address.PostalCode);
+            input.Address.PostalCode
+        );
 
-        var residence = ResidenceFactory.Create(input.ResidenceName, input.UserId)
+        var residence = ResidenceFactory
+            .Create(input.ResidenceName, input.UserId)
             .SetAddress(address);
 
-        await _residenceRepository.AddAsync(residence);
+        await _residenceRepository.AddAsync(residence, cancellationToken);
         await _unitOfWork.SaveChangesAsync();
 
-        return Result<CreateResidenceOutput>.Success(_mapper.Map<CreateResidenceOutput>(residence));
+        var resultResidence = await _residenceRepository.GetByUserIdAsync(input.UserId, cancellationToken);
+
+        return Result<CreateResidenceOutput>.Success(_mapper.Map<CreateResidenceOutput>(resultResidence));
     }
 }

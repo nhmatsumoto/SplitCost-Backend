@@ -1,4 +1,5 @@
 ﻿using SplitCost.Domain.Common;
+using SplitCost.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -24,9 +25,7 @@ public class UserEntity : BaseEntity
 
     public string AvatarUrl { get; set; } = string.Empty;
 
-    // Navigation properties
-
-    public ICollection<MemberEntity> Residences { get; set; } = new List<MemberEntity>();
+    public MemberEntity Member { get; set; }
 
     public ICollection<ExpenseEntity> Expenses { get; set; } = new List<ExpenseEntity>();
 

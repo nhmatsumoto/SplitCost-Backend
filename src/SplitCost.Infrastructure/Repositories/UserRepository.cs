@@ -17,19 +17,14 @@ public class UserRepository : IUserRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
-    public async Task AddAsync(User user)
+    public async Task AddAsync(User user, CancellationToken cancellationToken)
     {
         var userEntity = _mapper.Map<UserEntity>(user);
-        await _context.Users.AddAsync(userEntity);
+        await _context.Users.AddAsync(userEntity, cancellationToken);
     }
-    public async Task<User?> GetByIdAsync(Guid userId)
+    public async Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
     {
-        var userEntity = await _context.Users
-            .Include(u => u.Residences)
-                .ThenInclude(rm => rm.Residence)
-            .Include(u => u.ResidenceExpensesPaid)
-            .Include(u => u.ExpenseShares)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
         return _mapper.Map<User>(userEntity);
     }
@@ -39,17 +34,17 @@ public class UserRepository : IUserRepository
         var userEntity = _mapper.Map<UserEntity>(user);
         _context.Users.Update(userEntity);
     }
-    public async Task<bool> ExistsByUsernameAsync(string username, CancellationToken ct)
+    public async Task<bool> ExistsByUsernameAsync(string username, CancellationToken cancellationToken)
     {
-        return await _context.Users.AnyAsync(x => x.Username == username);
+        return await _context.Users.AnyAsync(x => x.Username == username, cancellationToken);
     }
-    public async Task<bool> ExistsByEmailAsync(string email , CancellationToken ct)
+    public async Task<bool> ExistsByEmailAsync(string email , CancellationToken cancellationToken)
     {
-        return await _context.Users.AnyAsync(x => x.Email == email);
+        return await _context.Users.AnyAsync(x => x.Email == email, cancellationToken);
     }
-    public async Task<bool> ExistsAsync(Guid userId, CancellationToken ct)
+    public async Task<bool> ExistsAsync(Guid userId, CancellationToken cancellationToken)
     {
-        return await _context.Users.AnyAsync(x => x.Id == userId);
+        return await _context.Users.AnyAsync(x => x.Id == userId, cancellationToken);
     }
 
 
