@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SplitCost.Application.Common;
 using SplitCost.Application.DTOs;
 using SplitCost.Application.Interfaces;
+using SplitCost.Application.UseCases.CreateMember;
+using SplitCost.Application.UseCases.CreateResidence;
 using System.Security.Claims;
 
 namespace SplitCost.API.Controllers
@@ -11,34 +14,30 @@ namespace SplitCost.API.Controllers
     [Route("api/[controller]")]
     public class ResidencesController : ControllerBase
     {
-        private readonly ICreateResidenceUseCase _createResidenceUseCase;
+       
         private readonly IUpdateResidenceUseCase _updateResidenceUseCase;
         private readonly IReadResidenceUseCase _getResidenceUseCase;
 
-        //private readonly IUseCase<AddResidenceMemberInput, int>
-
-        private readonly ICreateResidenceMemberUseCase _createResidenceMemberUseCase;
-
+        private readonly IUseCase<AddResidenceMemberInput, Result<int>> _addResidenceMemberUseCase;
+        private readonly IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> _createResidenceUseCase;
         public ResidencesController(
-            ICreateResidenceUseCase createResidenceUseCase,
+            IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> createResidenceUseCase,
+            IUseCase<AddResidenceMemberInput, Result<int>> addResidenceMemberUseCase,
             IUpdateResidenceUseCase updateResidenceUseCase,
-            IReadResidenceUseCase getResidenceUseCase,
-            ICreateResidenceMemberUseCase createResidenceMemberUseCase)
+            IReadResidenceUseCase getResidenceUseCase)
         {
             _createResidenceUseCase = createResidenceUseCase ?? throw new ArgumentNullException(nameof(createResidenceUseCase));
             _updateResidenceUseCase = updateResidenceUseCase ?? throw new ArgumentNullException(nameof(updateResidenceUseCase));
             _getResidenceUseCase = getResidenceUseCase ?? throw new ArgumentNullException(nameof(getResidenceUseCase));
-            _createResidenceMemberUseCase = createResidenceMemberUseCase ?? throw new ArgumentNullException(nameof(createResidenceMemberUseCase));
+            _addResidenceMemberUseCase = addResidenceMemberUseCase ?? throw new ArgumentException(nameof(addResidenceMemberUseCase));
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateResidence([FromBody] CreateResidenceDto createResidenceDto)
+        public async Task<IActionResult> CreateResidence([FromBody] CreateResidenceInput reateResidenceInput)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
 
             try
             {
@@ -48,17 +47,18 @@ namespace SplitCost.API.Controllers
                 if (!Guid.TryParse(userIdStr, out var userId))
                     return Unauthorized(new { Error = "Usuário não autenticado corretamente." });
 
+                var result = await _createResidenceUseCase.ExecuteAsync(reateResidenceInput);
+
+                //Verificar se o usuário tem residência, levar isso para Validation Layer
                 var hasResidence = await _getResidenceUseCase.UserHasResidence(userId);
 
-                if(hasResidence)
+                if (hasResidence)
                     return BadRequest(new { Error = "Usuário já possui uma residência." });
-
-                var result = await _createResidenceUseCase.CreateResidenceAsync(createResidenceDto, userId);
 
 
                 if (result.IsSuccess)
                 {
-                    await _createResidenceMemberUseCase.RegisterResidenceMemberAsync(new CreateResidenceMemberDto
+                    await _addResidenceMemberUseCase.ExecuteAsync(new CreateResidenceMemberDto
                     {
                         UserId = userId,
                         ResidenceId = result.Data.Id

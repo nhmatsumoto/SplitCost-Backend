@@ -49,7 +49,7 @@ public static class ServiceCollectionExtensions
 
         // Registra as configurações de mapeamento
         var config = TypeAdapterConfig.GlobalSettings;
-        config.Scan(typeof(ExpenseDomainMapperConfig).Assembly);
+        config.Scan(typeof(ExpenseMapperConfig).Assembly);
 
         // Registra IMapper do Mapster
         services.AddSingleton(config);

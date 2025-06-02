@@ -8,13 +8,7 @@ public class CreateResidenceOutput
     public string Name { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public List<CreateResidenceMemberDto> Members { get; set; }
-    public List<ExpenseDto> Expenses { get; set; }
+    public List<CreateResidenceMemberDto> Members { get; set; } = new();
+    public List<ExpenseDto> Expenses { get; set; } = new();
     public AddressDto Address { get; set; }
-
-    public CreateResidenceOutput()
-    {
-        Members = new List<CreateResidenceMemberDto>();
-        Expenses = new List<ExpenseDto>();
-    }
 }

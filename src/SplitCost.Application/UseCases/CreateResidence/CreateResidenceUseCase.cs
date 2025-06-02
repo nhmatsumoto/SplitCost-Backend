@@ -29,6 +29,7 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Crea
     public async Task<Result<CreateResidenceOutput>> ExecuteAsync(CreateResidenceInput input)
     {
         var validationResult = await _validator.ValidateAsync(input);
+
         if (!validationResult.IsValid)
         {
             return Result<CreateResidenceOutput>.FromFluentValidation("Dados inválidos", validationResult.Errors);

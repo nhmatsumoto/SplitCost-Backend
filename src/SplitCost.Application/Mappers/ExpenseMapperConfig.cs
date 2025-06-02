@@ -4,7 +4,7 @@ using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
 
 namespace SplitCost.Application.Mappers;
-public class ExpenseDomainMapperConfig : IRegister
+public class ExpenseMapperConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
