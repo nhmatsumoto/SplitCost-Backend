@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using SplitCost.Application.Common.Services;
 using SplitCost.Domain.Exceptions;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SplitCost.Infrastructure.Services;
 
@@ -12,11 +14,13 @@ public class KeycloakService : IKeycloakService
 {
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _config;
+    private readonly KeycloakSettings _settings;
 
-    public KeycloakService(HttpClient httpClient, IConfiguration config)
+    public KeycloakService(HttpClient httpClient, IConfiguration config, IOptions<KeycloakSettings> options)
     {
         _httpClient     = httpClient    ?? throw new ArgumentNullException(nameof(httpClient));
         _config         = config        ?? throw new ArgumentNullException(nameof(config));
+        _settings       = options.Value ?? throw new ArgumentNullException(nameof(options));
     }
 
     public async Task<Guid> CreateUserAsync(string username, string firstName, string lastName, string email, string password, CancellationToken cancellationToken)
@@ -24,31 +28,31 @@ public class KeycloakService : IKeycloakService
         var token = await GetApplicationAdminTokenAsync(cancellationToken);
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var realm = _config["Keycloak:Realm"];
-        var createUserUrl = $"{_config["Keycloak:BaseUrl"]}/admin/realms/{realm}/users";
+        var createUserUrl = $"{_settings.BaseUrl}/admin/realms/{_settings.Realm}/users";
 
-
-#warning adicionar mapeamento aqui
-
-        var userPayload = new
+        var userPayload = new KeycloakUserPayload
         {
             username = username,
             email = email,
             firstName = firstName,
             lastName = lastName,
-            enabled = true,
-            emailVerified = true,
             credentials = new[]
             {
-                new {
-                    type = "password",
-                    value = password,
-                    temporary = false
-                }
+                new Credential { value = password }
             }
         };
 
-        var content = new StringContent(JsonSerializer.Serialize(userPayload), Encoding.UTF8, "application/json");
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+
+        var content = new StringContent(
+            JsonSerializer.Serialize(userPayload, jsonOptions),
+            Encoding.UTF8,
+            "application/json");
+
         var response = await _httpClient.PostAsync(createUserUrl, content, cancellationToken);
         var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
 
@@ -64,7 +68,7 @@ public class KeycloakService : IKeycloakService
             return Guid.Parse(userId);
         }
 
-        if (response.IsSuccessStatusCode.Equals(HttpStatusCode.Conflict))
+        if (response.StatusCode == HttpStatusCode.Conflict)
         {
             throw new KeycloakUserConflictException("O Email informado não é valido");
         }
@@ -89,24 +93,28 @@ public class KeycloakService : IKeycloakService
 
     private async Task<string> GetApplicationAdminTokenAsync(CancellationToken cancellationToken)
     {
-        using var client = new HttpClient();
-        
-        var tokenEndpoint = _config["Keycloak:TokenEndpoint"];
+        var tokenEndpoint = _settings.GetTokenEndpoint();
 
         var content = new FormUrlEncodedContent(new[]
         {
-            new KeyValuePair<string, string>("client_id", _config["Keycloak:ClientId"]),
-            new KeyValuePair<string, string>("client_secret", _config["Keycloak:ClientSecret"]),
+            new KeyValuePair<string, string>("client_id", _settings.ClientId),
+            new KeyValuePair<string, string>("client_secret", _settings.ClientSecret),
             new KeyValuePair<string, string>("grant_type", "client_credentials")
         });
 
-        var response = await client.PostAsync(tokenEndpoint, content, cancellationToken);
+        var response = await _httpClient.PostAsync(tokenEndpoint, content, cancellationToken);
         var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Erro ao obter token do Keycloak: {responseBody}");
 
         var tokenObj = JsonSerializer.Deserialize<JsonElement>(responseBody);
-        return tokenObj.GetProperty("access_token").GetString();
+
+        if (!tokenObj.TryGetProperty("access_token", out var accessTokenProp) || string.IsNullOrWhiteSpace(accessTokenProp.GetString()))
+        {
+            throw new Exception("Resposta do Keycloak não contém um access_token válido.");
+        }
+
+        return accessTokenProp.GetString()!;
     }
 }

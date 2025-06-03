@@ -3,11 +3,15 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using SpitCost.Infrastructure.Context;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
+using SplitCost.Application.Common.Services;
 using SplitCost.Infrastructure.Mappers;
 using SplitCost.Infrastructure.Repositories;
+using SplitCost.Infrastructure.Services;
+using System.Net.Http.Headers;
 
 namespace Playground.Infrastructure.DependencyInjection;
 
@@ -44,18 +48,38 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IResidenceRepository, ResidenceRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();   
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork<SplitCostDbContext>>();
 
         // Registra as configurações de mapeamento
         var config = TypeAdapterConfig.GlobalSettings;
-        config.Scan(typeof(AddressEntityMapperConfig).Assembly);
+        config.Scan(typeof(ResidenceEntityMapperConfig).Assembly);
+        config.Scan(typeof(ExpenseEntityMapperConfig).Assembly);
 
         // Registra IMapper do Mapster
         services.AddSingleton(config);
         services.AddScoped<IMapper, ServiceMapper>();
+
+
+        //Keycloak Config
+        services.Configure<KeycloakSettings>(configuration.GetSection("Keycloak"));
+
+        services .AddOptions<KeycloakSettings>().Bind(configuration.GetSection("Keycloak")).ValidateOnStart();
+
+        services.AddHttpClient<IKeycloakService, KeycloakService>((serviceProvider, client) =>
+        {
+            var keycloakSettings = serviceProvider.GetRequiredService<IOptions<KeycloakSettings>>().Value;
+
+            client.BaseAddress = new Uri(keycloakSettings.BaseUrl);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        });
+
+        //Retry policy for HttpClient
+        //.AddPolicyHandler(Policy
+        //    .Handle<HttpRequestException>()
+        //    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
+        //);
 
 
         return services;

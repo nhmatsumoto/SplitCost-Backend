@@ -15,17 +15,38 @@ public class ResidenceEntity : BaseEntity
     [Column("Name")]
     public string Name { get; set; }
 
-    [ForeignKey("Address")]
-    [Column("AddressId")]
-    public Guid AddressId { get; set; }
-
-    public AddressEntity Address { get; set; }
-
     [ForeignKey("CreatedBy")]
     [Column("CreatedByUserId")]
     public Guid CreatedByUserId { get; set; }
-
     public UserEntity CreatedBy { get; set; }
+
+    //Address
+    [Required]
+    [MaxLength(200)]
+    public string Street { get; private set; } = null!;
+
+    [Required]
+    [MaxLength(20)]
+    public string Number { get; private set; } = null!;
+
+    [MaxLength(50)]
+    public string Apartment { get; private set; } = string.Empty;
+
+    [Required]
+    [MaxLength(100)]
+    public string City { get; private set; } = null!;
+
+    [Required]
+    [MaxLength(100)]
+    public string Prefecture { get; private set; } = null!;
+
+    [Required]
+    [MaxLength(100)]
+    public string Country { get; private set; } = null!;
+
+    [Required]
+    [MaxLength(20)]
+    public string PostalCode { get; private set; } = null!;
 
     public ICollection<MemberEntity> Members { get; set; } = new List<MemberEntity>();
 

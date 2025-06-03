@@ -31,7 +31,6 @@ public class UserEntity : BaseEntity
 
     public ICollection<ExpenseEntity> ResidenceExpensesPaid { get; set; } = new List<ExpenseEntity>();
 
-    public ICollection<ExpenseShareEntity> ExpenseShares { get; set; } = new List<ExpenseShareEntity>();
 
     public UserEntity(){ }
 }

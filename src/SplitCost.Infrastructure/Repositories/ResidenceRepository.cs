@@ -40,7 +40,6 @@ public class ResidenceRepository : IResidenceRepository
     {
         var residenceEntity = await _context.Residences
             .Where(x => x.CreatedByUserId == id)
-            .Include(x => x.Address)
             .AsNoTracking()
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -57,7 +56,6 @@ public class ResidenceRepository : IResidenceRepository
             .Include(r => r.Members)
                 .ThenInclude(rm => rm.User)
             .Include(r => r.Expenses)
-                .ThenInclude(e => e.Shares)
             .ToListAsync(cancellationToken);
 
         return _mapper.Map<IEnumerable<Residence>>(residencesEntity);

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.CreateApplicationUser;
-using SplitCost.Application.UseCases.GetApplicationUser;
+using SplitCost.Application.UseCases.ApplicationUserUseCases.CreateApplicationUser;
+using SplitCost.Application.UseCases.ApplicationUserUseCases.GetApplicationUserById;
 
 namespace SplitCost.API.Controllers;
 

@@ -5,16 +5,15 @@ using Microsoft.Extensions.DependencyInjection;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
 using SplitCost.Application.Mappers;
-using SplitCost.Application.UseCases.CreateApplicationUser;
-using SplitCost.Application.UseCases.CreateExpense;
-using SplitCost.Application.UseCases.CreateMember;
-using SplitCost.Application.UseCases.CreateResidence;
-using SplitCost.Application.UseCases.GetApplicationUser;
+using SplitCost.Application.UseCases.ApplicationUserUseCases.CreateApplicationUser;
+using SplitCost.Application.UseCases.ApplicationUserUseCases.GetApplicationUserById;
+using SplitCost.Application.UseCases.ExpenseUseCases.CreateExpense;
 using SplitCost.Application.UseCases.GetExpense;
-using SplitCost.Application.UseCases.GetMember;
-using SplitCost.Application.UseCases.GetResidence;
-using SplitCost.Application.UseCases.UpdateResidence;
-using SplitCost.Application.Validators;
+using SplitCost.Application.UseCases.MemberUseCases.AddMember;
+using SplitCost.Application.UseCases.MemberUseCases.GetMember;
+using SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
+using SplitCost.Application.UseCases.ResidenceUseCases.GetResidenceById;
+using SplitCost.Application.UseCases.ResidenceUseCases.UpdateResidence;
 
 namespace SplitCost.Application.DependencyInjection;
 
@@ -34,7 +33,7 @@ public static class ServiceCollectionExtensions
 
         // Member
         services.AddScoped<IUseCase<Guid, Result<Dictionary<Guid, string>>>, GetMemberByResidenceIdUseCase>();
-        services.AddScoped<IUseCase<AddResidenceMemberInput, Result<int>>, AddResidenceMemberUseCase>();
+        services.AddScoped<IUseCase<AddMemberInput, Result<int>>, AddMemberUseCase>();
 
         // Expenses
         services.AddScoped<IUseCase<CreateExpenseInput, Result<CreateExpenseOutput>>, CreateExpenseUseCase>();

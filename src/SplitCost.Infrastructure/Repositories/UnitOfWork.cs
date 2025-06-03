@@ -18,6 +18,56 @@ public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
 
     public DbContext Context => _context;
 
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken)
+    {
+        if (_transaction != null)
+        {
+            throw new InvalidOperationException("Uma transação já está ativa.");
+        }
+        _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+    }
+
+    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task CommitAsync(CancellationToken cancellationToken)
+    {
+        if (_transaction == null)
+        {
+            throw new InvalidOperationException("Nenhuma transação ativa para commitar.");
+        }
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+            await _transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await RollbackAsync(cancellationToken);
+            throw;
+        }
+        finally
+        {
+            if (_transaction != null)
+            {
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+    }
+
+    public async Task RollbackAsync(CancellationToken cancellationToken)
+    {
+        if (_transaction != null)
+        {
+            await _transaction.RollbackAsync(cancellationToken);
+            await _transaction.DisposeAsync();
+            _transaction = null;
+        }
+    }
+
     public void BeginTransaction()
     {
         if (_transaction != null)
@@ -25,25 +75,6 @@ public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
             throw new InvalidOperationException("Uma transação já está ativa.");
         }
         _transaction = _context.Database.BeginTransaction();
-    }
-
-    public async Task BeginTransactionAsync()
-    {
-        if (_transaction != null)
-        {
-            throw new InvalidOperationException("Uma transação já está ativa.");
-        }
-        _transaction = await _context.Database.BeginTransactionAsync();
-    }
-
-    public int SaveChanges()
-    {
-        return _context.SaveChanges();
-    }
-
-    public async Task<int> SaveChangesAsync()
-    {
-        return await _context.SaveChangesAsync();
     }
 
     public void Commit()
@@ -68,29 +99,9 @@ public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
         }
     }
 
-    public async Task CommitAsync()
+    public int SaveChanges()
     {
-        if (_transaction == null)
-        {
-            throw new InvalidOperationException("Nenhuma transação ativa para commitar.");
-        }
-        try
-        {
-            await _transaction.CommitAsync();
-        }
-        catch
-        {
-            await RollbackAsync();
-            throw;
-        }
-        finally
-        {
-            if (_transaction != null)
-            {
-                await _transaction.DisposeAsync();
-                _transaction = null;
-            }
-        }
+        return _context.SaveChanges();
     }
 
     public void Rollback()
@@ -99,16 +110,6 @@ public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
         {
             _transaction.Rollback();
             _transaction.Dispose();
-            _transaction = null;
-        }
-    }
-
-    public async Task RollbackAsync()
-    {
-        if (_transaction != null)
-        {
-            await _transaction.RollbackAsync();
-            await _transaction.DisposeAsync();
             _transaction = null;
         }
     }

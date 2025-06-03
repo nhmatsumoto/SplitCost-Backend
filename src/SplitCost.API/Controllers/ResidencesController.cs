@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.CreateMember;
-using SplitCost.Application.UseCases.CreateResidence;
-using SplitCost.Application.UseCases.GetResidence;
+using SplitCost.Application.UseCases.MemberUseCases.AddMember;
+using SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
+using SplitCost.Application.UseCases.ResidenceUseCases.GetResidenceById;
 
 namespace SplitCost.API.Controllers
 {
@@ -12,12 +12,12 @@ namespace SplitCost.API.Controllers
     [Route("api/[controller]")]
     public class ResidencesController : ControllerBase
     {
-        private readonly IUseCase<AddResidenceMemberInput, Result<int>> _addResidenceMemberUseCase;
+        private readonly IUseCase<AddMemberInput, Result<int>> _addResidenceMemberUseCase;
         private readonly IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> _createResidenceUseCase;
         private readonly IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>> _getResidenceByIdUseCase;
         public ResidencesController(
             IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> createResidenceUseCase,
-            IUseCase<AddResidenceMemberInput, Result<int>> addResidenceMemberUseCase,
+            IUseCase<AddMemberInput, Result<int>> addResidenceMemberUseCase,
             IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>> getResidenceByIdUseCase)
         {
             _createResidenceUseCase     = createResidenceUseCase    ?? throw new ArgumentNullException(nameof(createResidenceUseCase));
