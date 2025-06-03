@@ -1,8 +1,8 @@
 ﻿using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using SpitCost.Infrastructure.Context;
+using SplitCost.Application.Common.Repositories;
 using SplitCost.Domain.Entities;
-using SplitCost.Domain.Interfaces;
 using SplitCost.Infrastructure.Entities;
 
 namespace SplitCost.Infrastructure.Repositories;

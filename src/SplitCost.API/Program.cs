@@ -1,8 +1,8 @@
 using Microsoft.IdentityModel.Tokens;
 using Playground.API.Middlewares;
 using Playground.Infrastructure.DependencyInjection;
+using SplitCost.Application.Common.Services;
 using SplitCost.Application.DependencyInjection;
-using SplitCost.Domain.Interfaces;
 using SplitCost.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);

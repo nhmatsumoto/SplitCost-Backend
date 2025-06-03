@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SpitCost.Infrastructure.Context;
-using SplitCost.Domain.Interfaces;
+using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Repositories;
 using SplitCost.Infrastructure.Mappers;
 using SplitCost.Infrastructure.Repositories;
 
@@ -46,7 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();   
         services.AddScoped<IMemberRepository, MemberRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUnitOfWork, UnitOfWork<SplitCostDbContext>>();
 
         // Registra as configurações de mapeamento
         var config = TypeAdapterConfig.GlobalSettings;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SplitCost.Application.Common;
-using SplitCost.Application.Interfaces;
+using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Responses;
 using SplitCost.Application.UseCases.CreateExpense;
 using SplitCost.Application.UseCases.GetExpense;
 using SplitCost.Domain.Enums;

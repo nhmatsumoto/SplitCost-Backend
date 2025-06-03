@@ -1,6 +1,6 @@
-﻿namespace SplitCost.Application.Common;
+﻿using FluentValidation.Results;
 
-using FluentValidation.Results;
+namespace SplitCost.Application.Common.Responses;
 
 public class Result<T>
 {
@@ -44,7 +44,7 @@ public class Result<T>
         return new Result<T>(
             false,
             errorMessage,
-            Common.ErrorType.Validation, 
+            Responses.ErrorType.Validation, 
             default,
             validationErrors
         );

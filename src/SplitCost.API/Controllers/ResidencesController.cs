@@ -1,8 +1,6 @@
-﻿using MapsterMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SplitCost.Application.Common;
-using SplitCost.Application.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Responses;
 using SplitCost.Application.UseCases.CreateMember;
 using SplitCost.Application.UseCases.CreateResidence;
 using SplitCost.Application.UseCases.GetResidence;
@@ -45,7 +43,7 @@ namespace SplitCost.API.Controllers
                 };
             }
 
-            return CreatedAtAction(nameof(GetResidence), new { id = ((CreateResidenceOutput)result.Data!).Id }, result);
+            return CreatedAtAction(nameof(GetResidence), new { id = result.Data!.Id }, result);
         }
 
 

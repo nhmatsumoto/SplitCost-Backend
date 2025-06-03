@@ -1,7 +1,6 @@
 ﻿using SplitCost.Domain.Entities;
 
-namespace SplitCost.Domain.Interfaces;
-
+namespace SplitCost.Application.Common.Repositories;
 public interface IMemberRepository
 {
     Task AddAsync(Member member, CancellationToken cancellationToken);

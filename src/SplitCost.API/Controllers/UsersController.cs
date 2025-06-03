@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SplitCost.Application.Common;
-using SplitCost.Application.Interfaces;
+using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Responses;
 using SplitCost.Application.UseCases.CreateApplicationUser;
 using SplitCost.Application.UseCases.GetApplicationUser;
 
@@ -12,7 +12,6 @@ public class UsersController : ControllerBase
 {
     private readonly IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> _createApplicationUserUseCase;
     private readonly IUseCase<Guid, Result<GetApplicationUserByIdOutput>> _getApplicationUserUseCase;
-    
     public UsersController(
         IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> createApplicationUserUseCase,
         IUseCase<Guid, Result<GetApplicationUserByIdOutput>> getApplicationUserUseCase)

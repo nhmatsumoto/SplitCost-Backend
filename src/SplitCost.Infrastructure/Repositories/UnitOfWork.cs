@@ -1,24 +1,134 @@
-﻿using SpitCost.Infrastructure.Context;
-using SplitCost.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using SplitCost.Application.Common.Interfaces;
+
 
 namespace SplitCost.Infrastructure.Repositories;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
 {
-    private readonly SplitCostDbContext _context;
+    private readonly TContext _context;
+    private IDbContextTransaction _transaction;
+    private bool _disposed = false;
 
-    public UnitOfWork(SplitCostDbContext context)
+    public UnitOfWork(TContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        => await _context.SaveChangesAsync(cancellationToken);
+    public DbContext Context => _context;
+
+    public void BeginTransaction()
+    {
+        if (_transaction != null)
+        {
+            throw new InvalidOperationException("Uma transação já está ativa.");
+        }
+        _transaction = _context.Database.BeginTransaction();
+    }
+
+    public async Task BeginTransactionAsync()
+    {
+        if (_transaction != null)
+        {
+            throw new InvalidOperationException("Uma transação já está ativa.");
+        }
+        _transaction = await _context.Database.BeginTransactionAsync();
+    }
+
+    public int SaveChanges()
+    {
+        return _context.SaveChanges();
+    }
 
     public async Task<int> SaveChangesAsync()
-        => await _context.SaveChangesAsync();
+    {
+        return await _context.SaveChangesAsync();
+    }
 
-    public void Dispose() 
-        => _context.Dispose();
+    public void Commit()
+    {
+        if (_transaction == null)
+        {
+            throw new InvalidOperationException("Nenhuma transação ativa para commitar.");
+        }
+        try
+        {
+            _transaction.Commit();
+        }
+        catch
+        {
+            Rollback();
+            throw;
+        }
+        finally
+        {
+            _transaction?.Dispose();
+            _transaction = null;
+        }
+    }
+
+    public async Task CommitAsync()
+    {
+        if (_transaction == null)
+        {
+            throw new InvalidOperationException("Nenhuma transação ativa para commitar.");
+        }
+        try
+        {
+            await _transaction.CommitAsync();
+        }
+        catch
+        {
+            await RollbackAsync();
+            throw;
+        }
+        finally
+        {
+            if (_transaction != null)
+            {
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+    }
+
+    public void Rollback()
+    {
+        if (_transaction != null)
+        {
+            _transaction.Rollback();
+            _transaction.Dispose();
+            _transaction = null;
+        }
+    }
+
+    public async Task RollbackAsync()
+    {
+        if (_transaction != null)
+        {
+            await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null;
+        }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _transaction?.Dispose();
+                _context.Dispose();
+            }
+            _disposed = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 }
-

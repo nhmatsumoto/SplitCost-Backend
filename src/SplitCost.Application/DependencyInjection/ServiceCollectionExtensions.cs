@@ -2,8 +2,8 @@
 using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
-using SplitCost.Application.Common;
-using SplitCost.Application.Interfaces;
+using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Responses;
 using SplitCost.Application.Mappers;
 using SplitCost.Application.UseCases.CreateApplicationUser;
 using SplitCost.Application.UseCases.CreateExpense;
@@ -55,6 +55,7 @@ public static class ServiceCollectionExtensions
 
         // Regira as configurações do Fluent Validation
         services.AddValidatorsFromAssemblyContaining<CreateExpenseInputValidator>();
+
 
         return services;
     }

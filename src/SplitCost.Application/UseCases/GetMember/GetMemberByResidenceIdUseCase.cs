@@ -1,6 +1,6 @@
-﻿using SplitCost.Application.Common;
-using SplitCost.Application.Interfaces;
-using SplitCost.Domain.Interfaces;
+﻿using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Repositories;
+using SplitCost.Application.Common.Responses;
 
 namespace SplitCost.Application.UseCases.GetMember;
 

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
+using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.UseCases.CreateApplicationUser;
-using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.Validators;
 

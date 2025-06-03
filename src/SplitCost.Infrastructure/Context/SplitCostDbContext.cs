@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SplitCost.Domain.Common;
-using SplitCost.Domain.Entities;
 using SplitCost.Infrastructure.Entities;
 
 namespace SpitCost.Infrastructure.Context;
@@ -85,14 +84,25 @@ public class SplitCostDbContext : DbContext
     }
 
 
+    /// <summary>
+    /// Salva as alterações no contexto e atualiza os campos de auditoria (timestamps)
+    /// </summary>
+    /// <returns></returns>
     public override int SaveChanges()
     {
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        {
+            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdateTimestamps();
+            }
+        }
+
         return base.SaveChanges();
     }
 
-
     /// <summary>
-    /// Atualiza campos de auditoria
+    /// Salva as alterações no contexto de forma assíncrona e atualiza os campos de auditoria (timestamps)
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
@@ -100,15 +110,12 @@ public class SplitCostDbContext : DbContext
     {
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Entity.UpdateTimestamps();
-            }
-            else if (entry.State == EntityState.Modified)
+            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
             {
                 entry.Entity.UpdateTimestamps();
             }
         }
+
         return base.SaveChangesAsync(cancellationToken);
     }
 

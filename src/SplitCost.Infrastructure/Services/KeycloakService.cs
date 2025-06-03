@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SplitCost.Application.Common.Services;
 using SplitCost.Domain.Exceptions;
-using SplitCost.Domain.Interfaces;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;

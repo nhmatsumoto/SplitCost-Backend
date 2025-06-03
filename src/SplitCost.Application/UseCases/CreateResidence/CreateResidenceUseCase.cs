@@ -2,9 +2,10 @@
 using FluentValidation;
 using MapsterMapper;
 using SplitCost.Application.Common;
-using SplitCost.Application.Interfaces;
+using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Repositories;
+using SplitCost.Application.Common.Responses;
 using SplitCost.Domain.Factories;
-using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases.CreateResidence;
 
@@ -14,6 +15,7 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Crea
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IValidator<CreateResidenceInput> _validator;
+    
     public CreateResidenceUseCase(
         IResidenceRepository residenceRepository,
         IUnitOfWork unitOfWork,
@@ -32,7 +34,7 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Crea
 
         if (!validationResult.IsValid)
         {
-            return Result<CreateResidenceOutput>.FromFluentValidation("Dados inválidos", validationResult.Errors);
+            return Result<CreateResidenceOutput>.FromFluentValidation(Messages.InvalidData, validationResult.Errors);
         }
 
         var address = AddressFactory.Create(

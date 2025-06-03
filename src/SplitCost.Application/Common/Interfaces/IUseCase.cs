@@ -1,4 +1,4 @@
-﻿namespace SplitCost.Application.Interfaces;
+﻿namespace SplitCost.Application.Common.Interfaces;
 
 public interface IUseCase<TInput, TOutput>
 {

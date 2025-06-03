@@ -1,4 +1,4 @@
-﻿namespace SplitCost.Application.Common;
+﻿namespace SplitCost.Application.Common.Responses;
 
 public enum ErrorType
 {

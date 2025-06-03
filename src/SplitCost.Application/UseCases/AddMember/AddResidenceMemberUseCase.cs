@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MapsterMapper;
-using SplitCost.Application.Common;
-using SplitCost.Application.Interfaces;
+using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Repositories;
+using SplitCost.Application.Common.Responses;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
-using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases.CreateMember;
 

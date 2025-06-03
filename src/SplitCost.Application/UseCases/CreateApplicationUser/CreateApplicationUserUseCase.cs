@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
-using SplitCost.Application.Common;
-using SplitCost.Application.Interfaces;
+using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Repositories;
+using SplitCost.Application.Common.Responses;
+using SplitCost.Application.Common.Services;
 using SplitCost.Domain.Factories;
-using SplitCost.Domain.Interfaces;
 
 namespace SplitCost.Application.UseCases.CreateApplicationUser
 {
