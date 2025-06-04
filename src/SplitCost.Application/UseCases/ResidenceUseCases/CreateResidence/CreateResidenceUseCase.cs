@@ -11,11 +11,11 @@ namespace SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
 
 public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>>
 {
-    private readonly IResidenceRepository _residenceRepository;
-    private readonly IMemberRepository _memberRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly IValidator<CreateResidenceInput> _validator;
+    private readonly IResidenceRepository               _residenceRepository;
+    private readonly IMemberRepository                  _memberRepository;
+    private readonly IUnitOfWork                        _unitOfWork;
+    private readonly IMapper                            _mapper;
+    private readonly IValidator<CreateResidenceInput>   _validator;
     
     public CreateResidenceUseCase(
         IResidenceRepository residenceRepository,
