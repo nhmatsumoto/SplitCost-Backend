@@ -6,8 +6,8 @@ public class Residence : BaseEntity
 {
     public Guid Id { get; private set; }
     public string Name { get; private set; }
-    public Guid? CreatedByUserId { get; private set; }
-    public User? CreatedBy { get; private set; }
+    public Guid CreatedByUserId { get; private set; }
+    public User CreatedBy { get; private set; }
 
 
     //Address

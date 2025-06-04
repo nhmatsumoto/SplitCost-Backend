@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SplitCost.Infrastructure.Entities;
+namespace SplitCost.Infrastructure.Persistence.Entities;
 
 [Table("Residences")]
 public class ResidenceEntity : BaseEntity
@@ -23,30 +23,30 @@ public class ResidenceEntity : BaseEntity
     //Address
     [Required]
     [MaxLength(200)]
-    public string Street { get; private set; } = null!;
+    public string Street { get; set; } = null!;
 
     [Required]
     [MaxLength(20)]
-    public string Number { get; private set; } = null!;
+    public string Number { get; set; } = null!;
 
     [MaxLength(50)]
-    public string Apartment { get; private set; } = string.Empty;
+    public string Apartment { get; set; } = string.Empty;
 
     [Required]
     [MaxLength(100)]
-    public string City { get; private set; } = null!;
+    public string City { get; set; } = null!;
 
     [Required]
     [MaxLength(100)]
-    public string Prefecture { get; private set; } = null!;
+    public string Prefecture { get; set; } = null!;
 
     [Required]
     [MaxLength(100)]
-    public string Country { get; private set; } = null!;
+    public string Country { get; set; } = null!;
 
     [Required]
     [MaxLength(20)]
-    public string PostalCode { get; private set; } = null!;
+    public string PostalCode { get; set; } = null!;
 
     public ICollection<MemberEntity> Members { get; set; } = new List<MemberEntity>();
 

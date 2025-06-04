@@ -40,7 +40,7 @@ public class CreateExpenseUseCase : IUseCase<CreateExpenseInput, Result<CreateEx
 
         // Adiciona ao repositório e salva as mudanças
         await _expenseRepository.AddAsync(expense, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.CommitAsync(cancellationToken);
 
         var result = _mapper.Map<CreateExpenseOutput>(expense);
 

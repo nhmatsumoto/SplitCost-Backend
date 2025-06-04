@@ -3,25 +3,24 @@ using Microsoft.EntityFrameworkCore;
 using SpitCost.Infrastructure.Context;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Domain.Entities;
-using SplitCost.Infrastructure.Entities;
+using SplitCost.Infrastructure.Persistence.Mapping;
 
 namespace SplitCost.Infrastructure.Repositories;
 
 public class MemberRepository : IMemberRepository
 {
     private readonly SplitCostDbContext _context;
-    private readonly IMapper _mapper;
 
     public MemberRepository(SplitCostDbContext context, IMapper mapper)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _context    = context   ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task AddAsync(Member member, CancellationToken cancellationToken)
+    public async Task<Member> AddAsync(Member member, CancellationToken cancellationToken)
     {
-        var memberEntity = _mapper.Map<MemberEntity>(member);
-        await _context.Members.AddAsync(memberEntity, cancellationToken);
+        var entity = member.ToEntity();
+        var result = await _context.Members.AddAsync(entity, cancellationToken);
+        return result.Entity.ToDomain();
     }
     public async Task<Dictionary<Guid, string>> GetUsersByResidenceId(Guid residenceId, CancellationToken cancellationToken)
     {

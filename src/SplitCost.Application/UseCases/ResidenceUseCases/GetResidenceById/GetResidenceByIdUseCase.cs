@@ -31,9 +31,11 @@ public class GetResidenceByIdUseCase : IUseCase<GetResidenceByIdInput, Result<Ge
             return Result<GetResidenceByIdOutput>.FromFluentValidation("Validation failed", validationResult.Errors);
         }
 
-        var residence = await _residenceRepository.GetByIdAsync(userIdInput.ResidenceId, cancellationToken);
+        //var residence = await _residenceRepository.GetByIdAsync(userIdInput.ResidenceId, cancellationToken);
 
-        var output = _mapper.Map<GetResidenceByIdOutput>(residence);
+        //var output = _mapper.Map<GetResidenceByIdOutput>(residence);
+
+        var output = new GetResidenceByIdOutput();
 
         return Result<GetResidenceByIdOutput>.Success(output);
     }

@@ -8,7 +8,7 @@ namespace SplitCost.Infrastructure.Repositories;
 public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
 {
     private readonly TContext _context;
-    private IDbContextTransaction _transaction;
+    private IDbContextTransaction? _transaction;
     private bool _disposed = false;
 
     public UnitOfWork(TContext context)
@@ -16,28 +16,27 @@ public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public DbContext Context => _context;
-
     public async Task BeginTransactionAsync(CancellationToken cancellationToken)
     {
         if (_transaction != null)
-        {
             throw new InvalidOperationException("Uma transação já está ativa.");
-        }
+
         _transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
     }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+    public void BeginTransaction()
     {
-        return await _context.SaveChangesAsync(cancellationToken);
+        if (_transaction != null)
+            throw new InvalidOperationException("Uma transação já está ativa.");
+
+        _transaction = _context.Database.BeginTransaction();
     }
 
     public async Task CommitAsync(CancellationToken cancellationToken)
     {
         if (_transaction == null)
-        {
             throw new InvalidOperationException("Nenhuma transação ativa para commitar.");
-        }
+
         try
         {
             await _context.SaveChangesAsync(cancellationToken);
@@ -50,41 +49,18 @@ public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
         }
         finally
         {
-            if (_transaction != null)
-            {
-                await _transaction.DisposeAsync();
-                _transaction = null;
-            }
+            await DisposeTransactionAsync();
         }
-    }
-
-    public async Task RollbackAsync(CancellationToken cancellationToken)
-    {
-        if (_transaction != null)
-        {
-            await _transaction.RollbackAsync(cancellationToken);
-            await _transaction.DisposeAsync();
-            _transaction = null;
-        }
-    }
-
-    public void BeginTransaction()
-    {
-        if (_transaction != null)
-        {
-            throw new InvalidOperationException("Uma transação já está ativa.");
-        }
-        _transaction = _context.Database.BeginTransaction();
     }
 
     public void Commit()
     {
         if (_transaction == null)
-        {
             throw new InvalidOperationException("Nenhuma transação ativa para commitar.");
-        }
+
         try
         {
+            _context.SaveChanges(); // Corrigido: garante persistência dos dados
             _transaction.Commit();
         }
         catch
@@ -94,14 +70,17 @@ public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
         }
         finally
         {
-            _transaction?.Dispose();
-            _transaction = null;
+            DisposeTransaction();
         }
     }
 
-    public int SaveChanges()
+    public async Task RollbackAsync(CancellationToken cancellationToken)
     {
-        return _context.SaveChanges();
+        if (_transaction != null)
+        {
+            await _transaction.RollbackAsync(cancellationToken);
+            await DisposeTransactionAsync();
+        }
     }
 
     public void Rollback()
@@ -109,9 +88,33 @@ public class UnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
         if (_transaction != null)
         {
             _transaction.Rollback();
-            _transaction.Dispose();
+            DisposeTransaction();
+        }
+    }
+
+    private async Task<int> SaveChangesInternalAsync(CancellationToken cancellationToken)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    private int SaveChangesInternal()
+    {
+        return _context.SaveChanges();
+    }
+
+    private async Task DisposeTransactionAsync()
+    {
+        if (_transaction != null)
+        {
+            await _transaction.DisposeAsync();
             _transaction = null;
         }
+    }
+
+    private void DisposeTransaction()
+    {
+        _transaction?.Dispose();
+        _transaction = null;
     }
 
     protected virtual void Dispose(bool disposing)

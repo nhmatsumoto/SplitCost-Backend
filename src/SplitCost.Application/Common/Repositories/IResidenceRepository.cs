@@ -4,7 +4,7 @@ namespace SplitCost.Application.Common.Repositories;
 
 public interface IResidenceRepository
 {
-    Task AddAsync(Residence residence, CancellationToken cancellationToken);
+    Task<Residence> AddAsync(Residence residence, CancellationToken cancellationToken);
     Task<Residence?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<Residence?> GetByUserIdAsync(Guid id, CancellationToken cancellationToken);
     Task<IEnumerable<Residence>> GetAllAsync(CancellationToken cancellationToken);

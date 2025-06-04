@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SplitCost.Domain.Common;
-using SplitCost.Infrastructure.Entities;
+using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SpitCost.Infrastructure.Context;
 

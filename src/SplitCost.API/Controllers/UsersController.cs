@@ -25,8 +25,8 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RegisterApplicationUser([FromBody] CreateApplicationUserInput createApplicationUserInput, CancellationToken cancellationToken)
     {
-
         var result = await _createApplicationUserUseCase.ExecuteAsync(createApplicationUserInput, cancellationToken);
+
         if (!result.IsSuccess)
         {
             return result.ErrorType switch

@@ -124,7 +124,7 @@ namespace SplitCost.API.Controllers
         {
             var result = await _getMemberByResidenceIdUseCase.ExecuteAsync(residenceId, cancellationToken);
 
-            if (result.IsError)
+            if (!result.IsSuccess)
             {
                 return result.ErrorType switch
                 {

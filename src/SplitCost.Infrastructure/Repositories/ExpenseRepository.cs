@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SpitCost.Infrastructure.Context;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Domain.Entities;
-using SplitCost.Infrastructure.Entities;
+using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SplitCost.Infrastructure.Repositories;
 

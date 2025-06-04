@@ -8,6 +8,7 @@ public static class UserFactory
     /// Cria uma instância de User com os parâmetros fornecidos.
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="username"></param>
     /// <param name="name"></param>
     /// <param name="email"></param>
     /// <param name="avatarUrl"></param>

@@ -8,6 +8,8 @@ public class ResidenceMapperConfig
 {
     public void Register(TypeAdapterConfig config)
     {
+
+
         config.NewConfig<Residence, GetResidenceByIdOutput>()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.CreatedByUserId, src => src.CreatedByUserId)

@@ -11,11 +11,18 @@ public static class MemberFactory
     /// <param name="residenceId"></param>
     /// <param name="joinedAt"></param>
     /// <returns></returns>
-    public static Member Create(
-        Guid userId, 
-        Guid residenceId, 
-        DateTime joinedAt)
-    {
-        return new Member(userId, residenceId, joinedAt);
-    }
+    /// 
+    public static Member Create() 
+        => new Member();
+
+    public static Member Create(DateTime joinedAt) 
+        => new Member()
+            .SetJoinedAt(joinedAt);
+
+    public static Member Create(Guid id, Guid userId, Guid residenceId, DateTime joinedAt)
+        => new Member()
+            .SetId(id)
+            .SetUserId(userId)
+            .SetResidenceId(residenceId)
+            .SetJoinedAt(joinedAt);
 }

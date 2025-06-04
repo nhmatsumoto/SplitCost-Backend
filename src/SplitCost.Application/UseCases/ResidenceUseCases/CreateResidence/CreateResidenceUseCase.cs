@@ -12,17 +12,20 @@ namespace SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
 public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>>
 {
     private readonly IResidenceRepository _residenceRepository;
+    private readonly IMemberRepository _memberRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IValidator<CreateResidenceInput> _validator;
     
     public CreateResidenceUseCase(
         IResidenceRepository residenceRepository,
+        IMemberRepository memberRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper,
         IValidator<CreateResidenceInput> validator)
     {
         _residenceRepository    = residenceRepository   ?? throw new ArgumentNullException(nameof(residenceRepository));
+        _memberRepository       = memberRepository      ?? throw new ArgumentNullException(nameof(memberRepository));
         _unitOfWork             = unitOfWork            ?? throw new ArgumentNullException(nameof(unitOfWork));
         _mapper                 = mapper                ?? throw new ArgumentNullException(nameof(mapper));
         _validator              = validator             ?? throw new ArgumentNullException(nameof(validator));
@@ -37,23 +40,43 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Crea
             return Result<CreateResidenceOutput>.FromFluentValidation(Messages.InvalidData, validationResult.Errors);
         }
 
-        var residence = ResidenceFactory.Create(
-            input.ResidenceName,
-            input.UserId,
-            input.Street,
-            input.Number,
-            input.Apartment,
-            input.City,
-            input.Prefecture,
-            input.Country,
-            input.PostalCode
-        );
+        var residence = ResidenceFactory
+            .Create()
+            .SetName(input.ResidenceName)
+            .SetCreatedByUser(input.UserId)
+            .SetStreet(input.Street)
+            .SetNumber(input.Number)
+            .SetApartment(input.Apartment)
+            .SetCity(input.City)
+            .SetPrefecture(input.Prefecture)
+            .SetCountry(input.Country)
+            .SetPostalCode(input.PostalCode);
 
-        await _residenceRepository.AddAsync(residence, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var resultResidence = await _residenceRepository.GetByUserIdAsync(input.UserId, cancellationToken);
+        try
+        {
+            var createdResidence = await _residenceRepository.AddAsync(residence, cancellationToken);
 
-        return Result<CreateResidenceOutput>.Success(_mapper.Map<CreateResidenceOutput>(resultResidence));
+            var member = MemberFactory
+                .Create()
+                .SetUserId(input.UserId)
+                .SetResidenceId(createdResidence.Id)
+                .SetJoinedAt(DateTime.UtcNow);
+            
+            var createdMember = await _memberRepository.AddAsync(member, cancellationToken);
+
+            await _unitOfWork.CommitAsync(cancellationToken);
+
+            createdResidence.AddMember(createdMember);
+
+            return Result<CreateResidenceOutput>.Success(_mapper.Map<CreateResidenceOutput>(createdResidence));
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync(cancellationToken);
+            //_logger.LogError(ex, "Erro ao persistir residência e membro");
+            return Result<CreateResidenceOutput>.Failure(Messages.ResidenceCreationFailed, ErrorType.InternalError);
+        }
     }
 }

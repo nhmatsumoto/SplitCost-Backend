@@ -41,17 +41,16 @@ public class AddMemberUseCase : IUseCase<AddMemberInput, Result<int>>
 
         residence.SetCreatedByUser(residenceMemberInput.UserId);
 
-        var member = MemberFactory.Create(residenceMemberInput.ResidenceId, residenceMemberInput.UserId, DateTime.UtcNow);
+        //residenceMemberInput.ResidenceId, residenceMemberInput.UserId, 
+        var member = MemberFactory.Create(DateTime.UtcNow);
 
         residence.AddMember(member);
 
         await _residenceRepository.AddAsync(residence, cancellationToken);
 
         //var residenceEntity = await _residenceRepository.GetByIdAsync(residenceMemberInput.ResidenceId);
+#warning refatorar
 
-
-        var rows = await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return Result<int>.Success(rows);
+        return Result<int>.Success(1);
     }
 }

@@ -8,7 +8,6 @@ public class CreateResidenceInputValidator : AbstractValidator<CreateResidenceIn
 
     private readonly IResidenceRepository _residenceRepository;
 
-
     // Verificar se usuário já tem uma rediência
     public CreateResidenceInputValidator(
         IResidenceRepository residenceRepository)

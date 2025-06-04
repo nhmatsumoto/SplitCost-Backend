@@ -5,7 +5,6 @@ namespace SplitCost.Application.Common.Responses;
 public class Result<T>
 {
     public bool IsSuccess { get; }
-    public bool IsError => !IsSuccess;
     public string? ErrorMessage { get; }
     public ErrorType? ErrorType { get; }
     public T? Data { get; }

@@ -17,12 +17,12 @@ namespace SplitCost.Application.UseCases.ResidenceUseCases.UpdateResidence
 #warning finalizar esta implementação
         public async Task<Result<UpdateResidenceOutput>> ExecuteAsync(UpdateResidenceInput updateResidenceInput, CancellationToken cancellationToken)
         {
-            var residence = await _residenceRepository.GetByIdAsync(updateResidenceInput.ResidenceId, cancellationToken);
-            if (residence == null)
-                throw new InvalidOperationException("Residência não encontrada.");
+            //var residence = await _residenceRepository.GetByIdAsync(updateResidenceInput.ResidenceId, cancellationToken);
+            //if (residence == null)
+            //    throw new InvalidOperationException("Residência não encontrada.");
 
-            residence.SetName(updateResidenceInput.Name);
-            _residenceRepository.Update(residence);
+            //residence.SetName(updateResidenceInput.Name);
+            //_residenceRepository.Update(residence);
 
             //return new ResidenceDto
             //{
@@ -32,10 +32,16 @@ namespace SplitCost.Application.UseCases.ResidenceUseCases.UpdateResidence
             //    UpdatedAt = residence.UpdatedAt
             //};
 
+            //var result = new UpdateResidenceOutput
+            //{
+            //    Id = residence.Id,
+            //    Name = residence.Name,
+            //};
+
             var result = new UpdateResidenceOutput
             {
-                Id = residence.Id,
-                Name = residence.Name,
+                Id = Guid.NewGuid(),
+                Name = "NÃO IMPLEMENTADO",
             };
 
             return Result<UpdateResidenceOutput>.Success(result);

@@ -1,6 +1,4 @@
 ﻿using Mapster;
-using SplitCost.Domain.Entities;
-using SplitCost.Infrastructure.Entities;
 
 namespace SplitCost.API.Mappers
 {

@@ -4,7 +4,7 @@ namespace SplitCost.Application.Common.Repositories;
 
 public interface IUserRepository
 {
-    Task AddAsync(User user, CancellationToken cancellationToken);
+    Task<User> AddAsync(User user, CancellationToken cancellationToken);
     Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
     void Update(User user);
     Task<bool> ExistsByUsernameAsync(string username, CancellationToken cancellationToken);

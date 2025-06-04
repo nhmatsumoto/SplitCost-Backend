@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace SplitCost.Infrastructure.Entities;
+namespace SplitCost.Infrastructure.Persistence.Entities;
 
 [Table("Members")]
 public class MemberEntity : BaseEntity

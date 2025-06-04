@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
@@ -68,7 +69,7 @@ namespace SplitCost.Application.UseCases.ApplicationUserUseCases.CreateApplicati
                 {
                     await _unitOfWork.RollbackAsync(cancellationToken);
                     //_logger.LogError(ex, "Erro ao persistir usuário após criação no Keycloak");
-                    return Result<CreateApplicationUserOutput>.Failure("Erro ao salvar o usuário. Tente novamente.", ErrorType.InternalError);
+                    return Result<CreateApplicationUserOutput>.Failure(Messages.UserCreationFailed, ErrorType.InternalError);
                 }
 
 

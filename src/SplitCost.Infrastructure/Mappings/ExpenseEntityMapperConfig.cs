@@ -1,7 +1,7 @@
 ﻿using Mapster;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
-using SplitCost.Infrastructure.Entities;
+using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SplitCost.Infrastructure.Mappers;
 public class ExpenseEntityMapperConfig : IRegister

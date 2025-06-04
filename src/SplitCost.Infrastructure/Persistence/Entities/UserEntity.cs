@@ -3,7 +3,7 @@ using SplitCost.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SplitCost.Infrastructure.Entities;
+namespace SplitCost.Infrastructure.Persistence.Entities;
 
 [Table("Users")]
 public class UserEntity : BaseEntity

@@ -1,7 +1,7 @@
 ﻿using Mapster;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
-using SplitCost.Infrastructure.Entities;
+using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SplitCost.Infrastructure.Mappers;
 
@@ -24,19 +24,19 @@ public class ResidenceEntityMapperConfig : IRegister
             .Map(dest => dest.UpdatedAt, src => src.UpdatedAt);
 
         // Entity -> Domain
-        config.NewConfig<ResidenceEntity, Residence>()
-            .MapWith(src => ResidenceFactory
-                .Create(
-                    src.Name, 
-                    src.CreatedByUserId,
-                    src.Street,
-                    src.Number,
-                    src.Apartment,
-                    src.City,
-                    src.Prefecture,
-                    src.Country,
-                    src.PostalCode
-                )
-            .SetId(src.Id));
+        config.NewConfig<ResidenceEntity, Residence>().MapWith(src => ResidenceFactory
+            .Create()
+            .SetId(src.Id)
+            .SetName(src.Name)
+            .SetCreatedByUser(src.CreatedByUserId)
+            .SetStreet(src.Street)
+            .SetNumber(src.Number)
+            .SetApartment(src.Apartment)
+            .SetCity(src.City)
+            .SetPrefecture(src.Prefecture)
+            .SetCountry(src.Country)
+            .SetPostalCode(src.PostalCode)
+        );
+
     }
 }

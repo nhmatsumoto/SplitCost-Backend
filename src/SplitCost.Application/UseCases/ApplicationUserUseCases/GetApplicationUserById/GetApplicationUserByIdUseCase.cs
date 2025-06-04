@@ -1,4 +1,5 @@
 ﻿using MapsterMapper;
+using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
@@ -22,7 +23,7 @@ public class GetApplicationUserByIdUseCase : IUseCase<Guid, Result<GetApplicatio
 
         if (result == null)
         {
-            return Result<GetApplicationUserByIdOutput>.Failure($"Expense not found.", ErrorType.NotFound);
+            return Result<GetApplicationUserByIdOutput>.Failure(Messages.UserNotFound, ErrorType.NotFound);
         }
 
         var user = _mapper.Map<GetApplicationUserByIdOutput>(result);

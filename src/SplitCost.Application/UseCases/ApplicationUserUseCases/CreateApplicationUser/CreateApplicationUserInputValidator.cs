@@ -11,7 +11,6 @@ public class CreateApplicationUserInputValidator : AbstractValidator<CreateAppli
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
 
-        // Todo : Add validation for unique username
         RuleFor(x => x.Username)
             .NotEmpty().WithMessage("Username is required.")
             .Length(3, 50).WithMessage("Username must be between 3 and 50 characters long.")

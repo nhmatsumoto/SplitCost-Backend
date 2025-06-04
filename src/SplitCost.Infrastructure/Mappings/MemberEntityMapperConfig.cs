@@ -1,6 +1,6 @@
 ﻿using Mapster;
 using SplitCost.Domain.Entities;
-using SplitCost.Infrastructure.Entities;
+using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SplitCost.Infrastructure.Mappers;
 public class MemberEntityMapperConfig : IRegister
@@ -15,10 +15,8 @@ public class MemberEntityMapperConfig : IRegister
             .Map(dest => dest.JoinedAt, src => src.JoinedAt);
 
         // Entity -> Domain
-        config.NewConfig<Entities.MemberEntity, Domain.Entities.Member>()
-            .MapWith(src => Domain.Factories.MemberFactory.Create(
-                src.Id,
-                src.ResidenceId,
-                src.JoinedAt));
+        //src.Id, src.ResidenceId,
+        config.NewConfig<MemberEntity, Member>()
+            .MapWith(src => Domain.Factories.MemberFactory.Create(src.JoinedAt));
     }
 }

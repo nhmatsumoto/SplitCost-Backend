@@ -31,9 +31,11 @@ public class GetResidenceByUserIdUseCase : IUseCase<GetResidenceByUserIdInput, R
             return Result<GetResidenceByUserIdOutput>.FromFluentValidation("Dados inválidos", validationResult.Errors);
         }
 
-        var residence = await _residenceRepository.GetByUserIdAsync(getResidenceByUserIdInput.UserId, cancellationToken);
-        
-        var output = _mapper.Map<GetResidenceByUserIdOutput>(residence);
+        //var residence = await _residenceRepository.GetByUserIdAsync(getResidenceByUserIdInput.UserId, cancellationToken);
+
+        //var output = _mapper.Map<GetResidenceByUserIdOutput>(residence);
+
+        var output = new GetResidenceByUserIdOutput();
 
         return Result<GetResidenceByUserIdOutput>.Success(output);
     }

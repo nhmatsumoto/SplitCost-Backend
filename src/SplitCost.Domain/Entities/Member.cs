@@ -13,17 +13,25 @@ public class Member : BaseEntity
 
     internal Member() { }
 
-    internal Member(Guid userId, Guid residenceId, DateTime joinedAt)
+    //Guid userId, Guid residenceId, 
+    internal Member(DateTime joinedAt)
     {
-        SetUserId(userId);
-        SetResidenceId(residenceId);
+        //SetUserId(userId);
+        //SetResidenceId(residenceId);
         SetJoinedAt(joinedAt);
     }
 
+    public Member SetId(Guid id) 
+    {
+        if (id == Guid.Empty)
+            throw new ArgumentException("Id inválido.");
+        Id = id;
+        return this;
+    }
     public Member SetUserId(Guid userId)
     {
         if (userId == Guid.Empty)
-            throw new ArgumentException("Usuário inválido.");
+            throw new ArgumentException("UserId inválido.");
         UserId = userId;
         return this;
     }
