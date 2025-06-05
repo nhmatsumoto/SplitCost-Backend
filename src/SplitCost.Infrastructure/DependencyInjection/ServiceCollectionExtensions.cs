@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Serilog;
 using SpitCost.Infrastructure.Context;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Services;
+using SplitCost.Application.Interfaces;
+using SplitCost.Infrastructure.Logging;
 using SplitCost.Infrastructure.Mappers;
 using SplitCost.Infrastructure.Repositories;
 using SplitCost.Infrastructure.Services;
@@ -80,6 +83,12 @@ public static class ServiceCollectionExtensions
         //    .Handle<HttpRequestException>()
         //    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)))
         //);
+
+        // Logging configuration
+        services.AddScoped<ILoggerManager, LoggerManager>();
+
+
+
 
 
         return services;

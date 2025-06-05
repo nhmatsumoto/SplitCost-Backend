@@ -2,6 +2,7 @@
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
 using SplitCost.Application.UseCases.MemberUseCases.AddMember;
+using SplitCost.Application.UseCases.MemberUseCases.GetMember;
 using SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
 using SplitCost.Application.UseCases.ResidenceUseCases.GetResidenceById;
 
@@ -10,22 +11,24 @@ namespace SplitCost.API.Controllers
     //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class ResidencesController : ControllerBase
+    public class ResidenceController : ControllerBase
     {
-        private readonly IUseCase<AddMemberInput, Result<int>> _addResidenceMemberUseCase;
         private readonly IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> _createResidenceUseCase;
         private readonly IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>> _getResidenceByIdUseCase;
-        public ResidencesController(
+
+        private readonly IUseCase<AddMemberInput, Result<AddMemberOutput>> _addMemberUseCase;
+        private readonly IUseCase<GetMemberInput, Result<GetMemberOutput>> _getMemberUseCase;
+        public ResidenceController(
             IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> createResidenceUseCase,
-            IUseCase<AddMemberInput, Result<int>> addResidenceMemberUseCase,
+            IUseCase<AddMemberInput, Result<AddMemberOutput>> addMemberUseCase,
             IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>> getResidenceByIdUseCase)
         {
             _createResidenceUseCase     = createResidenceUseCase    ?? throw new ArgumentNullException(nameof(createResidenceUseCase));
             _getResidenceByIdUseCase    = getResidenceByIdUseCase   ?? throw new ArgumentNullException(nameof(getResidenceByIdUseCase));
-            _addResidenceMemberUseCase  = addResidenceMemberUseCase ?? throw new ArgumentException(nameof(addResidenceMemberUseCase));
+            _addMemberUseCase           = addMemberUseCase          ?? throw new ArgumentNullException(nameof(addMemberUseCase));
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -46,12 +49,11 @@ namespace SplitCost.API.Controllers
             return CreatedAtAction(nameof(GetResidence), new { id = result.Data!.Id }, result);
         }
 
-
-        [HttpGet]
+        [HttpGet("search")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetResidence([FromBody]GetResidenceByIdInput getResidenceByIdInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetResidence([FromBody] GetResidenceByIdInput getResidenceByIdInput, CancellationToken cancellationToken)
         {
 
             var result = await _getResidenceByIdUseCase.ExecuteAsync(getResidenceByIdInput, cancellationToken);
@@ -68,6 +70,50 @@ namespace SplitCost.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("member/create")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> AddMember([FromBody] AddMemberInput addMemberInput, CancellationToken cancellationToken)
+        {
+            var result = await _addMemberUseCase.ExecuteAsync(addMemberInput, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return result.ErrorType switch
+                {
+                    ErrorType.NotFound => NotFound(result),
+                    ErrorType.Validation => BadRequest(result),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, result)
+                };
+            }
+
+            return CreatedAtAction(nameof(GetMember), /*new { id = result.Data!.Id },*/ result);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetMember([FromBody] GetMemberInput getMemberInput, CancellationToken cancellationToken)
+        {
+
+            var result = await _getMemberUseCase.ExecuteAsync(getMemberInput, cancellationToken);
+
+            if (!result.IsSuccess)
+            {
+                return result.ErrorType switch
+                {
+                    ErrorType.NotFound => NotFound(result),
+                    ErrorType.Validation => BadRequest(result),
+                    _ => StatusCode(StatusCodes.Status500InternalServerError, result)
+                };
+            }
+
+            return Ok(result);
+        }
+
 
         //private Guid ParseGuid(string? value)
         //{
@@ -101,8 +147,6 @@ namespace SplitCost.API.Controllers
         //}
 
 
-
-
         //[HttpGet("user/{id:guid}")]
         //[ProducesResponseType(StatusCodes.Status200OK)]
         //[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -122,19 +166,5 @@ namespace SplitCost.API.Controllers
         //    }
         //}
 
-        //[HttpGet]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //public async Task<IActionResult> GetAllResidences()
-        //{
-        //    try
-        //    {
-        //        var residences = await _getResidenceUseCase.GetAllAsync();
-        //        return Ok(residences);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new { Error = ex.Message });
-        //    }
-        //}
     }
 }

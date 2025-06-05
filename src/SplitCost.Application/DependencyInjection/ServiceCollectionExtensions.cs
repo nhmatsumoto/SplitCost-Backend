@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
 
         // Member
         services.AddScoped<IUseCase<Guid, Result<Dictionary<Guid, string>>>, GetMemberByResidenceIdUseCase>();
-        services.AddScoped<IUseCase<AddMemberInput, Result<int>>, AddMemberUseCase>();
+        services.AddScoped<IUseCase<AddMemberInput, Result<AddMemberOutput>>, AddMemberUseCase>();
 
         // Expenses
         services.AddScoped<IUseCase<CreateExpenseInput, Result<CreateExpenseOutput>>, CreateExpenseUseCase>();

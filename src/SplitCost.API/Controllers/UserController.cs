@@ -8,11 +8,11 @@ namespace SplitCost.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
     private readonly IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> _createApplicationUserUseCase;
     private readonly IUseCase<Guid, Result<GetApplicationUserByIdOutput>> _getApplicationUserUseCase;
-    public UsersController(
+    public UserController(
         IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> createApplicationUserUseCase,
         IUseCase<Guid, Result<GetApplicationUserByIdOutput>> getApplicationUserUseCase)
     {

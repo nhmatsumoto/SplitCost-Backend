@@ -1,11 +1,20 @@
 using Microsoft.IdentityModel.Tokens;
 using Playground.API.Middlewares;
 using Playground.Infrastructure.DependencyInjection;
+using Serilog;
 using SplitCost.Application.Common.Services;
 using SplitCost.Application.DependencyInjection;
 using SplitCost.Infrastructure.Services;
 
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Configuration
     .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../SplitCost.Infrastructure"))

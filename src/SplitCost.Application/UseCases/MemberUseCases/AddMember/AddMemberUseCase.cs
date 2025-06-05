@@ -1,56 +1,64 @@
 ﻿using FluentValidation;
 using MapsterMapper;
+using Microsoft.Extensions.Logging;
+using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
 
 namespace SplitCost.Application.UseCases.MemberUseCases.AddMember;
 
-public class AddMemberUseCase : IUseCase<AddMemberInput, Result<int>>
+public class AddMemberUseCase : IUseCase<AddMemberInput, Result<AddMemberOutput>>
 {
-    private readonly IResidenceRepository _residenceRepository;
+    private readonly IMemberRepository _memberRepository;
     private readonly IValidator<AddMemberInput> _validator;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ILogger<AddMemberUseCase> _logger;
 
     public AddMemberUseCase(
-        IUserRepository userRepository, 
-        IResidenceRepository residenceRepository, 
+        IUserRepository userRepository,
+        IMemberRepository memberRepository, 
         IValidator<AddMemberInput> validator,
         IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<AddMemberUseCase> logger)
     {
-        _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
-        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _memberRepository   = memberRepository  ?? throw new ArgumentNullException(nameof(memberRepository));
+        _validator          = validator         ?? throw new ArgumentNullException(nameof(validator));
+        _unitOfWork         = unitOfWork        ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _mapper             = mapper            ?? throw new ArgumentNullException(nameof(mapper));
+        _logger             = logger            ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Result<int>> ExecuteAsync(AddMemberInput residenceMemberInput, CancellationToken cancellationToken)
+    public async Task<Result<AddMemberOutput>> ExecuteAsync(AddMemberInput memberInput, CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(residenceMemberInput);
+        var validationResult = await _validator.ValidateAsync(memberInput);
 
         if(!validationResult.IsValid)
         {
-            return Result<int>.FromFluentValidation("Dados inválidos", validationResult.Errors);
+            return Result<AddMemberOutput>.FromFluentValidation(Messages.InvalidData, validationResult.Errors);
         }
 
-        var residence = _mapper.Map<Residence>(residenceMemberInput);
+        var member = MemberFactory.Create()
+            .SetUserId(memberInput.UserId)
+            .SetResidenceId(memberInput.ResidenceId)
+            .SetJoinedAt(DateTime.UtcNow);
 
-        residence.SetCreatedByUser(residenceMemberInput.UserId);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        //residenceMemberInput.ResidenceId, residenceMemberInput.UserId, 
-        var member = MemberFactory.Create(DateTime.UtcNow);
-
-        residence.AddMember(member);
-
-        await _residenceRepository.AddAsync(residence, cancellationToken);
-
-        //var residenceEntity = await _residenceRepository.GetByIdAsync(residenceMemberInput.ResidenceId);
-#warning refatorar
-
-        return Result<int>.Success(1);
+        try
+        {
+            var createdMember = await _memberRepository.AddAsync(member, cancellationToken);
+            await _unitOfWork.CommitAsync(cancellationToken);
+            return Result<AddMemberOutput>.Success(_mapper.Map<AddMemberOutput>(createdMember));
+        }
+        catch (Exception ex)
+        {
+            await _unitOfWork.RollbackAsync(cancellationToken);
+            _logger.LogError(ex, "Erro ao adicionar membro à residência");
+            return Result<AddMemberOutput>.Failure(Messages.ResidenceCreationFailed, ErrorType.InternalError);
+        }
     }
 }
