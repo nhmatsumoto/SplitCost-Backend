@@ -5,10 +5,8 @@ namespace SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
 
 public class CreateResidenceInputValidator : AbstractValidator<CreateResidenceInput>
 {
-
     private readonly IResidenceRepository _residenceRepository;
 
-    // Verificar se usuário já tem uma rediência
     public CreateResidenceInputValidator(
         IResidenceRepository residenceRepository)
     {

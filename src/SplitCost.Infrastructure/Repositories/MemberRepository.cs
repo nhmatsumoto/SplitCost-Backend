@@ -29,7 +29,11 @@ public class MemberRepository : IMemberRepository
             .Select(rm => new { rm.UserId, rm.User.Name })
             .ToDictionaryAsync(x => x.UserId, x => x.Name, cancellationToken);
     }
+
     public async Task<bool> ExistsAsync(Guid userId, Guid residenceId, CancellationToken cancellationToken)
         => await _context.Members
             .AnyAsync(m => m.UserId == userId && m.ResidenceId == residenceId, cancellationToken);
+
+    public async Task<bool> ExistsByResidenceId(Guid residenceId, CancellationToken cancellationToken)
+        => await _context.Members.AnyAsync(x => x.ResidenceId == residenceId, cancellationToken);
 }

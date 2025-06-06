@@ -15,6 +15,6 @@ public class GetResidenceByIdOutput
     public string Prefecture { get; set; }
     public string Country { get; set; }
     public string PostalCode { get; set; }
-    public List<GetMemberOutput> Members { get; set; }
+    public List<GetMemberByresidenceIdOutput> Members { get; set; }
     public List<GetExpenseOutput> Expenses { get; set; }
 }

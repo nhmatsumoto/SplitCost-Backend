@@ -17,7 +17,7 @@ namespace SplitCost.API.Controllers
         private readonly IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>> _getResidenceByIdUseCase;
 
         private readonly IUseCase<AddMemberInput, Result<AddMemberOutput>> _addMemberUseCase;
-        private readonly IUseCase<GetMemberInput, Result<GetMemberOutput>> _getMemberUseCase;
+        private readonly IUseCase<GetMemberByResidenceIdInput, Result<GetMemberByresidenceIdOutput>> _getMemberUseCase;
         public ResidenceController(
             IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> createResidenceUseCase,
             IUseCase<AddMemberInput, Result<AddMemberOutput>> addMemberUseCase,
@@ -96,7 +96,7 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetMember([FromBody] GetMemberInput getMemberInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMember([FromBody] GetMemberByResidenceIdInput getMemberInput, CancellationToken cancellationToken)
         {
 
             var result = await _getMemberUseCase.ExecuteAsync(getMemberInput, cancellationToken);

@@ -15,7 +15,7 @@ public class CreateResidenceOutput
     public string Country { get; private set; }
     public string PostalCode { get; private set; }
 
-    public List<GetMemberOutput> Members { get; set; } = new();
+    public List<GetMemberByresidenceIdOutput> Members { get; set; } = new();
     public List<GetExpenseOutput> Expenses { get; set; } = new();
 
     // Auditoria
