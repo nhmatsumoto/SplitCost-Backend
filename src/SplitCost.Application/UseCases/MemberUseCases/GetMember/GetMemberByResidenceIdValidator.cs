@@ -23,6 +23,4 @@ public class GetMemberByResidenceIdValidator : AbstractValidator<GetMemberByResi
         return await _memberRepository.ExistsByResidenceId(residenceId, cancellationToken);
     }
 
-    
-
 }
