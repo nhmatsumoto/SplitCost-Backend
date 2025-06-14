@@ -31,8 +31,7 @@ namespace SplitCost.Domain.Entities
             SetAvatarUrl(avatarUrl);
         }
 
-        // Apenas para frameworks de serialização/deserialização
-        protected User() { }
+        public User() { }
 
         public User SetId(Guid id)
         {

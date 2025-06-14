@@ -11,7 +11,6 @@ public static class MemberFactory
     /// <param name="residenceId"></param>
     /// <param name="joinedAt"></param>
     /// <returns></returns>
-    /// 
     public static Member Create() 
         => new Member();
 

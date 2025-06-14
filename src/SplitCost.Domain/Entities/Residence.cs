@@ -141,5 +141,30 @@ public class Residence : BaseEntity
         PostalCode = postalCode.Trim();
         return this;
     }
+
+    public Residence SetMembers(IEnumerable<Member> members)
+    {
+        if (members is null) throw new ArgumentNullException(nameof(members));
+        _members.Clear();
+        _members.AddRange(members);
+        return this;
+    }
+
+    public Residence SetExpenses(IEnumerable<Expense> expenses)
+    {
+        if (expenses is null) throw new ArgumentNullException(nameof(expenses));
+        _expenses.Clear();
+        _expenses.AddRange(expenses);
+        return this;
+    }
+
+    public Residence SetCreatedBy(User user)
+    {
+        if (user == null) throw new ArgumentNullException(nameof(user));
+        CreatedBy = user;
+        return this;
+    }
+
+
 }
 

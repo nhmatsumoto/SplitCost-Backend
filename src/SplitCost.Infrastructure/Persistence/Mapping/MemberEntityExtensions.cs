@@ -16,12 +16,12 @@ public static class MemberEntityExtensions
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        return MemberFactory.Create(
-            id: entity.Id,
-            userId: entity.UserId,
-            residenceId: entity.ResidenceId,
-            joinedAt: entity.JoinedAt
-        );
+        return MemberFactory
+            .Create()
+            .SetId(entity.Id)
+            .SetUserId(entity.UserId)
+            .SetResidenceId(entity.ResidenceId)
+            .SetJoinedAt(entity.JoinedAt);
     }
 
     /// <summary>

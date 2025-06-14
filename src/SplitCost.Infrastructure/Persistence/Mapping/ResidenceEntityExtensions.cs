@@ -31,7 +31,9 @@ public static class ResidenceEntityExtensions
             .SetCity(entity.City)
             .SetPrefecture(entity.Prefecture)
             .SetCountry(entity.Country)
-            .SetPostalCode(entity.PostalCode);
+            .SetPostalCode(entity.PostalCode)
+            .SetMembers(entity.Members.Select(m => m.ToDomain()))
+            .SetExpenses(entity.Expenses.Select(e => e.ToDomain()));
 
         return residence;
     }

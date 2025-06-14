@@ -10,13 +10,13 @@ public static class UserEntityExtenstions
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-        return UserFactory.Create(
-            id: entity.Id,
-            username: entity.Username,
-            name: entity.Name,
-            email: entity.Email,
-            avatarUrl: entity.AvatarUrl ?? string.Empty
-        );
+        return UserFactory
+            .Create()
+            .SetId(entity.Id)
+            .SetUsername(entity.Username)
+            .SetName(entity.Name)
+            .SetEmail(entity.Email)
+            .SetAvatarUrl(entity.AvatarUrl ?? string.Empty);
     }
 
     public static UserEntity ToEntity(this User user)
