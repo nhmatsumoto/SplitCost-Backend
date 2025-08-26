@@ -29,6 +29,8 @@ public class UserEntity : BaseEntity
 
     public ICollection<ExpenseEntity> Expenses { get; set; } = new List<ExpenseEntity>();
 
+    public ICollection<IncomeEntity> Incomes { get; set; } = new List<IncomeEntity>();
+
     public ICollection<ExpenseEntity> ResidenceExpensesPaid { get; set; } = new List<ExpenseEntity>();
 
 

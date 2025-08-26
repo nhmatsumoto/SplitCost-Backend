@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SpitCost.Infrastructure.Context;
 using SplitCost.Application.Common.Repositories;
+using SplitCost.Application.Dtos;
 using SplitCost.Domain.Entities;
 using SplitCost.Infrastructure.Persistence.Mapping;
 
@@ -22,16 +23,43 @@ public class ResidenceRepository : IResidenceRepository
         return result.Entity.ToDomain();
     }
 
-    public async Task<Residence?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ResidenceDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var entity = await _context.Residences
-            .Include(r => r.Members)
-                .ThenInclude(rm => rm.User)
-            .Include(r => r.Expenses)
+        return await _context.Residences
+            .Where(r => r.Id == id)
+            .Select(r => new ResidenceDto
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Street = r.Street,
+                Number = r.Number,
+                Apartment = r.Apartment,
+                City = r.City,
+                Prefecture = r.Prefecture,
+                Country = r.Country,
+                PostalCode = r.PostalCode,
+                CreatedByUserId = r.CreatedByUserId,
+                Members = r.Members.Select(m => new MemberDto
+                {
+                    Id = m.Id,
+                    UserId = m.UserId,
+                    JoinedAt = m.JoinedAt,
+                    MemberName = m.User.Name
+                }).ToList(),
+                Expenses = r.Expenses.Select(e => new ExpenseDto
+                {
+                    Id = e.Id,
+                    Amount = e.Amount,
+                    Category = e.Category,
+                    Type = e.Type,
+                    Date = e.Date,
+                    Description = e.Description,
+                    RegisteredByUserId = e.RegisteredByUserId,
+                    PaidByUserId = e.PaidByUserId
+                }).ToList()
+            })
             .AsNoTracking()
-            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-        return entity?.ToDomain();
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<Residence?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)

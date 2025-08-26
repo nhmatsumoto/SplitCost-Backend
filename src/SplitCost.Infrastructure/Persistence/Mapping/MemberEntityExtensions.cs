@@ -30,15 +30,15 @@ public static class MemberEntityExtensions
     /// <param name="member"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static MemberEntity ToEntity(this Domain.Entities.Member member)
+    public static MemberEntity ToEntity(this Member domain)
     {
-        if (member == null) throw new ArgumentNullException(nameof(member));
+        if (domain == null) throw new ArgumentNullException(nameof(domain));
 
         return new MemberEntity
         {
-            Id = member.Id,
-            UserId = member.UserId,
-            ResidenceId = member.ResidenceId
+            Id = domain.Id,
+            UserId = domain.UserId,
+            ResidenceId = domain.ResidenceId
         };
     }
 

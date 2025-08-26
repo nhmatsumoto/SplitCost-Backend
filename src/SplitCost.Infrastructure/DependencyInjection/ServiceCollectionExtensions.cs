@@ -51,7 +51,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IResidenceRepository, ResidenceRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IExpenseRepository, ExpenseRepository>();   
+        services.AddScoped<IExpenseRepository, ExpenseRepository>();
+        services.AddScoped<IIncomeRepository, IncomeRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork<SplitCostDbContext>>();
 

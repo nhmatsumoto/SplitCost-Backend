@@ -38,24 +38,22 @@ public static class ResidenceEntityExtensions
         return residence;
     }
 
-
-    public static ResidenceEntity ToEntity(this Residence residence)
+    public static ResidenceEntity ToEntity(this Residence domain)
     {
-        if (residence == null) throw new ArgumentNullException(nameof(residence));
+        if (domain == null) throw new ArgumentNullException(nameof(domain));
 
-#warning Criar Factory para ResidenceEntity?
         var entity = new ResidenceEntity
         {
-            Id = residence.Id,
-            Name = residence.Name,
-            CreatedByUserId = residence.CreatedByUserId,
-            Street = residence.Street,
-            Number = residence.Number,
-            Apartment = residence.Apartment ?? string.Empty,
-            City = residence.City,
-            Prefecture = residence.Prefecture,
-            Country = residence.Country,
-            PostalCode = residence.PostalCode
+            Id = domain.Id,
+            Name = domain.Name,
+            CreatedByUserId = domain.CreatedByUserId,
+            Street = domain.Street,
+            Number = domain.Number,
+            Apartment = domain.Apartment ?? string.Empty,
+            City = domain.City,
+            Prefecture = domain.Prefecture,
+            Country = domain.Country,
+            PostalCode = domain.PostalCode
         };
 
         return entity;

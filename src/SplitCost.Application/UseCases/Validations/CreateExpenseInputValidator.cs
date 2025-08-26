@@ -1,7 +1,8 @@
 ﻿using FluentValidation;
 using SplitCost.Application.Common.Repositories;
+using SplitCost.Application.UseCases.ExpenseUseCases.CreateExpense;
 
-namespace SplitCost.Application.UseCases.ExpenseUseCases.CreateExpense;
+namespace SplitCost.Application.UseCases.Validations;
 
 public class CreateExpenseInputValidator : AbstractValidator<CreateExpenseInput>
 {
@@ -12,8 +13,8 @@ public class CreateExpenseInputValidator : AbstractValidator<CreateExpenseInput>
         IUserRepository userRepository,
         IResidenceRepository residenceRepository)
     {
-        _userRepository = userRepository;
-        _residenceRepository = residenceRepository;
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
 
         RuleFor(x => x.Type)
             .IsInEnum()

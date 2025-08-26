@@ -4,16 +4,19 @@ using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
+using SplitCost.Application.Dtos;
 using SplitCost.Application.Mappers;
 using SplitCost.Application.UseCases.ApplicationUserUseCases.CreateApplicationUser;
 using SplitCost.Application.UseCases.ApplicationUserUseCases.GetApplicationUserById;
 using SplitCost.Application.UseCases.ExpenseUseCases.CreateExpense;
 using SplitCost.Application.UseCases.GetExpense;
+using SplitCost.Application.UseCases.IncomeUseCases.CreateIncome;
 using SplitCost.Application.UseCases.MemberUseCases.AddMember;
 using SplitCost.Application.UseCases.MemberUseCases.GetMember;
 using SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
 using SplitCost.Application.UseCases.ResidenceUseCases.GetResidenceById;
 using SplitCost.Application.UseCases.ResidenceUseCases.UpdateResidence;
+using SplitCost.Application.UseCases.Validations;
 
 namespace SplitCost.Application.DependencyInjection;
 
@@ -28,7 +31,7 @@ public static class ServiceCollectionExtensions
     {
         // Residences
         services.AddScoped<IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>>, CreateResidenceUseCase>();
-        services.AddScoped<IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>>, GetResidenceByIdUseCase>();
+        services.AddScoped<IUseCase<GetResidenceByIdInput, Result<ResidenceDto>>, GetResidenceByIdUseCase>();
         services.AddScoped<IUseCase<UpdateResidenceInput, Result<UpdateResidenceOutput>>, UpdateResidenceUseCase>();
 
         // Member
@@ -43,6 +46,13 @@ public static class ServiceCollectionExtensions
         // Users
         services.AddScoped<IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>>, CreateApplicationUserUseCase>();
         services.AddScoped<IUseCase<Guid, Result<GetApplicationUserByIdOutput>>, GetApplicationUserByIdUseCase>();
+
+        // Incomes
+        services.AddScoped<IUseCase<CreateIncomeInput, Result<CreateIncomeOutput>>, CreateIncomeUseCase>();
+        //services.AddScoped<IUseCase<Guid, Result<GetExpenseByIdOutput>>, GetExpenseByIdUseCase>();
+        //services.AddScoped<IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>>, GetExpensesByResidenceIdUseCase>();
+
+
 
         // Registra as configurações de mapeamento
         var config = TypeAdapterConfig.GlobalSettings;

@@ -25,17 +25,17 @@ public class ExpenseEntity : BaseEntity
 
     [ForeignKey("Residence")]
     [Column("ResidenceId")]
-    public Guid ResidenceId { get; set; }
-    public ResidenceEntity Residence { get; set; } = null!;
+    public Guid ResidenceId { get; private set; }
+    public ResidenceEntity Residence { get; private set; } = null!;
 
     [ForeignKey("RegisteredBy")]
     [Column("RegisteredByUserId")]
-    public Guid RegisteredByUserId { get; set; }
-    public UserEntity RegisteredBy { get; set; } = null!;
+    public Guid RegisteredByUserId { get; private set; }
+    public UserEntity RegisteredBy { get; private set; } = null!;
 
     [ForeignKey("PaidBy")]
-    public Guid PaidByUserId { get; set; }
-    public UserEntity PaidBy { get; set; } = null!;
+    public Guid PaidByUserId { get; private set; }
+    public UserEntity PaidBy { get; private set; } = null!;
 
     public ExpenseEntity(){ }
 }

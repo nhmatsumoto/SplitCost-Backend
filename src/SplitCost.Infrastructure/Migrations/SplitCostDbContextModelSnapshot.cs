@@ -22,7 +22,7 @@ namespace SplitCost.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.ExpenseEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ExpenseEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +76,41 @@ namespace SplitCost.Infrastructure.Migrations
                     b.ToTable("Expenses");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.MemberEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.IncomeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("RegisteredByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ResidenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegisteredByUserId");
+
+                    b.HasIndex("ResidenceId");
+
+                    b.ToTable("Incomes");
+                });
+
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.MemberEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +143,7 @@ namespace SplitCost.Infrastructure.Migrations
                     b.ToTable("Members");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.ResidenceEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,7 +207,7 @@ namespace SplitCost.Infrastructure.Migrations
                     b.ToTable("Residences");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.UserEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.UserEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -207,21 +241,21 @@ namespace SplitCost.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.ExpenseEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ExpenseEntity", b =>
                 {
-                    b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "PaidBy")
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "PaidBy")
                         .WithMany("ResidenceExpensesPaid")
                         .HasForeignKey("PaidByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "RegisteredBy")
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "RegisteredBy")
                         .WithMany("Expenses")
                         .HasForeignKey("RegisteredByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SplitCost.Infrastructure.Entities.ResidenceEntity", "Residence")
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", "Residence")
                         .WithMany("Expenses")
                         .HasForeignKey("ResidenceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -234,17 +268,36 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Navigation("Residence");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.MemberEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.IncomeEntity", b =>
                 {
-                    b.HasOne("SplitCost.Infrastructure.Entities.ResidenceEntity", "Residence")
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "RegisteredByUser")
+                        .WithMany("Incomes")
+                        .HasForeignKey("RegisteredByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", "Residence")
+                        .WithMany("Incomes")
+                        .HasForeignKey("ResidenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RegisteredByUser");
+
+                    b.Navigation("Residence");
+                });
+
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.MemberEntity", b =>
+                {
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", "Residence")
                         .WithMany("Members")
                         .HasForeignKey("ResidenceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "User")
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "User")
                         .WithOne("Member")
-                        .HasForeignKey("SplitCost.Infrastructure.Entities.MemberEntity", "UserId")
+                        .HasForeignKey("SplitCost.Infrastructure.Persistence.Entities.MemberEntity", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -253,9 +306,9 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.ResidenceEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", b =>
                 {
-                    b.HasOne("SplitCost.Infrastructure.Entities.UserEntity", "CreatedBy")
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -264,16 +317,20 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Navigation("CreatedBy");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.ResidenceEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", b =>
                 {
                     b.Navigation("Expenses");
+
+                    b.Navigation("Incomes");
 
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Entities.UserEntity", b =>
+            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.UserEntity", b =>
                 {
                     b.Navigation("Expenses");
+
+                    b.Navigation("Incomes");
 
                     b.Navigation("Member")
                         .IsRequired();

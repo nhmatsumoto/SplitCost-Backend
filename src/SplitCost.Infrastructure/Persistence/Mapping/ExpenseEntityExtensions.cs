@@ -28,14 +28,14 @@ public static class ExpenseEntityExtensions
             .SetWhoRegistered(entity.RegisteredByUserId)
             .SetWhoPaid(entity.PaidByUserId);
     }
-   
-    //public static ExpenseEntity ToEntity(this Expense expense)
+
+    //public static ExpenseEntity ToEntity(this Expense domain)
     //{
-    //    if (expense == null) throw new ArgumentNullException(nameof(expense));
+    //    if (domain == null) throw new ArgumentNullException(nameof(domain));
 
     //    return new ExpenseEntity
     //    {
-    //       Id = expense.Id,
+           
 
     //    };
     //}

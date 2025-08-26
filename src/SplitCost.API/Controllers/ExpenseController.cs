@@ -72,7 +72,6 @@ namespace SplitCost.API.Controllers
             }
         }
 
-        //ADICIONAR VALIDATOR PARA TRATAR ID DO RESIDENCE
         [HttpGet("residence/{residenceId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

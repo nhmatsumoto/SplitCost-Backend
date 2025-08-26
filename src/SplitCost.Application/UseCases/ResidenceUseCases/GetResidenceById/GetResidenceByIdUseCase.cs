@@ -3,10 +3,11 @@ using MapsterMapper;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
+using SplitCost.Application.Dtos;
 
 namespace SplitCost.Application.UseCases.ResidenceUseCases.GetResidenceById;
 
-public class GetResidenceByIdUseCase : IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>>
+public class GetResidenceByIdUseCase : IUseCase<GetResidenceByIdInput, Result<ResidenceDto>>
 {
     private readonly IResidenceRepository _residenceRepository;
     private readonly IValidator<GetResidenceByIdInput> _validator;
@@ -22,20 +23,18 @@ public class GetResidenceByIdUseCase : IUseCase<GetResidenceByIdInput, Result<Ge
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<Result<GetResidenceByIdOutput>> ExecuteAsync(GetResidenceByIdInput userIdInput, CancellationToken cancellationToken)
+    public async Task<Result<ResidenceDto>> ExecuteAsync(GetResidenceByIdInput userIdInput, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(userIdInput);
 
         if (!validationResult.IsValid)
         {
-            return Result<GetResidenceByIdOutput>.FromFluentValidation("Validation failed", validationResult.Errors);
+            return Result<ResidenceDto>.FromFluentValidation("Validation failed", validationResult.Errors);
         }
 
         var residence = await _residenceRepository.GetByIdAsync(userIdInput.ResidenceId, cancellationToken);
 
-        var output = _mapper.Map<GetResidenceByIdOutput>(residence);
-
-        return Result<GetResidenceByIdOutput>.Success(output);
+        return Result<ResidenceDto>.Success(residence);
     }
 
     //public async Task<IEnumerable<ResidenceDto>> GetAllAsync()

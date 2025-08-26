@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
+using SplitCost.Application.Dtos;
 using SplitCost.Application.UseCases.MemberUseCases.AddMember;
 using SplitCost.Application.UseCases.MemberUseCases.GetMember;
 using SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
@@ -14,14 +15,14 @@ namespace SplitCost.API.Controllers
     public class ResidenceController : ControllerBase
     {
         private readonly IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> _createResidenceUseCase;
-        private readonly IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>> _getResidenceByIdUseCase;
+        private readonly IUseCase<GetResidenceByIdInput, Result<ResidenceDto>> _getResidenceByIdUseCase;
 
         private readonly IUseCase<AddMemberInput, Result<AddMemberOutput>> _addMemberUseCase;
         private readonly IUseCase<GetMemberByResidenceIdInput, Result<GetMemberByresidenceIdOutput>> _getMemberUseCase;
         public ResidenceController(
             IUseCase<CreateResidenceInput, Result<CreateResidenceOutput>> createResidenceUseCase,
             IUseCase<AddMemberInput, Result<AddMemberOutput>> addMemberUseCase,
-            IUseCase<GetResidenceByIdInput, Result<GetResidenceByIdOutput>> getResidenceByIdUseCase)
+            IUseCase<GetResidenceByIdInput, Result<ResidenceDto>> getResidenceByIdUseCase)
         {
             _createResidenceUseCase     = createResidenceUseCase    ?? throw new ArgumentNullException(nameof(createResidenceUseCase));
             _getResidenceByIdUseCase    = getResidenceByIdUseCase   ?? throw new ArgumentNullException(nameof(getResidenceByIdUseCase));
@@ -53,7 +54,7 @@ namespace SplitCost.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetResidence([FromBody] GetResidenceByIdInput getResidenceByIdInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetResidence([FromQuery] GetResidenceByIdInput getResidenceByIdInput, CancellationToken cancellationToken)
         {
 
             var result = await _getResidenceByIdUseCase.ExecuteAsync(getResidenceByIdInput, cancellationToken);

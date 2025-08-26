@@ -8,9 +8,6 @@ public class Residence : BaseEntity
     public string Name { get; private set; }
     public Guid CreatedByUserId { get; private set; }
     public User CreatedBy { get; private set; }
-
-
-    //Address
     public string Street { get; private set; }
     public string Number { get; private set; }
     public string Apartment { get; private set; }
@@ -164,7 +161,5 @@ public class Residence : BaseEntity
         CreatedBy = user;
         return this;
     }
-
-
 }
 

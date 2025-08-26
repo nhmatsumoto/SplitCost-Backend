@@ -63,13 +63,13 @@ namespace SplitCost.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Category = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSharedAmongMembers = table.Column<bool>(type: "bit", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     ResidenceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RegisteredByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PaidByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IsSharedAmongMembers = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -90,6 +90,35 @@ namespace SplitCost.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Expenses_Users_RegisteredByUserId",
+                        column: x => x.RegisteredByUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Incomes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Category = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResidenceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RegisteredByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Incomes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Incomes_Residences_ResidenceId",
+                        column: x => x.ResidenceId,
+                        principalTable: "Residences",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Incomes_Users_RegisteredByUserId",
                         column: x => x.RegisteredByUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -140,6 +169,16 @@ namespace SplitCost.Infrastructure.Migrations
                 column: "ResidenceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Incomes_RegisteredByUserId",
+                table: "Incomes",
+                column: "RegisteredByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Incomes_ResidenceId",
+                table: "Incomes",
+                column: "ResidenceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Members_ResidenceId",
                 table: "Members",
                 column: "ResidenceId");
@@ -161,6 +200,9 @@ namespace SplitCost.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Expenses");
+
+            migrationBuilder.DropTable(
+                name: "Incomes");
 
             migrationBuilder.DropTable(
                 name: "Members");

@@ -52,5 +52,7 @@ public class ResidenceEntity : BaseEntity
 
     public ICollection<ExpenseEntity> Expenses { get; set; } = new List<ExpenseEntity>();
 
+    public ICollection<IncomeEntity> Incomes { get; set; } = new List<IncomeEntity>();
+
     public ResidenceEntity() { }
 }
