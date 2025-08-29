@@ -1,10 +1,8 @@
-﻿using SplitCost.Domain.Entities;
+﻿using SplitCost.Application.Interfaces;
+using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.Common.Repositories;
-public interface IMemberRepository
+public interface IMemberRepository : IRepository<Member>
 {
-    Task<Member> AddAsync(Member member, CancellationToken cancellationToken);
-    Task<Dictionary<Guid, string>> GetUsersByResidenceId(Guid residenceId, CancellationToken cancellationToken);
-    Task<bool> ExistsAsync(Guid userId, Guid residenceId, CancellationToken cancellationToken);
-    Task<bool> ExistsByResidenceId(Guid residenceId, CancellationToken cancellationToken);
+    
 }

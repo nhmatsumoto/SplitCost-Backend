@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.ApplicationUserUseCases.CreateApplicationUser;
-using SplitCost.Application.UseCases.ApplicationUserUseCases.GetApplicationUserById;
+using SplitCost.Application.UseCases.Dtos;
 
 namespace SplitCost.API.Controllers;
 
@@ -56,6 +55,27 @@ public class UserController : ControllerBase
                 _ => StatusCode(StatusCodes.Status500InternalServerError, result)
             };
             
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet("settings")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetUserSettings(Guid userId, CancellationToken cancellationToken)
+    {
+        var result = await _getApplicationUserUseCase.ExecuteAsync(userId, cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            return result.ErrorType switch
+            {
+                ErrorType.NotFound => NotFound(result),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, result)
+            };
+
         }
 
         return Ok(result);

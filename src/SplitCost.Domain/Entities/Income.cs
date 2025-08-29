@@ -9,15 +9,24 @@ namespace SplitCost.Domain.Entities
         public decimal Amount { get; set; }
         public IncomeCategory Category { get; set; }
         public DateTime Date { get; set; }
-        public string Description { get; set; }
-
-        public Guid ResidenceId { get; private set; }
-        public Residence Residence { get; private set; }
-
-        public Guid RegisteredByUserId { get; private set; }
-        public User RegisteredBy { get; private set; }
+        public string Description { get; set; } = string.Empty;
+        public Guid ResidenceId { get; set; }
+        public Guid UserId { get; set; }
+        public Residence Residence { get; set; } = null!;
+        public User User { get; set; } = null!;
 
         internal Income() { }
+
+        public Income(
+            decimal amount,
+            IncomeCategory category,
+            DateTime date,
+            Guid residenceId,
+            Guid registeredByUserId,
+            string description = ""
+            ) : this(amount, category, date, description, residenceId, registeredByUserId)
+        {
+        }
 
         internal Income(
             decimal amount,
@@ -33,7 +42,7 @@ namespace SplitCost.Domain.Entities
             SetDate(date);
             SetDescription(description);
             SetResidenceId(residenceId);
-            SetRegisteredByUserId(registeredByUserId);
+            SetUserId(registeredByUserId);
         }
 
         public Income SetId(Guid id)
@@ -77,10 +86,10 @@ namespace SplitCost.Domain.Entities
             return this;
         }
 
-        public Income SetRegisteredByUserId(Guid registeredByUserId)
+        public Income SetUserId(Guid userId)
         {
-            if (registeredByUserId == Guid.Empty) throw new ArgumentException("Usuário inválido.");
-            RegisteredByUserId = registeredByUserId;
+            if (userId == Guid.Empty) throw new ArgumentException("Usuário inválido.");
+            UserId = userId;
             return this;
         }
     }

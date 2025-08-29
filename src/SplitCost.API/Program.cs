@@ -3,7 +3,7 @@ using Playground.API.Middlewares;
 using Playground.Infrastructure.DependencyInjection;
 using Serilog;
 using SplitCost.Application.Common.Services;
-using SplitCost.Application.DependencyInjection;
+using SplitCost.Application.Extensions;
 using SplitCost.Infrastructure.Services;
 
 Log.Logger = new LoggerConfiguration()

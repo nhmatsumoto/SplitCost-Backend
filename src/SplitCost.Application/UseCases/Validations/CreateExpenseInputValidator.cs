@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using SplitCost.Application.Common.Repositories;
-using SplitCost.Application.UseCases.ExpenseUseCases.CreateExpense;
+using SplitCost.Application.UseCases.Dtos;
 
 namespace SplitCost.Application.UseCases.Validations;
 
@@ -57,11 +57,11 @@ public class CreateExpenseInputValidator : AbstractValidator<CreateExpenseInput>
 
     private async Task<bool> ResidenceExists(Guid residenceId, CancellationToken ct)
     {
-        return await _residenceRepository.ExistsAsync(residenceId, ct);
+        return await _residenceRepository.ExistsAsync(x => x.Id == residenceId, ct);
     }
 
     private async Task<bool> UserExists(Guid userId, CancellationToken ct)
     {
-        return await _userRepository.ExistsAsync(userId, ct);
+        return await _userRepository.ExistsAsync(x => x.Id == userId, ct);
     }
 }

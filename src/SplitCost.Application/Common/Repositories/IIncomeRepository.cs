@@ -1,10 +1,10 @@
-﻿using SplitCost.Domain.Entities;
+﻿using SplitCost.Application.Interfaces;
+using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.Common.Repositories
 {
-    public interface IIncomeRepository
+    public interface IIncomeRepository : IRepository<Income>
     {
-        Task AddAsync(Income incomeDomain, CancellationToken cancellationToken);
-        Task<Income?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        
     }
 }

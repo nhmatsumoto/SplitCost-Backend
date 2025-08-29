@@ -22,7 +22,6 @@ public static class ExpenseFactory
                 .SetAmount(amount)
                 .SetDate(date)
                 .SetDescription(description)
-                .SetSharedAmongMembers(isSharedAmongMembers)
                 .SetResidenceId(residenceId)
                 .SetWhoRegistered(registeredByUserId)
                 .SetWhoPaid(paidByUserId);
@@ -45,7 +44,6 @@ public static class ExpenseFactory
                .SetAmount(amount)
                .SetDate(date)
                .SetDescription(description)
-               .SetSharedAmongMembers(isSharedAmongMembers)
                .SetResidenceId(residenceId)
                .SetWhoRegistered(registeredByUserId)
                .SetWhoPaid(paidByUserId);

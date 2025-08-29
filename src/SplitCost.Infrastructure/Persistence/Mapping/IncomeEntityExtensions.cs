@@ -1,13 +1,12 @@
 ﻿using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
-using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SplitCost.Infrastructure.Persistence.Mapping;
 
 public static class IncomeEntityExtensions
 {
     
-    public static Income ToDomain(this IncomeEntity entity)
+    public static Income ToDomain(this Income entity)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -18,6 +17,6 @@ public static class IncomeEntityExtensions
             .SetDate(entity.Date)
             .SetDescription(entity.Description)
             .SetResidenceId(entity.ResidenceId)
-            .SetRegisteredByUserId(entity.RegisteredByUserId);
+            .SetUserId(entity.UserId);
     }
 }

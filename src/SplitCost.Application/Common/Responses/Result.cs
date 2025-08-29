@@ -25,8 +25,8 @@ public class Result<T>
     public static Result<T> Failure(string errorMessage, ErrorType errorType) =>
         new Result<T>(false, errorMessage, errorType);
 
-    public static Result<T> Failure(string errorMessage, ErrorType errorType, Dictionary<string, string[]> validationErrors) =>
-        new Result<T>(false, errorMessage, errorType, default, validationErrors);
+    public static Result<T> Failure(string errorMessage, ErrorType errorType, List<ValidationFailure> validationErrors) =>
+        new Result<T>(false, errorMessage, errorType, default);
 
     public static Result<T> Invalid(string errorMessage, ErrorType errorType, Dictionary<string, string[]> validationErrors) =>
         new Result<T>(false, errorMessage, errorType, default, validationErrors);

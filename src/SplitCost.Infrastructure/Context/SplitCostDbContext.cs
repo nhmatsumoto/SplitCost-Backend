@@ -1,16 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SplitCost.Domain.Common;
-using SplitCost.Infrastructure.Persistence.Entities;
+using SplitCost.Domain.Entities;
 
 namespace SpitCost.Infrastructure.Context;
 
 public class SplitCostDbContext : DbContext
 {
-    public DbSet<UserEntity> Users { get; set; }
-    public DbSet<ResidenceEntity> Residences { get; set; }
-    public DbSet<MemberEntity> Members { get; set; }
-    public DbSet<ExpenseEntity> Expenses { get; set; }
-    public DbSet<IncomeEntity> Incomes { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<UserSettings> UserSettings { get; set; }
+    public DbSet<Residence> Residences { get; set; }
+    public DbSet<Member> Members { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
+    public DbSet<Income> Incomes { get; set; }
 
     public SplitCostDbContext(DbContextOptions<SplitCostDbContext> options)
         : base(options)
@@ -22,18 +23,18 @@ public class SplitCostDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // USER ⇄ RESIDENCEMEMBER (Many-to-Many via Entity)
-        modelBuilder.Entity<MemberEntity>()
+        modelBuilder.Entity<Member>()
             .HasKey(m => m.Id);
 
         // Cada usuário pode ter apenas 1 residência
-        modelBuilder.Entity<MemberEntity>()
-            .HasOne(m => m.User)
-            .WithOne(u => u.Member)
-            .HasForeignKey<MemberEntity>(m => m.UserId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict); // Evita cascata
+        //modelBuilder.Entity<Member>()
+        //    .HasOne(m => m.User)
+        //    .WithOne(u => u.Residence)
+        //    .HasForeignKey<Member>(m => m.UserId)
+        //    .IsRequired()
+        //    .OnDelete(DeleteBehavior.Restrict); // Evita cascata
 
-        modelBuilder.Entity<MemberEntity>()
+        modelBuilder.Entity<Member>()
             .HasOne(m => m.Residence)
             .WithMany(r => r.Members)
             .HasForeignKey(m => m.ResidenceId)
@@ -41,38 +42,49 @@ public class SplitCostDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict); // Evita cascata
 
         // RESIDENCE ⇄ RESIDENCEEXPENSE (One-to-Many)
-        modelBuilder.Entity<ExpenseEntity>()
+        modelBuilder.Entity<Expense>()
             .HasOne(e => e.Residence)
             .WithMany(r => r.Expenses)
             .HasForeignKey(e => e.ResidenceId)
             .OnDelete(DeleteBehavior.Cascade); // Permite cascata, já que despesas dependem da residência
 
         // INCOME
-        modelBuilder.Entity<IncomeEntity>()
+        modelBuilder.Entity<Income>()
             .HasKey(m => m.Id);
 
-        modelBuilder.Entity<IncomeEntity>()
-            .HasOne(i => i.RegisteredByUser)
+        modelBuilder.Entity<Income>()
+            .HasOne(i => i.User)
             .WithMany(u => u.Incomes) // Relacionamento com a coleção de Incomes no User
-            .HasForeignKey(i => i.RegisteredByUserId)
+            .HasForeignKey(i => i.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Restrict); // Evita cascata para evitar o erro
 
+        modelBuilder.Entity<Income>()
+            .HasOne(i => i.Residence)
+            .WithMany(u => u.Incomes) // Relacionamento com a coleção de Incomes no User
+            .HasForeignKey(i => i.ResidenceId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict); // Evita cascata para evitar o erro
+
+
         // USER ⇄ RESIDENCEEXPENSE (RegisteredBy)
-        modelBuilder.Entity<ExpenseEntity>()
+        modelBuilder.Entity<Expense>()
             .HasOne(e => e.RegisteredBy)
             .WithMany(u => u.Expenses)
             .HasForeignKey(e => e.RegisteredByUserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Restrict); // Evita cascata
 
-        // USER ⇄ RESIDENCEEXPENSE (PaidBy)
-        modelBuilder.Entity<ExpenseEntity>()
-            .HasOne(e => e.PaidBy)
-            .WithMany(u => u.ResidenceExpensesPaid)
-            .HasForeignKey(e => e.PaidByUserId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict); // Evita cascata
+        //// USER ⇄ RESIDENCEEXPENSE (PaidBy)
+        //modelBuilder.Entity<Expense>()
+        //    .HasOne(e => e.PaidBy)
+        //    .WithMany(u => u.ResidenceExpensesPaid)
+        //    .HasForeignKey(e => e.PaidByUserId)
+        //    .IsRequired()
+        //    .OnDelete(DeleteBehavior.Restrict); // Evita cascata
+
+       
+
     }
 
 

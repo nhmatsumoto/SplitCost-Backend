@@ -1,6 +1,5 @@
 ﻿using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
-using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SplitCost.Infrastructure.Persistence.Mapping;
 
@@ -12,7 +11,7 @@ public static class ExpenseEntityExtensions
     /// <param name="entity"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static Expense ToDomain(this ExpenseEntity entity)
+    public static Expense ToDomain(this Expense entity)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -23,7 +22,6 @@ public static class ExpenseEntityExtensions
             .SetAmount(entity.Amount)
             .SetDate(entity.Date)
             .SetDescription(entity.Description)
-            .SetSharedAmongMembers(entity.IsSharedAmongMembers)
             .SetResidenceId(entity.ResidenceId)
             .SetWhoRegistered(entity.RegisteredByUserId)
             .SetWhoPaid(entity.PaidByUserId);

@@ -1,27 +1,61 @@
 ﻿using SplitCost.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SplitCost.Domain.Entities;
 
+
+[Table("Residences")]
 public class Residence : BaseEntity
 {
-    public Guid Id { get; private set; }
-    public string Name { get; private set; }
-    public Guid CreatedByUserId { get; private set; }
-    public User CreatedBy { get; private set; }
-    public string Street { get; private set; }
-    public string Number { get; private set; }
-    public string Apartment { get; private set; }
-    public string City { get; private set; }
-    public string Prefecture { get; private set; }
-    public string Country { get; private set; }
-    public string PostalCode { get; private set; }
 
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
 
-    private readonly List<Member> _members = new();
-    public IReadOnlyCollection<Member> Members => _members;
+    [MaxLength(200)]
+    [Column("Name")]
+    public string Name { get; set; }
 
-    private readonly List<Expense> _expenses = new();
-    public IReadOnlyCollection<Expense> Expenses => _expenses;
+    [ForeignKey("CreatedBy")]
+    [Column("CreatedByUserId")]
+    public Guid CreatedByUserId { get; set; }
+    public User CreatedBy { get; set; }
+
+    //Address
+    [Required]
+    [MaxLength(200)]
+    public string Street { get; set; } = null!;
+
+    [Required]
+    [MaxLength(20)]
+    public string Number { get; set; } = null!;
+
+    [MaxLength(50)]
+    public string Apartment { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(100)]
+    public string City { get; set; } = null!;
+
+    [Required]
+    [MaxLength(100)]
+    public string Prefecture { get; set; } = null!;
+
+    [Required]
+    [MaxLength(100)]
+    public string Country { get; set; } = null!;
+
+    [Required]
+    [MaxLength(20)]
+    public string PostalCode { get; set; } = null!;
+
+    public List<Member> Members { get; set; } = new List<Member>();
+
+    public List<Expense> Expenses { get; set; } = new List<Expense>();
+
+    public List<Income> Incomes { get; set; } = new List<Income>();
+
 
     internal Residence() { }
 
@@ -66,18 +100,18 @@ public class Residence : BaseEntity
     {
         if (member == null)
             throw new ArgumentNullException(nameof(member));
-        if (_members.Any(m => m.UserId == member.UserId))
+        if (Members.Any(m => m.UserId == member.UserId))
             throw new InvalidOperationException("Usuário já é membro da residência.");
-        _members.Add(member);
+        Members.Add(member);
         return this;
     }
 
     public Residence RemoveMember(Guid userId)
     {
-        var member = _members.FirstOrDefault(m => m.UserId == userId);
+        var member = Members.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
             throw new InvalidOperationException("Membro não encontrado.");
-        _members.Remove(member);
+        Members.Remove(member);
         return this;
     }
 
@@ -87,7 +121,7 @@ public class Residence : BaseEntity
             throw new ArgumentNullException(nameof(expense));
         if (expense.ResidenceId != Id)
             throw new InvalidOperationException("Despesa não pertence a esta residência.");
-        _expenses.Add(expense);
+        Expenses.Add(expense);
         return this;
     }
 
@@ -142,16 +176,16 @@ public class Residence : BaseEntity
     public Residence SetMembers(IEnumerable<Member> members)
     {
         if (members is null) throw new ArgumentNullException(nameof(members));
-        _members.Clear();
-        _members.AddRange(members);
+        Members.Clear();
+        Members.AddRange(members);
         return this;
     }
 
     public Residence SetExpenses(IEnumerable<Expense> expenses)
     {
         if (expenses is null) throw new ArgumentNullException(nameof(expenses));
-        _expenses.Clear();
-        _expenses.AddRange(expenses);
+        Expenses.Clear();
+        Expenses.AddRange(expenses);
         return this;
     }
 

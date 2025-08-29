@@ -13,4 +13,8 @@ public class KeycloakApiException : Exception
         StatusCode = statusCode;
         Content = content;
     }
+
+    public KeycloakApiException(string? message) : base(message)
+    {
+    }
 }

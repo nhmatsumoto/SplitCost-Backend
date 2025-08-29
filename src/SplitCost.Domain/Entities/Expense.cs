@@ -1,29 +1,40 @@
 ﻿using SplitCost.Domain.Common;
 using SplitCost.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SplitCost.Domain.Entities;
 
+[Table("Expenses")]
 public class Expense : BaseEntity
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; private set; }
     public ExpenseType Type { get; private set; }
     public ExpenseCategory Category { get; private set; }
-    public decimal Amount { get; private set; }
     public DateTime Date { get; private set; }
-    public string Description { get; private set; }
 
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal Amount { get; private set; }
+
+    [MaxLength(500)]
+    [Required]
+    public string Description { get; private set; } = null!;
+
+    [ForeignKey("Residence")]
+    [Column("ResidenceId")]
     public Guid ResidenceId { get; private set; }
-    public Residence Residence { get; private set; }
+    public Residence Residence { get; private set; } = null!;
 
+    [ForeignKey("RegisteredBy")]
+    [Column("RegisteredByUserId")]
     public Guid RegisteredByUserId { get; private set; }
-    public User RegisteredBy { get; private set; }
+    public User RegisteredBy { get; private set; } = null!;
 
+    [ForeignKey("PaidBy")]
     public Guid PaidByUserId { get; private set; }
-    public User PaidBy { get; private set; }
-
-    public bool IsSharedAmongMembers { get; private set; }
-    public ICollection<ExpenseShare> Shares { get; private set; } = new List<ExpenseShare>();
-
+    public User PaidBy { get; private set; } = null!;
     internal Expense() { }
 
     internal Expense(
@@ -32,7 +43,6 @@ public class Expense : BaseEntity
         decimal amount,
         DateTime date,
         string description,
-        bool isSharedAmongMembers,
         Guid residenceId,
         Guid registeredByUserId,
         Guid paidByUserId)
@@ -42,7 +52,6 @@ public class Expense : BaseEntity
         SetAmount(amount);
         SetDate(date);
         SetDescription(description);
-        SetSharedAmongMembers(isSharedAmongMembers);
         SetResidenceId(residenceId);
         SetWhoRegistered(registeredByUserId);
         SetWhoPaid(paidByUserId);
@@ -88,11 +97,6 @@ public class Expense : BaseEntity
         return this;
     }
 
-    public Expense SetSharedAmongMembers(bool shared)
-    {
-        IsSharedAmongMembers = shared;
-        return this;
-    }
 
     public Expense SetResidenceId(Guid residenceId)
     {
@@ -112,13 +116,6 @@ public class Expense : BaseEntity
     {
         if (userId == Guid.Empty) throw new ArgumentException("Usuário inválido para pagamento.");
         PaidByUserId = userId;
-        return this;
-    }
-
-    public Expense AddShare(ExpenseShare share)
-    {
-        if (share == null) throw new ArgumentNullException(nameof(share));
-        Shares.Add(share);
         return this;
     }
 }

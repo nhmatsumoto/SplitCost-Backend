@@ -95,17 +95,17 @@ namespace SplitCost.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RegisteredByUserId")
+                    b.Property<Guid>("ResidenceId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ResidenceId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RegisteredByUserId");
-
                     b.HasIndex("ResidenceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Incomes");
                 });
@@ -270,21 +270,21 @@ namespace SplitCost.Infrastructure.Migrations
 
             modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.IncomeEntity", b =>
                 {
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "RegisteredByUser")
-                        .WithMany("Incomes")
-                        .HasForeignKey("RegisteredByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", "Residence")
                         .WithMany("Incomes")
                         .HasForeignKey("ResidenceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("RegisteredByUser");
+                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "User")
+                        .WithMany("Incomes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Residence");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.MemberEntity", b =>

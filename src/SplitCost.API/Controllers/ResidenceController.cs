@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.Dtos;
-using SplitCost.Application.UseCases.MemberUseCases.AddMember;
-using SplitCost.Application.UseCases.MemberUseCases.GetMember;
-using SplitCost.Application.UseCases.ResidenceUseCases.CreateResidence;
-using SplitCost.Application.UseCases.ResidenceUseCases.GetResidenceById;
+using SplitCost.Application.UseCases.Dtos;
 
 namespace SplitCost.API.Controllers
 {

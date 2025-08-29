@@ -1,15 +1,30 @@
 ﻿using SplitCost.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SplitCost.Domain.Entities;
 
+[Table("Members")]
 public class Member : BaseEntity
 {
-    public Guid Id { get; private set; }
-    public Guid UserId { get; private set; }
-    public User User { get; private set; }
-    public Guid ResidenceId { get; private set; }
-    public Residence Residence { get; private set; }
-    public DateTime JoinedAt { get; private set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
+
+    [Required]
+    [ForeignKey("User")]
+    [Column("UserId")]
+    public Guid UserId { get; set; }
+    public User User { get; set; } = null!;
+
+    [Required]
+    [ForeignKey("Residence")]
+    [Column("ResidenceId")]
+    public Guid ResidenceId { get; set; }
+    public Residence Residence { get; set; } = null!;
+
+    [Required]
+    public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
 
     internal Member() { }
 

@@ -1,6 +1,5 @@
 ﻿using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
-using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SplitCost.Infrastructure.Persistence.Mapping;
 
@@ -12,7 +11,7 @@ public static class MemberEntityExtensions
     /// <param name="entity"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static Member ToDomain(this MemberEntity entity)
+    public static Member ToDomain(this Member entity)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -30,16 +29,16 @@ public static class MemberEntityExtensions
     /// <param name="member"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static MemberEntity ToEntity(this Member domain)
+    public static Member ToEntity(this Member domain)
     {
         if (domain == null) throw new ArgumentNullException(nameof(domain));
 
-        return new MemberEntity
-        {
-            Id = domain.Id,
-            UserId = domain.UserId,
-            ResidenceId = domain.ResidenceId
-        };
+        return MemberFactory
+            .Create()
+            .SetId(domain.Id)
+            .SetId(domain.Id)
+            .SetResidenceId(domain.ResidenceId);
+        
     }
 
 }

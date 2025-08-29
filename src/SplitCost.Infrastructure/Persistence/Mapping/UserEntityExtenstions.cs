@@ -1,12 +1,11 @@
 ﻿using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
-using SplitCost.Infrastructure.Persistence.Entities;
 
 namespace SplitCost.Infrastructure.Persistence.Mapping;
 
 public static class UserEntityExtenstions
 {
-    public static User ToDomain(this UserEntity entity)
+    public static User ToDomain(this User entity)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
 
@@ -19,11 +18,11 @@ public static class UserEntityExtenstions
             .SetAvatarUrl(entity.AvatarUrl ?? string.Empty);
     }
 
-    public static UserEntity ToEntity(this User user)
+    public static User ToEntity(this User user)
     {
         if (user == null) throw new ArgumentNullException(nameof(user));
 
-        return new UserEntity
+        return new User
         {
             Id = user.Id,
             Username = user.Username,

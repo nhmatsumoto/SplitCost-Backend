@@ -91,6 +91,7 @@ public class KeycloakService : IKeycloakService
         }
     }
 
+
     private async Task<string> GetApplicationAdminTokenAsync(CancellationToken cancellationToken)
     {
         var tokenEndpoint = _settings.GetTokenEndpoint();

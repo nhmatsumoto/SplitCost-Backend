@@ -4,14 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Serilog;
 using SpitCost.Infrastructure.Context;
+using SplitCost.Application.Common.Configuration;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Services;
 using SplitCost.Application.Interfaces;
 using SplitCost.Infrastructure.Logging;
-using SplitCost.Infrastructure.Mappers;
 using SplitCost.Infrastructure.Repositories;
 using SplitCost.Infrastructure.Services;
 using System.Net.Http.Headers;
@@ -57,10 +56,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork<SplitCostDbContext>>();
 
         // Registra as configurações de mapeamento
-        var config = TypeAdapterConfig.GlobalSettings;
-        config.Scan(typeof(ResidenceEntityMapperConfig).Assembly);
-        config.Scan(typeof(ExpenseEntityMapperConfig).Assembly);
+        TypeAdapterConfig.GlobalSettings.Scan(typeof(MapsterConfig).Assembly);
+        services.AddScoped<IMapper, ServiceMapper>();
 
+        var config = TypeAdapterConfig.GlobalSettings;
+        config.Default
+           .PreserveReference(true) // Preserva referências circulares, se necessário
+           .IgnoreNullValues(true); // Ignora valores nulos durante o mapeamento
+        config.Scan(typeof(MapsterConfig).Assembly);
+       
         // Registra IMapper do Mapster
         services.AddSingleton(config);
         services.AddScoped<IMapper, ServiceMapper>();
@@ -69,7 +73,7 @@ public static class ServiceCollectionExtensions
         //Keycloak Config
         services.Configure<KeycloakSettings>(configuration.GetSection("Keycloak"));
 
-        services .AddOptions<KeycloakSettings>().Bind(configuration.GetSection("Keycloak")).ValidateOnStart();
+        services.AddOptions<KeycloakSettings>().Bind(configuration.GetSection("Keycloak")).ValidateOnStart();
 
         services.AddHttpClient<IKeycloakService, KeycloakService>((serviceProvider, client) =>
         {
