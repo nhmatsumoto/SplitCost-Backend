@@ -13,35 +13,30 @@ public class Residence : BaseEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
+    [Required]
     [MaxLength(200)]
     [Column("Name")]
     public string Name { get; set; }
 
     //Address
-    [Required]
     [MaxLength(200)]
     public string Street { get; set; } = null!;
 
-    [Required]
     [MaxLength(20)]
     public string Number { get; set; } = null!;
 
     [MaxLength(50)]
     public string Apartment { get; set; } = string.Empty;
 
-    [Required]
     [MaxLength(100)]
     public string City { get; set; } = null!;
 
-    [Required]
     [MaxLength(100)]
     public string Prefecture { get; set; } = null!;
-
-    [Required]
+   
     [MaxLength(100)]
     public string Country { get; set; } = null!;
 
-    [Required]
     [MaxLength(20)]
     public string PostalCode { get; set; } = null!;
 
@@ -112,14 +107,12 @@ public class Residence : BaseEntity
 
     public Residence SetStreet(string street)
     {
-        if (string.IsNullOrWhiteSpace(street)) throw new ArgumentException("O nome da rua não pode ser vazio.");
         Street = street.Trim();
         return this;
     }
 
     public Residence SetNumber(string number)
     {
-        if (string.IsNullOrWhiteSpace(number)) throw new ArgumentException("O número do endereço não pode ser vazio.");
         Number = number.Trim();
         return this;
     }
@@ -132,28 +125,24 @@ public class Residence : BaseEntity
 
     public Residence SetCity(string city)
     {
-        if (string.IsNullOrWhiteSpace(city)) throw new ArgumentException("A cidade não pode ser vazia.");
         City = city.Trim();
         return this;
     }
 
     public Residence SetPrefecture(string prefecture)
     {
-        if (string.IsNullOrWhiteSpace(prefecture)) throw new ArgumentException("A província não pode ser vazia.");
         Prefecture = prefecture.Trim();
         return this;
     }
 
     public Residence SetCountry(string country)
     {
-        if (string.IsNullOrWhiteSpace(country)) throw new ArgumentException("O país não pode ser vazio.");
         Country = country.Trim();
         return this;
     }
 
     public Residence SetPostalCode(string postalCode)
     {
-        if (string.IsNullOrWhiteSpace(postalCode)) throw new ArgumentException("O código postal não pode ser vazio.");
         PostalCode = postalCode.Trim();
         return this;
     }

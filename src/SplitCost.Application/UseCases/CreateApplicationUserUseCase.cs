@@ -108,10 +108,10 @@ public class CreateApplicationUserUseCase(
 
             await _unitOfWork.RollbackAsync(cancellationToken);
             _logger.LogError(ex, $"Erro ao persistir usuário no banco de dados: {user.Email}, EXCEPTION: {ex.Message} INNER: {ex.InnerException}", input.Username);
-
-            // Tenta remover o usuário do Keycloak se o commit falhar (compensação)
+            
             try
             {
+                // Tenta remover o usuário do Keycloak se o commit falhar (compensação)
                 await _keycloakService.DeleteUserAsync(keycloakUserId, cancellationToken);
             }
             catch (Exception kcEx)
