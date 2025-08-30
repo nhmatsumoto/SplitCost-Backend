@@ -118,4 +118,31 @@ public class KeycloakService : IKeycloakService
 
         return accessTokenProp.GetString()!;
     }
+
+    public async Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var token = await GetApplicationAdminTokenAsync(cancellationToken);
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var deleteUserUrl = $"{_settings.BaseUrl}/admin/realms/{_settings.Realm}/users/{userId}";
+
+        var response = await _httpClient.DeleteAsync(deleteUserUrl, cancellationToken);
+        var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        if (response.IsSuccessStatusCode)
+            return;
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.NotFound:
+                throw new KeycloakUserNotFoundException($"Usuário {userId} não encontrado no Keycloak.");
+            case HttpStatusCode.Unauthorized:
+                throw new KeycloakUnauthorizedException($"Não autorizado para deletar usuário {userId}. Detalhes: {responseContent}");
+            case HttpStatusCode.Forbidden:
+                throw new KeycloakForbiddenException($"Proibido deletar usuário {userId}. Detalhes: {responseContent}");
+            default:
+                throw new KeycloakApiException($"Erro ao deletar usuário {userId} no Keycloak. Status: {response.StatusCode}. Detalhes: {responseContent}");
+        }
+    }
+
 }

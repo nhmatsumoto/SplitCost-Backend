@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpitCost.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using SpitCost.Infrastructure.Context;
 namespace SplitCost.Infrastructure.Migrations
 {
     [DbContext(typeof(SplitCostDbContext))]
-    partial class SplitCostDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250830090415_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,7 +252,7 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Property<bool>("ReceiveEmailNotifications")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("ResidenceId")
+                    b.Property<Guid>("ResidenceId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Theme")
@@ -260,12 +263,19 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("UserId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ResidenceId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
+
+                    b.HasIndex("UserId1")
+                        .IsUnique()
+                        .HasFilter("[UserId1] IS NOT NULL");
 
                     b.ToTable("UserSettings");
                 });
@@ -327,13 +337,19 @@ namespace SplitCost.Infrastructure.Migrations
                 {
                     b.HasOne("SplitCost.Domain.Entities.Residence", "Residence")
                         .WithMany()
-                        .HasForeignKey("ResidenceId");
+                        .HasForeignKey("ResidenceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SplitCost.Domain.Entities.User", "User")
                         .WithOne()
                         .HasForeignKey("SplitCost.Domain.Entities.UserSettings", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SplitCost.Domain.Entities.User", null)
+                        .WithOne("Settings")
+                        .HasForeignKey("SplitCost.Domain.Entities.UserSettings", "UserId1");
 
                     b.Navigation("Residence");
 
@@ -356,6 +372,9 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Navigation("Incomes");
 
                     b.Navigation("Members");
+
+                    b.Navigation("Settings")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

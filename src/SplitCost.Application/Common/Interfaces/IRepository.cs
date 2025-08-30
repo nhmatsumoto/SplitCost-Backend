@@ -9,4 +9,5 @@ public interface IRepository<T> where T : class
     Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
     Task<IEnumerable<T>> GetByPredicateAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+    Task<T?> GetByExpression(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 }

@@ -49,4 +49,9 @@ public class Repository<T> : IRepository<T> where T : class
     {
         return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
     }
+
+    public async Task<T?> GetByExpression(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
+    }
 }

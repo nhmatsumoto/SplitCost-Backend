@@ -22,9 +22,8 @@ public static class ExpenseFactory
                 .SetAmount(amount)
                 .SetDate(date)
                 .SetDescription(description)
-                .SetResidenceId(residenceId)
-                .SetWhoRegistered(registeredByUserId)
-                .SetWhoPaid(paidByUserId);
+                .SetResidenceId(residenceId);
+
 
     public static Expense Create(
        Guid id,
@@ -44,7 +43,6 @@ public static class ExpenseFactory
                .SetAmount(amount)
                .SetDate(date)
                .SetDescription(description)
-               .SetResidenceId(residenceId)
-               .SetWhoRegistered(registeredByUserId)
-               .SetWhoPaid(paidByUserId);
+               .SetResidenceId(residenceId);
+              
 }

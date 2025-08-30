@@ -20,21 +20,14 @@ public class Expense : BaseEntity
 
     [MaxLength(500)]
     [Required]
-    public string Description { get; private set; } = null!;
+    public string Description { get; private set; } = string.Empty;
 
     [ForeignKey("Residence")]
     [Column("ResidenceId")]
     public Guid ResidenceId { get; private set; }
     public Residence Residence { get; private set; } = null!;
 
-    [ForeignKey("RegisteredBy")]
-    [Column("RegisteredByUserId")]
-    public Guid RegisteredByUserId { get; private set; }
-    public User RegisteredBy { get; private set; } = null!;
-
-    [ForeignKey("PaidBy")]
-    public Guid PaidByUserId { get; private set; }
-    public User PaidBy { get; private set; } = null!;
+    
     internal Expense() { }
 
     internal Expense(
@@ -43,9 +36,7 @@ public class Expense : BaseEntity
         decimal amount,
         DateTime date,
         string description,
-        Guid residenceId,
-        Guid registeredByUserId,
-        Guid paidByUserId)
+        Guid residenceId)
     {
         SetType(type);
         SetCategory(category);
@@ -53,8 +44,7 @@ public class Expense : BaseEntity
         SetDate(date);
         SetDescription(description);
         SetResidenceId(residenceId);
-        SetWhoRegistered(registeredByUserId);
-        SetWhoPaid(paidByUserId);
+       
     }
 
     public Expense SetId(Guid id)
@@ -102,20 +92,6 @@ public class Expense : BaseEntity
     {
         if (residenceId == Guid.Empty) throw new ArgumentException("Residência inválida.");
         ResidenceId = residenceId;
-        return this;
-    }
-
-    public Expense SetWhoRegistered(Guid userId)
-    {
-        if (userId == Guid.Empty) throw new ArgumentException("Usuário inválido para registro.");
-        RegisteredByUserId = userId;
-        return this;
-    }
-
-    public Expense SetWhoPaid(Guid userId)
-    {
-        if (userId == Guid.Empty) throw new ArgumentException("Usuário inválido para pagamento.");
-        PaidByUserId = userId;
         return this;
     }
 }

@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿ using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
 using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Domain.Entities;
 
 namespace SplitCost.API.Controllers;
 
@@ -10,13 +11,17 @@ namespace SplitCost.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> _createApplicationUserUseCase;
-    private readonly IUseCase<Guid, Result<GetApplicationUserByIdOutput>> _getApplicationUserUseCase;
+    private readonly IUseCase<Guid, Result<User>> _getApplicationUserUseCase;
+    private readonly IUseCase<Guid, Result<UserSettings>> _getUserSettingsUseCase;
+
     public UserController(
         IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> createApplicationUserUseCase,
-        IUseCase<Guid, Result<GetApplicationUserByIdOutput>> getApplicationUserUseCase)
+        IUseCase<Guid, Result<User>> getApplicationUserUseCase,
+        IUseCase<Guid, Result<UserSettings>> getUserSettingsUseCase)
     {
         _createApplicationUserUseCase   = createApplicationUserUseCase  ?? throw new ArgumentNullException(nameof(createApplicationUserUseCase));
         _getApplicationUserUseCase      = getApplicationUserUseCase     ?? throw new ArgumentNullException(nameof(getApplicationUserUseCase));
+        _getUserSettingsUseCase         = getUserSettingsUseCase        ?? throw new ArgumentNullException(nameof(getUserSettingsUseCase));
     }
 
     [HttpPost("register")]
@@ -36,16 +41,16 @@ public class UserController : ControllerBase
             };
         }
 
-        return CreatedAtAction(nameof(GetById), new { id = result.Data?.Id }, result);
+        return CreatedAtAction(nameof(GetById), new { userId = result.Data?.Id }, result);
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{userId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetById(Guid userIdInput, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(Guid userId, CancellationToken cancellationToken)
     {
-        var result = await _getApplicationUserUseCase.ExecuteAsync(userIdInput, cancellationToken);
+        var result = await _getApplicationUserUseCase.ExecuteAsync(userId, cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -60,13 +65,13 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("settings")]
+    [HttpGet("settings/{userId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetUserSettings(Guid userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetUserSettings(Guid userId, CancellationToken cancellationToken = default)
     {
-        var result = await _getApplicationUserUseCase.ExecuteAsync(userId, cancellationToken);
+        var result = await _getUserSettingsUseCase.ExecuteAsync(userId, cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -75,7 +80,6 @@ public class UserController : ControllerBase
                 ErrorType.NotFound => NotFound(result),
                 _ => StatusCode(StatusCodes.Status500InternalServerError, result)
             };
-
         }
 
         return Ok(result);

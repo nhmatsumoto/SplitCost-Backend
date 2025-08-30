@@ -13,18 +13,22 @@ public class User : BaseEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
-    [MaxLength(200)]
+    [MaxLength(100)]
     [Column("Name")]
     public string Name { get; set; }
 
+    [MaxLength(100)]
+    [Column("Username")]
     public string Username { get; set; }
-    public string Email { get; set; }
-    public string AvatarUrl { get; set; }
 
-    [ForeignKey("CreatedBy")]
-    [Column("CreatedByUserId")]
-    public Guid CreatedByUserId { get; set; }
-    public User CreatedBy { get; set; }
+    [EmailAddress]
+    [MaxLength(150)]
+    [Column("Email")]
+    public string Email { get; set; }
+
+    [Url]
+    [Column("AvatarUrl")]
+    public string AvatarUrl { get; set; }
 
     public ICollection<Member> Members { get; set; } = new List<Member>();
 

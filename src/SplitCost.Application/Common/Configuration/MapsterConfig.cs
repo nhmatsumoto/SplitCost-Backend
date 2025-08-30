@@ -53,9 +53,7 @@ public static class MapsterConfig
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.Date, src => src.Date)
             .Map(dest => dest.Description, src => src.Description ?? "")
-            .Map(dest => dest.ResidenceId, src => src.ResidenceId)
-            .Map(dest => dest.RegisteredByUserId, src => src.RegisteredByUserId)
-            .Map(dest => dest.PaidByUserId, src => src.PaidByUserId);
+            .Map(dest => dest.ResidenceId, src => src.ResidenceId);
 
 
     }

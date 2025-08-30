@@ -44,7 +44,11 @@ public static class ServiceCollectionExtensions
 
         // Users
         services.AddScoped<IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>>, CreateApplicationUserUseCase>();
-        services.AddScoped<IUseCase<Guid, Result<GetApplicationUserByIdOutput>>, GetApplicationUserByIdUseCase>();
+        services.AddScoped<IUseCase<Guid, Result<User>>, GetApplicationUserByIdUseCase>();
+        services.AddScoped<IUseCase<Guid, Result<UserSettings>>, ReadUserSettingsByUserIdUseCase>();
+
+
+
 
         // Incomes
         services.AddScoped<IUseCase<CreateIncomeInput, Result<CreateIncomeOutput>>, CreateIncomeUseCase>();

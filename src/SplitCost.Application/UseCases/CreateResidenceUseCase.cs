@@ -51,7 +51,6 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Resi
         var residence = ResidenceFactory
             .Create()
             .SetName(input.ResidenceName)
-            .SetCreatedByUser(input.UserId)
             .SetStreet(input.Street)
             .SetNumber(input.Number)
             .SetApartment(input.Apartment)

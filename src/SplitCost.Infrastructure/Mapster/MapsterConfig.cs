@@ -30,9 +30,7 @@ public static class MapsterConfig
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.Date, src => src.Date)
             .Map(dest => dest.Description, src => src.Description ?? "")
-            .Map(dest => dest.ResidenceId, src => src.ResidenceId)
-            .Map(dest => dest.RegisteredByUserId, src => src.RegisteredByUserId)
-            .Map(dest => dest.PaidByUserId, src => src.PaidByUserId);
+            .Map(dest => dest.ResidenceId, src => src.ResidenceId);
 
         // Domain -> Entity
         TypeAdapterConfig<Expense, Expense>.NewConfig()
@@ -40,8 +38,6 @@ public static class MapsterConfig
             .Map(dest => dest.Amount, src => src.Amount)
             .Map(dest => dest.Category, src => src.Category)
             .Map(dest => dest.Description, src => src.Description ?? "")
-            .Map(dest => dest.PaidByUserId, src => src.PaidByUserId)
-            .Map(dest => dest.RegisteredByUserId, src => src.RegisteredByUserId)
             .Map(dest => dest.ResidenceId, src => src.ResidenceId)
             .Map(dest => dest.Date, src => src.Date);
 
@@ -54,8 +50,6 @@ public static class MapsterConfig
             .SetDate(src.Date)
             .SetDescription(src.Description ?? string.Empty)
             .SetResidenceId(src.ResidenceId)
-            .SetWhoRegistered(src.RegisteredByUserId)
-            .SetWhoPaid(src.PaidByUserId)
             .SetId(src.Id));
 
         // Domain -> Entity
@@ -76,7 +70,6 @@ public static class MapsterConfig
 
         TypeAdapterConfig<Residence, GetResidenceByIdOutput>.NewConfig()
            .Map(dest => dest.Id, src => src.Id)
-           .Map(dest => dest.CreatedByUserId, src => src.CreatedByUserId)
            .Map(dest => dest.Name, src => src.Name)
            .Map(dest => dest.Street, src => src.Street)
            .Map(dest => dest.Number, src => src.Number)
@@ -91,7 +84,6 @@ public static class MapsterConfig
         // Domain -> Entity
         TypeAdapterConfig<Residence, Residence>.NewConfig()
             .Map(dest => dest.Id, src => src.Id)
-            .Map(dest => dest.CreatedByUserId, src => src.CreatedByUserId)
             .Map(dest => dest.Street, src => src.Street)
             .Map(dest => dest.Number, src => src.Number)
             .Map(dest => dest.Apartment, src => src.Apartment)
@@ -107,7 +99,6 @@ public static class MapsterConfig
             .Create()
             .SetId(src.Id)
             .SetName(src.Name)
-            .SetCreatedByUser(src.CreatedByUserId)
             .SetStreet(src.Street)
             .SetNumber(src.Number)
             .SetApartment(src.Apartment)

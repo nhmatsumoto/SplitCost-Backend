@@ -22,76 +22,115 @@ public class SplitCostDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // USER ⇄ RESIDENCEMEMBER (Many-to-Many via Entity)
-        modelBuilder.Entity<Member>()
-            .HasKey(m => m.Id);
+        // ================================
+        // User
+        // ================================
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.Id);
 
-        // Cada usuário pode ter apenas 1 residência
-        //modelBuilder.Entity<Member>()
-        //    .HasOne(m => m.User)
-        //    .WithOne(u => u.Residence)
-        //    .HasForeignKey<Member>(m => m.UserId)
-        //    .IsRequired()
-        //    .OnDelete(DeleteBehavior.Restrict); // Evita cascata
+            entity.HasMany(u => u.Members)
+                  .WithOne(m => m.User)
+                  .HasForeignKey(m => m.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Member>()
-            .HasOne(m => m.Residence)
-            .WithMany(r => r.Members)
-            .HasForeignKey(m => m.ResidenceId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict); // Evita cascata
+            entity.HasMany(u => u.Incomes)
+                  .WithOne(i => i.User)
+                  .HasForeignKey(i => i.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
 
-        // RESIDENCE ⇄ RESIDENCEEXPENSE (One-to-Many)
-        modelBuilder.Entity<Expense>()
-            .HasOne(e => e.Residence)
-            .WithMany(r => r.Expenses)
-            .HasForeignKey(e => e.ResidenceId)
-            .OnDelete(DeleteBehavior.Cascade); // Permite cascata, já que despesas dependem da residência
+        });
 
-        // INCOME
-        modelBuilder.Entity<Income>()
-            .HasKey(m => m.Id);
+        // ================================
+        // Residence
+        // ================================
+        modelBuilder.Entity<Residence>(entity =>
+        {
+            entity.HasKey(r => r.Id);
 
-        modelBuilder.Entity<Income>()
-            .HasOne(i => i.User)
-            .WithMany(u => u.Incomes) // Relacionamento com a coleção de Incomes no User
-            .HasForeignKey(i => i.UserId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict); // Evita cascata para evitar o erro
+            entity.HasMany(r => r.Members)
+                  .WithOne(m => m.Residence)
+                  .HasForeignKey(m => m.ResidenceId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Income>()
-            .HasOne(i => i.Residence)
-            .WithMany(u => u.Incomes) // Relacionamento com a coleção de Incomes no User
-            .HasForeignKey(i => i.ResidenceId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict); // Evita cascata para evitar o erro
+            entity.HasMany(r => r.Incomes)
+                  .WithOne(i => i.Residence)
+                  .HasForeignKey(i => i.ResidenceId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
+            entity.HasMany(r => r.Expenses)
+                  .WithOne(e => e.Residence)
+                  .HasForeignKey(e => e.ResidenceId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
-        // USER ⇄ RESIDENCEEXPENSE (RegisteredBy)
-        modelBuilder.Entity<Expense>()
-            .HasOne(e => e.RegisteredBy)
-            .WithMany(u => u.Expenses)
-            .HasForeignKey(e => e.RegisteredByUserId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict); // Evita cascata
+        });
 
-        //// USER ⇄ RESIDENCEEXPENSE (PaidBy)
-        //modelBuilder.Entity<Expense>()
-        //    .HasOne(e => e.PaidBy)
-        //    .WithMany(u => u.ResidenceExpensesPaid)
-        //    .HasForeignKey(e => e.PaidByUserId)
-        //    .IsRequired()
-        //    .OnDelete(DeleteBehavior.Restrict); // Evita cascata
+        // ================================
+        // Income
+        // ================================
+        modelBuilder.Entity<Income>(entity =>
+        {
+            entity.HasKey(i => i.Id);
 
-       
+            entity.HasOne(i => i.User)
+                  .WithMany(u => u.Incomes)
+                  .HasForeignKey(i => i.UserId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
+            entity.HasOne(i => i.Residence)
+                  .WithMany(r => r.Incomes)
+                  .HasForeignKey(i => i.ResidenceId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // ================================
+        // Expense
+        // ================================
+        modelBuilder.Entity<Expense>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasOne(e => e.Residence)
+                  .WithMany(r => r.Expenses)
+                  .HasForeignKey(e => e.ResidenceId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // ================================
+        // Member
+        // ================================
+        modelBuilder.Entity<Member>(entity =>
+        {
+            entity.HasKey(m => new { m.UserId, m.ResidenceId });
+
+            entity.HasOne(m => m.User)
+                  .WithMany(u => u.Members)
+                  .HasForeignKey(m => m.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(m => m.Residence)
+                  .WithMany(r => r.Members)
+                  .HasForeignKey(m => m.ResidenceId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ================================
+        // UserSettings
+        // ================================
+        modelBuilder.Entity<UserSettings>(entity =>
+        {
+            entity.HasKey(us => us.Id);
+
+            entity.HasOne(us => us.User)
+                  .WithOne()
+                  .HasForeignKey<UserSettings>(us => us.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Property(us => us.Theme).HasMaxLength(50);
+            entity.Property(us => us.Language).HasMaxLength(10);
+        });
     }
 
-
-    /// <summary>
-    /// Salva as alterações no contexto e atualiza os campos de auditoria (timestamps)
-    /// </summary>
-    /// <returns></returns>
     public override int SaveChanges()
     {
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
@@ -105,11 +144,6 @@ public class SplitCostDbContext : DbContext
         return base.SaveChanges();
     }
 
-    /// <summary>
-    /// Salva as alterações no contexto de forma assíncrona e atualiza os campos de auditoria (timestamps)
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
@@ -122,5 +156,4 @@ public class SplitCostDbContext : DbContext
 
         return base.SaveChangesAsync(cancellationToken);
     }
-
 }

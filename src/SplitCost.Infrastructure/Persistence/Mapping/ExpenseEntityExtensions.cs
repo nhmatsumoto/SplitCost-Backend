@@ -22,9 +22,8 @@ public static class ExpenseEntityExtensions
             .SetAmount(entity.Amount)
             .SetDate(entity.Date)
             .SetDescription(entity.Description)
-            .SetResidenceId(entity.ResidenceId)
-            .SetWhoRegistered(entity.RegisteredByUserId)
-            .SetWhoPaid(entity.PaidByUserId);
+            .SetResidenceId(entity.ResidenceId);
+            
     }
 
     //public static ExpenseEntity ToEntity(this Expense domain)

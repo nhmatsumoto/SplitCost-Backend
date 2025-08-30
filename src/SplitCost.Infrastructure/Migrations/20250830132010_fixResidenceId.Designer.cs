@@ -12,8 +12,8 @@ using SpitCost.Infrastructure.Context;
 namespace SplitCost.Infrastructure.Migrations
 {
     [DbContext(typeof(SplitCostDbContext))]
-    [Migration("20250827081746_updates")]
-    partial class updates
+    [Migration("20250830132010_fixResidenceId")]
+    partial class fixResidenceId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace SplitCost.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ExpenseEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.Expense", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,16 +48,6 @@ namespace SplitCost.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<bool>("IsSharedAmongMembers")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PaidByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RegisteredByUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("RegisteredByUserId");
-
                     b.Property<Guid>("ResidenceId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ResidenceId");
@@ -68,18 +58,19 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PaidByUserId");
-
-                    b.HasIndex("RegisteredByUserId");
-
                     b.HasIndex("ResidenceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Expenses");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.IncomeEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.Income", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,6 +82,9 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Property<int>("Category")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -100,6 +94,9 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.Property<Guid>("ResidenceId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -113,40 +110,37 @@ namespace SplitCost.Infrastructure.Migrations
                     b.ToTable("Incomes");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.MemberEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.Member", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("UserId");
 
                     b.Property<Guid>("ResidenceId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ResidenceId");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("UserId");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "ResidenceId");
 
                     b.HasIndex("ResidenceId");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Members");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.Residence", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -169,10 +163,6 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CreatedByUserId");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -205,12 +195,10 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedByUserId");
-
                     b.ToTable("Residences");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.UserEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -218,68 +206,97 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("AvatarUrl");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("Email");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Name");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("Username");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ExpenseEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.UserSettings", b =>
                 {
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "PaidBy")
-                        .WithMany("ResidenceExpensesPaid")
-                        .HasForeignKey("PaidByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "RegisteredBy")
-                        .WithMany("Expenses")
-                        .HasForeignKey("RegisteredByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", "Residence")
+                    b.Property<bool>("ReceiveEmailNotifications")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ResidenceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Theme")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResidenceId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserSettings");
+                });
+
+            modelBuilder.Entity("SplitCost.Domain.Entities.Expense", b =>
+                {
+                    b.HasOne("SplitCost.Domain.Entities.Residence", "Residence")
                         .WithMany("Expenses")
                         .HasForeignKey("ResidenceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("PaidBy");
-
-                    b.Navigation("RegisteredBy");
+                    b.HasOne("SplitCost.Domain.Entities.User", null)
+                        .WithMany("Expenses")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Residence");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.IncomeEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.Income", b =>
                 {
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", "Residence")
+                    b.HasOne("SplitCost.Domain.Entities.Residence", "Residence")
                         .WithMany("Incomes")
                         .HasForeignKey("ResidenceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "User")
+                    b.HasOne("SplitCost.Domain.Entities.User", "User")
                         .WithMany("Incomes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -290,18 +307,18 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.MemberEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.Member", b =>
                 {
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", "Residence")
+                    b.HasOne("SplitCost.Domain.Entities.Residence", "Residence")
                         .WithMany("Members")
                         .HasForeignKey("ResidenceId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "User")
-                        .WithOne("Member")
-                        .HasForeignKey("SplitCost.Infrastructure.Persistence.Entities.MemberEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("SplitCost.Domain.Entities.User", "User")
+                        .WithMany("Members")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Residence");
@@ -309,18 +326,24 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.UserSettings", b =>
                 {
-                    b.HasOne("SplitCost.Infrastructure.Persistence.Entities.UserEntity", "CreatedBy")
+                    b.HasOne("SplitCost.Domain.Entities.Residence", "Residence")
                         .WithMany()
-                        .HasForeignKey("CreatedByUserId")
+                        .HasForeignKey("ResidenceId");
+
+                    b.HasOne("SplitCost.Domain.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("SplitCost.Domain.Entities.UserSettings", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CreatedBy");
+                    b.Navigation("Residence");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.ResidenceEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.Residence", b =>
                 {
                     b.Navigation("Expenses");
 
@@ -329,16 +352,13 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("SplitCost.Infrastructure.Persistence.Entities.UserEntity", b =>
+            modelBuilder.Entity("SplitCost.Domain.Entities.User", b =>
                 {
                     b.Navigation("Expenses");
 
                     b.Navigation("Incomes");
 
-                    b.Navigation("Member")
-                        .IsRequired();
-
-                    b.Navigation("ResidenceExpensesPaid");
+                    b.Navigation("Members");
                 });
 #pragma warning restore 612, 618
         }

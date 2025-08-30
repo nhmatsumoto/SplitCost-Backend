@@ -53,6 +53,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IExpenseRepository, ExpenseRepository>();
         services.AddScoped<IIncomeRepository, IncomeRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();
+        services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork<SplitCostDbContext>>();
 
         // Registra as configurações de mapeamento

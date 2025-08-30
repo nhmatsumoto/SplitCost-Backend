@@ -17,11 +17,6 @@ public class Residence : BaseEntity
     [Column("Name")]
     public string Name { get; set; }
 
-    [ForeignKey("CreatedBy")]
-    [Column("CreatedByUserId")]
-    public Guid CreatedByUserId { get; set; }
-    public User CreatedBy { get; set; }
-
     //Address
     [Required]
     [MaxLength(200)]
@@ -56,13 +51,11 @@ public class Residence : BaseEntity
 
     public List<Income> Incomes { get; set; } = new List<Income>();
 
-
     internal Residence() { }
 
     internal Residence(string name, Guid createdByUserId, string street, string number, string apartment, string city, string prefecture, string country, string postalCode)
     {
         SetName(name);
-        SetCreatedByUser(createdByUserId);
         SetStreet(street);
         SetNumber(number);
         SetApartment(apartment);
@@ -85,14 +78,6 @@ public class Residence : BaseEntity
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("O nome da residência não pode ser vazio.");
         Name = name.Trim();
-        return this;
-    }
-
-    public Residence SetCreatedByUser(Guid userId)
-    {
-        if (userId == Guid.Empty)
-            throw new ArgumentException("Usuário criador inválido.");
-        CreatedByUserId = userId;
         return this;
     }
 
@@ -186,13 +171,6 @@ public class Residence : BaseEntity
         if (expenses is null) throw new ArgumentNullException(nameof(expenses));
         Expenses.Clear();
         Expenses.AddRange(expenses);
-        return this;
-    }
-
-    public Residence SetCreatedBy(User user)
-    {
-        if (user == null) throw new ArgumentNullException(nameof(user));
-        CreatedBy = user;
         return this;
     }
 }

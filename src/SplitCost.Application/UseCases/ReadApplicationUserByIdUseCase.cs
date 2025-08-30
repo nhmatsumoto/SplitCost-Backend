@@ -3,11 +3,11 @@ using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.UseCases;
 
-public class GetApplicationUserByIdUseCase : IUseCase<Guid, Result<GetApplicationUserByIdOutput>>
+public class GetApplicationUserByIdUseCase : IUseCase<Guid, Result<User>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
@@ -18,7 +18,7 @@ public class GetApplicationUserByIdUseCase : IUseCase<Guid, Result<GetApplicatio
         _mapper             = mapper            ?? throw new ArgumentException(nameof(mapper));
     }
 
-    public async Task<Result<GetApplicationUserByIdOutput>> ExecuteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Result<User>> ExecuteAsync(Guid id, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -26,12 +26,10 @@ public class GetApplicationUserByIdUseCase : IUseCase<Guid, Result<GetApplicatio
 
         if (result == null)
         {
-            return Result<GetApplicationUserByIdOutput>.Failure(Messages.UserNotFound, ErrorType.NotFound);
+            return Result<User>.Failure(Messages.UserNotFound, ErrorType.NotFound);
         }
 
-        var user = _mapper.Map<GetApplicationUserByIdOutput>(result);
-
-        return Result<GetApplicationUserByIdOutput>.Success(user);
+        return Result<User>.Success(result);
     }
 
 }

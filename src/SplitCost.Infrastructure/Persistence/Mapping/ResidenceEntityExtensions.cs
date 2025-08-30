@@ -23,7 +23,6 @@ public static class ResidenceEntityExtensions
             .Create()
             .SetId(entity.Id)
             .SetName(entity.Name)
-            .SetCreatedByUser(entity.CreatedByUserId)
             .SetStreet(entity.Street)
             .SetNumber(entity.Number)
             .SetApartment(entity.Apartment)
