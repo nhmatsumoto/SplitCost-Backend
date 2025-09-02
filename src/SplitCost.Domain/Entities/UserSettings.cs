@@ -1,6 +1,6 @@
-﻿namespace SplitCost.Domain.Entities;
+namespace SplitCost.Domain.Entities;
 
-public class UserSettings
+public class UserSettings : BaseEntity
 {
     public Guid Id { get; private set; }
     public bool ReceiveEmailNotifications { get; private set; } = true;
