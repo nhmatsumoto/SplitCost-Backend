@@ -2,19 +2,15 @@
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Application.Dtos;
 
 namespace SplitCost.Application.UseCases;
 
 public class ReadExpensesByResidenceIdUseCase : IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>>
 {
-    private readonly IMapper _mapper;
     private readonly IExpenseRepository _expenseRepository;
-    public ReadExpensesByResidenceIdUseCase(
-        IMapper mapper,
-        IExpenseRepository expenseRepository)
+    public ReadExpensesByResidenceIdUseCase(IExpenseRepository expenseRepository)
     {
-        _mapper             = mapper            ?? throw new ArgumentNullException(nameof(mapper));
         _expenseRepository  = expenseRepository ?? throw new ArgumentNullException(nameof(expenseRepository));
     }
     public async Task<Result<IEnumerable<GetExpenseByIdOutput>>> ExecuteAsync(Guid input, CancellationToken cancellationToken)

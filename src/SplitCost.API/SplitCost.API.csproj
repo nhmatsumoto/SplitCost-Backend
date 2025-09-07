@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
@@ -17,11 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SplitCost.Application\SplitCost.Application.csproj" />
+    <ProjectReference Include="..\SplitCost.Domain.Exceptions\SplitCost.Domain.Exceptions.csproj" />
     <ProjectReference Include="..\SplitCost.Infrastructure\SplitCost.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Logs\" />
   </ItemGroup>
 
 </Project>

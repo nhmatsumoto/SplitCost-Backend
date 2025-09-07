@@ -10,12 +10,10 @@ namespace SplitCost.Application.UseCases;
 public class GetApplicationUserByIdUseCase : IUseCase<Guid, Result<User>>
 {
     private readonly IUserRepository _userRepository;
-    private readonly IMapper _mapper;
-
+   
     public GetApplicationUserByIdUseCase(IUserRepository userRepository, IMapper mapper)
     {
-        _userRepository     = userRepository    ?? throw new ArgumentException(nameof(userRepository));
-        _mapper             = mapper            ?? throw new ArgumentException(nameof(mapper));
+        _userRepository = userRepository ?? throw new ArgumentException(nameof(userRepository));
     }
 
     public async Task<Result<User>> ExecuteAsync(Guid id, CancellationToken cancellationToken)

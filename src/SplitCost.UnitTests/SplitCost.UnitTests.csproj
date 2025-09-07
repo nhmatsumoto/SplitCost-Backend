@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SplitCost.API\SplitCost.API.csproj" />
     <ProjectReference Include="..\SplitCost.Application\SplitCost.Application.csproj" />
     <ProjectReference Include="..\SplitCost.Domain\SplitCost.Domain.csproj" />
     <ProjectReference Include="..\SplitCost.Infrastructure\SplitCost.Infrastructure.csproj" />

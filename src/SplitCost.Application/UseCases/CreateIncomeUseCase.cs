@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Application.Dtos;
 using SplitCost.Domain.Factories;
 
 namespace SplitCost.Application.UseCases;
@@ -18,7 +18,7 @@ public class CreateIncomeUseCase(
 {
     private readonly IIncomeRepository                  _incomeRepository = incomeRepository    ?? throw new ArgumentNullException(nameof(incomeRepository));
     private readonly IUnitOfWork                        _unitOfWork = unitOfWork                ?? throw new ArgumentNullException(nameof(unitOfWork));
-    private readonly IMapper                            _mapper = mapper                        ?? throw new ArgumentNullException(nameof(mapper));
+   
     private readonly IValidator<CreateIncomeInput>      _validator = validator                  ?? throw new ArgumentNullException(nameof(validator));
     private readonly ILogger<CreateIncomeUseCase>       _logger = logger                        ?? throw new ArgumentNullException(nameof(logger));
 

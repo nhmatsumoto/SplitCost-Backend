@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SplitCost.Application\SplitCost.Application.csproj" />
+    <ProjectReference Include="..\SplitCost.Domain.Exceptions\SplitCost.Domain.Exceptions.csproj" />
     <ProjectReference Include="..\SplitCost.Domain\SplitCost.Domain.csproj" />
   </ItemGroup>
 

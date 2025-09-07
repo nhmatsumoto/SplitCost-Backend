@@ -13,9 +13,7 @@ public static class ExpenseFactory
         DateTime date,
         string description,
         bool isSharedAmongMembers,
-        Guid residenceId,
-        Guid registeredByUserId,
-        Guid paidByUserId) =>
+        Guid residenceId) =>
             new Expense()
                 .SetType(type)
                 .SetCategory(category)

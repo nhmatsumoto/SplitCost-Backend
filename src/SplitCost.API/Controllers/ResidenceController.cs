@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Application.Dtos;
 using SplitCost.Domain.Entities;
 
 namespace SplitCost.API.Controllers
@@ -13,9 +13,9 @@ namespace SplitCost.API.Controllers
     {
         private readonly IUseCase<CreateResidenceInput, Result<Residence>> _createResidenceUseCase;
         private readonly IUseCase<GetResidenceByIdInput, Result<Residence>> _getResidenceByIdUseCase;
-
         private readonly IUseCase<AddMemberInput, Result<Member>> _addMemberUseCase;
         private readonly IUseCase<GetMemberByResidenceIdInput, Result<GetMemberByresidenceIdOutput>> _getMemberUseCase;
+
         public ResidenceController(
             IUseCase<CreateResidenceInput, Result<Residence>> createResidenceUseCase,
             IUseCase<AddMemberInput, Result<Member>> addMemberUseCase,

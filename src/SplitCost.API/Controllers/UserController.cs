@@ -1,7 +1,7 @@
-﻿ using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Application.Dtos;
 using SplitCost.Domain.Entities;
 
 namespace SplitCost.API.Controllers;
@@ -10,12 +10,12 @@ namespace SplitCost.API.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> _createApplicationUserUseCase;
+    private readonly IUseCase<CreateUserInput, Result<CreateUserOutput>> _createApplicationUserUseCase;
     private readonly IUseCase<Guid, Result<User>> _getApplicationUserUseCase;
     private readonly IUseCase<Guid, Result<UserSettings>> _getUserSettingsUseCase;
 
     public UserController(
-        IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>> createApplicationUserUseCase,
+        IUseCase<CreateUserInput, Result<CreateUserOutput>> createApplicationUserUseCase,
         IUseCase<Guid, Result<User>> getApplicationUserUseCase,
         IUseCase<Guid, Result<UserSettings>> getUserSettingsUseCase)
     {
@@ -27,7 +27,7 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RegisterApplicationUser([FromBody] CreateApplicationUserInput createApplicationUserInput, CancellationToken cancellationToken)
+    public async Task<IActionResult> RegisterApplicationUser([FromBody] CreateUserInput createApplicationUserInput, CancellationToken cancellationToken)
     {
         var result = await _createApplicationUserUseCase.ExecuteAsync(createApplicationUserInput, cancellationToken);
 

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SpitCost.Infrastructure.Context;
-using SplitCost.Application.Common.Configuration;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Services;
@@ -55,21 +54,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork<SplitCostDbContext>>();
-
-        // Registra as configurações de mapeamento
-        TypeAdapterConfig.GlobalSettings.Scan(typeof(MapsterConfig).Assembly);
-        services.AddScoped<IMapper, ServiceMapper>();
-
-        var config = TypeAdapterConfig.GlobalSettings;
-        config.Default
-           .PreserveReference(true) // Preserva referências circulares, se necessário
-           .IgnoreNullValues(true); // Ignora valores nulos durante o mapeamento
-        config.Scan(typeof(MapsterConfig).Assembly);
-       
-        // Registra IMapper do Mapster
-        services.AddSingleton(config);
-        services.AddScoped<IMapper, ServiceMapper>();
-
 
         //Keycloak Config
         services.Configure<KeycloakSettings>(configuration.GetSection("Keycloak"));

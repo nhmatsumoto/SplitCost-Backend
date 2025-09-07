@@ -2,12 +2,11 @@
 using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
-using SplitCost.Application.Common.Configuration;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
+using SplitCost.Application.Dtos;
 using SplitCost.Application.UseCases;
-using SplitCost.Application.UseCases.Dtos;
-using SplitCost.Application.UseCases.Validations;
+using SplitCost.Application.Validations;
 using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.Extensions;
@@ -21,10 +20,6 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        // Mapster Configuration
-        TypeAdapterConfig.GlobalSettings.Scan(typeof(MapsterConfig).Assembly);
-        services.AddScoped<IMapper, ServiceMapper>();
-
         // FluentValidation Configuration
         services.AddValidatorsFromAssemblyContaining<CreateExpenseInputValidator>();
 
@@ -43,7 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>>, ReadExpensesByResidenceIdUseCase>();
 
         // Users
-        services.AddScoped<IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>>, CreateApplicationUserUseCase>();
+        services.AddScoped<IUseCase<CreateUserInput, Result<CreateUserOutput>>, CreateApplicationUserUseCase>();
         services.AddScoped<IUseCase<Guid, Result<User>>, GetApplicationUserByIdUseCase>();
         services.AddScoped<IUseCase<Guid, Result<UserSettings>>, ReadUserSettingsByUserIdUseCase>();
 

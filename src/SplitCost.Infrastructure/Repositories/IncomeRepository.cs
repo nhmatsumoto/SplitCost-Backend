@@ -12,6 +12,4 @@ public class IncomeRepository : Repository<Income>, IIncomeRepository
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
-
-    
 }

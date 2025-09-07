@@ -1,3 +1,5 @@
+using SplitCost.Domain.Common;
+
 namespace SplitCost.Domain.Entities;
 
 public class UserSettings : BaseEntity

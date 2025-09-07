@@ -11,8 +11,16 @@ public class Expense : BaseEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; private set; }
+
+    [Required]
+    [EnumDataType(typeof(ExpenseType))]
     public ExpenseType Type { get; private set; }
+
+    [Required]
+    [EnumDataType(typeof(ExpenseCategory))]
     public ExpenseCategory Category { get; private set; }
+
+    [Required]
     public DateTime Date { get; private set; }
 
     [Column(TypeName = "decimal(18,2)")]
@@ -22,11 +30,14 @@ public class Expense : BaseEntity
     [Required]
     public string Description { get; private set; } = string.Empty;
 
+    [ForeignKey("User")]
+    [Column("PayingUserId")]
+    public Guid PayingUserId{ get; set; }
+
     [ForeignKey("Residence")]
     [Column("ResidenceId")]
     public Guid ResidenceId { get; private set; }
     public Residence Residence { get; private set; } = null!;
-
     
     internal Expense() { }
 
@@ -44,7 +55,6 @@ public class Expense : BaseEntity
         SetDate(date);
         SetDescription(description);
         SetResidenceId(residenceId);
-       
     }
 
     public Expense SetId(Guid id)
@@ -92,6 +102,13 @@ public class Expense : BaseEntity
     {
         if (residenceId == Guid.Empty) throw new ArgumentException("Residência inválida.");
         ResidenceId = residenceId;
+        return this;
+    }
+
+    public Expense SetPayingUserId(Guid payingUserId)
+    {
+        if (payingUserId == Guid.Empty) throw new ArgumentException("Usuário pagante inválido.");
+        PayingUserId = payingUserId;
         return this;
     }
 }

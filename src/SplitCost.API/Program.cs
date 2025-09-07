@@ -4,6 +4,7 @@ using Playground.Infrastructure.DependencyInjection;
 using Serilog;
 using SplitCost.Application.Common.Services;
 using SplitCost.Application.Extensions;
+using SplitCost.Domain.Exceptions.Extensions;
 using SplitCost.Infrastructure.Services;
 
 Log.Logger = new LoggerConfiguration()
@@ -22,10 +23,9 @@ builder.Configuration
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-
 builder.Services.AddHttpClient<IKeycloakService, KeycloakService>();
 
-#warning "Certifique-se de que o Keycloak está configurado corretamente antes de iniciar a aplicação."
+// Authentication
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -41,6 +41,7 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
+// Authorization
 builder.Services.AddAuthorization();
 
 // Infrastructure
@@ -49,8 +50,10 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Application 
 builder.Services.AddApplication();
 
+// Exceptions
+builder.Services.AddExceptions(builder.Configuration);
+
 // Alterar para operar em produção
-#warning "Certifique-se de que o ambiente está configurado corretamente para produção antes de implantar."
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
@@ -61,11 +64,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 var app = builder.Build();
 
-// Exception Middleware 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("FrontendPolicy");
 

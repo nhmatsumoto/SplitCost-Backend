@@ -1,6 +1,4 @@
-﻿using SplitCost.Application.Interfaces;
-using SplitCost.Application.UseCases.Dtos;
-using SplitCost.Domain.Entities;
+﻿using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.Common.Repositories;
 

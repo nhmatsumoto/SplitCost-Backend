@@ -1,7 +1,7 @@
 ﻿using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Application.Dtos;
 
 namespace SplitCost.Application.UseCases
 {
@@ -14,8 +14,6 @@ namespace SplitCost.Application.UseCases
             _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
         }
 
-
-        #warning finalizar esta implementação
         public async Task<Result<UpdateResidenceOutput>> ExecuteAsync(UpdateResidenceInput updateResidenceInput, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

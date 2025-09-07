@@ -6,7 +6,7 @@ using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Application.Dtos;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
 
@@ -16,7 +16,6 @@ public class CreateResidenceUseCase(
     IResidenceRepository residenceRepository,
     IMemberRepository memberRepository,
     IUnitOfWork unitOfWork,
-    IMapper mapper,
     IValidator<CreateResidenceInput> validator,
     ILogger<CreateResidenceUseCase> logger,
     IUserSettingsRepository userSettingsRepository) : IUseCase<CreateResidenceInput, Result<Residence>>
@@ -24,7 +23,6 @@ public class CreateResidenceUseCase(
     private readonly IResidenceRepository               _residenceRepository        = residenceRepository       ?? throw new ArgumentNullException(nameof(residenceRepository));
     private readonly IMemberRepository                  _memberRepository           = memberRepository          ?? throw new ArgumentNullException(nameof(memberRepository));
     private readonly IUnitOfWork                        _unitOfWork                 = unitOfWork                ?? throw new ArgumentNullException(nameof(unitOfWork));
-    private readonly IMapper                            _mapper                     = mapper                    ?? throw new ArgumentNullException(nameof(mapper));
     private readonly IValidator<CreateResidenceInput>   _validator                  = validator                 ?? throw new ArgumentNullException(nameof(validator));
     private readonly ILogger<CreateResidenceUseCase>    _logger                     = logger                    ?? throw new ArgumentNullException(nameof(logger));
     private readonly IUserSettingsRepository            _userSettingsRepository     = userSettingsRepository    ?? throw new ArgumentNullException(nameof(userSettingsRepository));

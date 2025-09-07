@@ -3,14 +3,13 @@ using MapsterMapper;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Application.Dtos;
 
 namespace SplitCost.Application.UseCases;
 
 public class ReadResidenceByUserIdUseCase : IUseCase<GetResidenceByUserIdInput, Result<GetResidenceByUserIdOutput>>
 {
     private readonly IResidenceRepository _residenceRepository;
-    private readonly IMapper _mapper;
     private readonly IValidator<GetResidenceByUserIdInput> _validator;
 
     public ReadResidenceByUserIdUseCase(
@@ -19,7 +18,6 @@ public class ReadResidenceByUserIdUseCase : IUseCase<GetResidenceByUserIdInput, 
         IValidator<GetResidenceByUserIdInput> validator)
     {
         _residenceRepository    = residenceRepository   ?? throw new ArgumentNullException(nameof(residenceRepository));
-        _mapper                 = mapper                ?? throw new ArgumentNullException(nameof(mapper));
         _validator              = validator             ?? throw new ArgumentNullException(nameof(validator));
     }
 

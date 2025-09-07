@@ -5,7 +5,7 @@ using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.UseCases.Dtos;
+using SplitCost.Application.Dtos;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
 
@@ -16,7 +16,6 @@ public class CreateMemberUseCase : IUseCase<AddMemberInput, Result<Member>>
     private readonly IMemberRepository _memberRepository;
     private readonly IValidator<AddMemberInput> _validator;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
     private readonly ILogger<CreateMemberUseCase> _logger;
 
     public CreateMemberUseCase(
@@ -30,7 +29,6 @@ public class CreateMemberUseCase : IUseCase<AddMemberInput, Result<Member>>
         _memberRepository   = memberRepository  ?? throw new ArgumentNullException(nameof(memberRepository));
         _validator          = validator         ?? throw new ArgumentNullException(nameof(validator));
         _unitOfWork         = unitOfWork        ?? throw new ArgumentNullException(nameof(unitOfWork));
-        _mapper             = mapper            ?? throw new ArgumentNullException(nameof(mapper));
         _logger             = logger            ?? throw new ArgumentNullException(nameof(logger));
     }
 
