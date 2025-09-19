@@ -39,7 +39,7 @@ public class Expense : BaseEntity
     public Guid ResidenceId { get; private set; }
     public Residence Residence { get; private set; } = null!;
     
-    internal Expense() { }
+    public Expense() { }
 
     internal Expense(
         ExpenseType type,

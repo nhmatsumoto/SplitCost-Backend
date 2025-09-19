@@ -20,10 +20,10 @@ public class ExceptionMiddleware
         _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
-
     public async Task InvokeAsync(HttpContext context)
     {
-        var handlers = _serviceProvider.GetServices<IExceptionHandler>();
+        using var scope = _serviceProvider.CreateScope();
+        var handlers = scope.ServiceProvider.GetServices<IExceptionHandler>();
 
         try
         {

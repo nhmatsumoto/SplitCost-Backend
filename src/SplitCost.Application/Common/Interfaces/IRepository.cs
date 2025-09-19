@@ -8,6 +8,8 @@ public interface IRepository<T> where T : class
     Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
     Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+
+#warning renomear para melhor clareza, Obter 1 e Obter N 
     Task<IEnumerable<T>> GetByPredicateAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
     Task<T?> GetByExpression(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
 }

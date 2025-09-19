@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using MapsterMapper;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
@@ -14,7 +13,6 @@ public class ReadResidenceByUserIdUseCase : IUseCase<GetResidenceByUserIdInput, 
 
     public ReadResidenceByUserIdUseCase(
         IResidenceRepository residenceRepository, 
-        IMapper mapper,
         IValidator<GetResidenceByUserIdInput> validator)
     {
         _residenceRepository    = residenceRepository   ?? throw new ArgumentNullException(nameof(residenceRepository));

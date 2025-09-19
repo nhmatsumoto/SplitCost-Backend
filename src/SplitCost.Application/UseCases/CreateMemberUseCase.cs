@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using MapsterMapper;
 using Microsoft.Extensions.Logging;
 using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
@@ -23,7 +22,6 @@ public class CreateMemberUseCase : IUseCase<AddMemberInput, Result<Member>>
         IMemberRepository memberRepository, 
         IValidator<AddMemberInput> validator,
         IUnitOfWork unitOfWork,
-        IMapper mapper,
         ILogger<CreateMemberUseCase> logger)
     {
         _memberRepository   = memberRepository  ?? throw new ArgumentNullException(nameof(memberRepository));

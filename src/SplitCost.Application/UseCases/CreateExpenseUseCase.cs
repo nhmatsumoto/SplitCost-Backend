@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using MapsterMapper;
 using Microsoft.Extensions.Logging;
+using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
 using SplitCost.Application.Dtos;
-using SplitCost.Application.Mappers;
+using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.UseCases;
 
@@ -40,13 +40,12 @@ public class CreateExpenseUseCase : IUseCase<CreateExpenseInput, Result<CreateEx
             return Result<CreateExpenseOutput>.FromFluentValidation("Dados inválidos", validationResult.Errors);
         }
 
-        var expense = ExpenseMapper.ToDomain(input);
+        var expense = Mapper.Map<CreateExpenseInput, Expense>(input);
 
         await _expenseRepository.AddAsync(expense, cancellationToken);
         await _unitOfWork.CommitAsync(cancellationToken);
 
-        //Revisar o compartilhamento de despesas entre membros
-        var result = ExpenseMapper.ToOutput(expense, input.IsSharedAmongMembers);
+        var result = Mapper.Map<Expense, CreateExpenseOutput>(expense);
 
         return Result<CreateExpenseOutput>.Success(result);
     }

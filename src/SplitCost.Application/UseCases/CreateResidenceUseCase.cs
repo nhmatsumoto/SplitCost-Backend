@@ -1,6 +1,4 @@
-﻿
-using FluentValidation;
-using MapsterMapper;
+﻿using FluentValidation;
 using Microsoft.Extensions.Logging;
 using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
@@ -12,21 +10,30 @@ using SplitCost.Domain.Factories;
 
 namespace SplitCost.Application.UseCases;
 
-public class CreateResidenceUseCase(
-    IResidenceRepository residenceRepository,
-    IMemberRepository memberRepository,
-    IUnitOfWork unitOfWork,
-    IValidator<CreateResidenceInput> validator,
-    ILogger<CreateResidenceUseCase> logger,
-    IUserSettingsRepository userSettingsRepository) : IUseCase<CreateResidenceInput, Result<Residence>>
+public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Residence>>
 {
-    private readonly IResidenceRepository               _residenceRepository        = residenceRepository       ?? throw new ArgumentNullException(nameof(residenceRepository));
-    private readonly IMemberRepository                  _memberRepository           = memberRepository          ?? throw new ArgumentNullException(nameof(memberRepository));
-    private readonly IUnitOfWork                        _unitOfWork                 = unitOfWork                ?? throw new ArgumentNullException(nameof(unitOfWork));
-    private readonly IValidator<CreateResidenceInput>   _validator                  = validator                 ?? throw new ArgumentNullException(nameof(validator));
-    private readonly ILogger<CreateResidenceUseCase>    _logger                     = logger                    ?? throw new ArgumentNullException(nameof(logger));
-    private readonly IUserSettingsRepository            _userSettingsRepository     = userSettingsRepository    ?? throw new ArgumentNullException(nameof(userSettingsRepository));
+    private readonly IResidenceRepository _residenceRepository;
+    private readonly IMemberRepository _memberRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IValidator<CreateResidenceInput> _validator;
+    private readonly IUserSettingsRepository _userSettingsRepository;
+    private readonly ILogger<CreateResidenceUseCase> _logger;
     
+    public CreateResidenceUseCase(
+        IResidenceRepository residenceRepository, 
+        IMemberRepository memberRepository, 
+        IUnitOfWork unitOfWork, 
+        IValidator<CreateResidenceInput> validator, 
+        ILogger<CreateResidenceUseCase> logger, 
+        IUserSettingsRepository userSettingsRepository)
+    {
+        _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
+        _memberRepository = memberRepository ?? throw new ArgumentNullException(nameof(memberRepository));
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+        _userSettingsRepository = userSettingsRepository ?? throw new ArgumentNullException(nameof(userSettingsRepository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
     public async Task<Result<Residence>> ExecuteAsync(CreateResidenceInput input, CancellationToken cancellationToken)
     {

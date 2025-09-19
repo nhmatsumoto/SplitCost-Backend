@@ -1,5 +1,4 @@
-﻿using MapsterMapper;
-using SplitCost.Application.Common;
+﻿using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
@@ -11,7 +10,7 @@ public class GetApplicationUserByIdUseCase : IUseCase<Guid, Result<User>>
 {
     private readonly IUserRepository _userRepository;
    
-    public GetApplicationUserByIdUseCase(IUserRepository userRepository, IMapper mapper)
+    public GetApplicationUserByIdUseCase(IUserRepository userRepository)
     {
         _userRepository = userRepository ?? throw new ArgumentException(nameof(userRepository));
     }

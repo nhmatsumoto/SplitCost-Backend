@@ -1,6 +1,4 @@
 ﻿using FluentValidation;
-using Mapster;
-using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
@@ -41,8 +39,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUseCase<CreateUserInput, Result<CreateUserOutput>>, CreateApplicationUserUseCase>();
         services.AddScoped<IUseCase<Guid, Result<User>>, GetApplicationUserByIdUseCase>();
         services.AddScoped<IUseCase<Guid, Result<UserSettings>>, ReadUserSettingsByUserIdUseCase>();
-
-
 
 
         // Incomes
