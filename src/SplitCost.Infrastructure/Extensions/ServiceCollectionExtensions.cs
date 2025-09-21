@@ -1,6 +1,4 @@
-﻿using Mapster;
-using MapsterMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -44,6 +42,7 @@ public static class ServiceCollectionExtensions
             throw new InvalidOperationException("A string de conexão 'DefaultConnection' não foi encontrada.");
         }
 
+#warning Alterar base para PostgreSQL
         services.AddDbContext<SplitCostDbContext>(options =>
             options.UseSqlServer(connectionString));
 

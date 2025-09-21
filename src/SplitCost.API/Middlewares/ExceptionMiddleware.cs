@@ -43,7 +43,6 @@ public class ExceptionMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception, IEnumerable<IExceptionHandler> handlers)
     {
-
         var handler = handlers.FirstOrDefault(h => h.CanHandle(exception))
                      ?? handlers.First(h => h is DefaultExceptionHandler);
 
@@ -51,10 +50,14 @@ public class ExceptionMiddleware
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = statusCode;
+        
+        var userMessage = statusCode == 500
+            ? "Ocorreu um erro interno. Tente novamente mais tarde."
+            : message;
 
         var errorResponse = new
         {
-            Message = message,
+            Message = userMessage,
             StatusCode = statusCode
         };
 
@@ -62,5 +65,9 @@ public class ExceptionMiddleware
             new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
 
         await context.Response.WriteAsync(json);
+
+        // Log completo com stack trace
+        _logger.LogError(exception, "Exception details: {ExceptionMessage}", exception.Message);
     }
+
 }

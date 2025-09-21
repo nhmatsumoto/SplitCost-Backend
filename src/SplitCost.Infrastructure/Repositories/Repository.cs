@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SplitCost.Domain.Entities;
 using System.Linq.Expressions;
 
 public class Repository<T> : IRepository<T> where T : class

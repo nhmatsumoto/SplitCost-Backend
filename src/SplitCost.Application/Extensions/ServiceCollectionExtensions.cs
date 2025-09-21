@@ -27,7 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUseCase<UpdateResidenceInput, Result<UpdateResidenceOutput>>, UpdateResidenceUseCase>();
 
         // Member
-        services.AddScoped<IUseCase<GetMemberByResidenceIdInput, Result<Dictionary<Guid, string>>>, ReadMembersByResidenceIdUseCase>();
+        services.AddScoped<IUseCase<GetMemberByResidenceIdInput, Result<IEnumerable<MemberItemDto>>>, ReadMembersByResidenceIdUseCase>();
         services.AddScoped<IUseCase<AddMemberInput, Result<Member>>, CreateMemberUseCase>();
 
         // Expenses

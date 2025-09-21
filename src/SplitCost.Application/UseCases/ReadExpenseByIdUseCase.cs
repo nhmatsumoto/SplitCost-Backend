@@ -1,30 +1,50 @@
-﻿using SplitCost.Application.Common;
-using SplitCost.Application.Common.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using SplitCost.Application.Common;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
+using SplitCost.Application.Common.UseCases;
 using SplitCost.Application.Dtos;
 using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.UseCases;
 
-public class ReadExpenseByIdUseCase : IUseCase<Guid, Result<GetExpenseByIdOutput>>
+public class ReadExpenseByIdUseCase : BaseUseCase<Guid, GetExpenseByIdOutput>
 {
     private readonly IExpenseRepository _expenseRepository;
-   
-    public ReadExpenseByIdUseCase(IExpenseRepository expenseRepository)
+    private readonly ILogger<ReadExpenseByIdUseCase> _logger;
+
+    public ReadExpenseByIdUseCase(
+        IExpenseRepository expenseRepository,
+        ILogger<ReadExpenseByIdUseCase> logger)
     {
-        _expenseRepository = expenseRepository ?? throw new ArgumentException(nameof(expenseRepository));
+        _expenseRepository = expenseRepository ?? throw new ArgumentNullException(nameof(expenseRepository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Result<GetExpenseByIdOutput>> ExecuteAsync(Guid input, CancellationToken cancellationToken)
+    protected override Task<FluentValidation.Results.ValidationResult> ValidateAsync(Guid input, CancellationToken cancellationToken)
+    {
+        if (input == Guid.Empty)
+        {
+            return Task.FromResult(new FluentValidation.Results.ValidationResult(
+                new[] { new FluentValidation.Results.ValidationFailure(nameof(input), "Id não pode ser vazio") }
+            ));
+        }
+
+        return Task.FromResult(new FluentValidation.Results.ValidationResult());
+    }
+
+    protected override async Task<Result<GetExpenseByIdOutput>> HandleAsync(Guid input, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+
+        _logger.BeginScope("Buscando despesa com Id {ExpenseId}", input);
 
         var expense = await _expenseRepository.GetByIdAsync(input, cancellationToken);
 
         if (expense == null)
         {
-            return Result<GetExpenseByIdOutput>.Failure($"Expense not found.", ErrorType.NotFound);
+            _logger.LogWarning("Despesa não encontrada: {ExpenseId}", input);
+            return Result<GetExpenseByIdOutput>.Failure("Expense not found.", ErrorType.NotFound);
         }
 
         var expenseDto = Mapper.Map<Expense, GetExpenseByIdOutput>(expense);

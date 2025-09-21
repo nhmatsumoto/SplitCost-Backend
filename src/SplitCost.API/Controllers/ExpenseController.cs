@@ -12,19 +12,19 @@ namespace SplitCost.API.Controllers
     {
         private readonly IUseCase<CreateExpenseInput, Result<CreateExpenseOutput>> _createExpenseUseCase;
         private readonly IUseCase<Guid, Result<GetExpenseByIdOutput>> _getExpenseByIdUseCase;
-        private readonly IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>> _getExpenseByResidenceIdUseCase;
-        private readonly IUseCase<Guid, Result<Dictionary<Guid, string>>> _getMemberByResidenceIdUseCase;
+        private readonly IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>> _getExpensesByResidenceIdUseCase;
+        private readonly IUseCase<GetMemberByResidenceIdInput, Result<IEnumerable<MemberItemDto>>> _getMembersByResidenceIdUseCase;
       
         public ExpenseController(
             IUseCase<CreateExpenseInput, Result<CreateExpenseOutput>> createExpenseUseCase,
             IUseCase<Guid, Result<GetExpenseByIdOutput>> getExpenseByIdUseCase,
-            IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>> getExpenseByResidenceIdUseCase,
-            IUseCase<Guid, Result<Dictionary<Guid, string>>> getMemberByResidenceIdUseCase)
+            IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>> getExpensesByResidenceIdUseCase,
+            IUseCase<GetMemberByResidenceIdInput, Result<IEnumerable<MemberItemDto>>> getMembersByResidenceIdUseCase)
         {
             _createExpenseUseCase           = createExpenseUseCase              ?? throw new ArgumentNullException(nameof(createExpenseUseCase));
             _getExpenseByIdUseCase          = getExpenseByIdUseCase             ?? throw new ArgumentNullException(nameof(getExpenseByIdUseCase));
-            _getExpenseByResidenceIdUseCase = getExpenseByResidenceIdUseCase    ?? throw new ArgumentNullException(nameof(getExpenseByResidenceIdUseCase));
-            _getMemberByResidenceIdUseCase  = getMemberByResidenceIdUseCase     ?? throw new ArgumentNullException(nameof(getMemberByResidenceIdUseCase));
+            _getExpensesByResidenceIdUseCase = getExpensesByResidenceIdUseCase    ?? throw new ArgumentNullException(nameof(getExpensesByResidenceIdUseCase));
+            _getMembersByResidenceIdUseCase  = getMembersByResidenceIdUseCase     ?? throw new ArgumentNullException(nameof(getMembersByResidenceIdUseCase));
         }
 
         [HttpPost]
@@ -46,7 +46,6 @@ namespace SplitCost.API.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = ((CreateExpenseOutput)result.Data!).Id }, result);
         }
-
 
         //TODO ADICIONAR VALIDATOR PARA TRATAR ID do Expense
         [HttpGet("{id:guid}")]
@@ -71,13 +70,13 @@ namespace SplitCost.API.Controllers
             }
         }
 
-        [HttpGet("residence/{residenceId:guid}")]
+        [HttpGet("residence/{input:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetExpensesByResidenceId(Guid residenceIdInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExpensesByResidenceId(Guid input, CancellationToken cancellationToken)
         {
-            var result = await _getExpenseByResidenceIdUseCase.ExecuteAsync(residenceIdInput, cancellationToken);
+            var result = await _getExpensesByResidenceIdUseCase.ExecuteAsync(input, cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -111,16 +110,15 @@ namespace SplitCost.API.Controllers
                 .ToList());
         }
 
-
         //ADICIONAR VALIDATOR PARA TRATAR ID DO RESIDENCE
         [HttpGet("users/{residenceId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUsersByResidenceId(Guid residenceId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUsersByResidenceId(GetMemberByResidenceIdInput residenceInput, CancellationToken cancellationToken)
         {
-            var result = await _getMemberByResidenceIdUseCase.ExecuteAsync(residenceId, cancellationToken);
+            var result = await _getMembersByResidenceIdUseCase.ExecuteAsync(residenceInput, cancellationToken);
 
             if (!result.IsSuccess)
             {

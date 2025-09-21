@@ -1,4 +1,5 @@
-﻿using SpitCost.Infrastructure.Context;
+﻿using Microsoft.EntityFrameworkCore;
+using SpitCost.Infrastructure.Context;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Domain.Entities;
 
@@ -13,4 +14,8 @@ public class ExpenseRepository : Repository<Expense>, IExpenseRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
     } 
 
+    public async Task<List<Expense>> GetExpenseListByResidenceId(Guid residenceId, CancellationToken cancellationToken)
+    {
+        return await _context.Expenses.Include(r => r.Residence).Where(x => x.ResidenceId == residenceId).ToListAsync(cancellationToken);
+    }
 }

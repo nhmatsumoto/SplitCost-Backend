@@ -2,6 +2,7 @@
 
 public record CreateResidenceInput
 {
+    //Quem está criando a residência
     public Guid UserId { get; set; }
     public string ResidenceName { get; set; } = string.Empty;
     public string? Street { get; set; }

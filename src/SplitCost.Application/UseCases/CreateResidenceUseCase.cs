@@ -4,13 +4,14 @@ using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
+using SplitCost.Application.Common.UseCases;
 using SplitCost.Application.Dtos;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
 
 namespace SplitCost.Application.UseCases;
 
-public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Residence>>
+public class CreateResidenceUseCase : BaseUseCase<CreateResidenceInput, Residence>
 {
     private readonly IResidenceRepository _residenceRepository;
     private readonly IMemberRepository _memberRepository;
@@ -18,13 +19,13 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Resi
     private readonly IValidator<CreateResidenceInput> _validator;
     private readonly IUserSettingsRepository _userSettingsRepository;
     private readonly ILogger<CreateResidenceUseCase> _logger;
-    
+
     public CreateResidenceUseCase(
-        IResidenceRepository residenceRepository, 
-        IMemberRepository memberRepository, 
-        IUnitOfWork unitOfWork, 
-        IValidator<CreateResidenceInput> validator, 
-        ILogger<CreateResidenceUseCase> logger, 
+        IResidenceRepository residenceRepository,
+        IMemberRepository memberRepository,
+        IUnitOfWork unitOfWork,
+        IValidator<CreateResidenceInput> validator,
+        ILogger<CreateResidenceUseCase> logger,
         IUserSettingsRepository userSettingsRepository)
     {
         _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
@@ -35,28 +36,34 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Resi
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<Result<Residence>> ExecuteAsync(CreateResidenceInput input, CancellationToken cancellationToken)
+    protected override async Task<FluentValidation.Results.ValidationResult> ValidateAsync(CreateResidenceInput input, CancellationToken cancellationToken)
+    {
+        if (input == null)
+        {
+            return new FluentValidation.Results.ValidationResult(
+                new[] { new FluentValidation.Results.ValidationFailure(nameof(input), "Input não pode ser nulo") }
+            );
+        }
+
+        return await _validator.ValidateAsync(input, cancellationToken);
+    }
+
+    protected override async Task<Result<Residence>> HandleAsync(CreateResidenceInput input, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var validationResult = await _validator.ValidateAsync(input);
+        _logger.BeginScope("Criando residência para usuário {UserId}", input.UserId);
 
-        if (!validationResult.IsValid)
-        {
-            return Result<Residence>.FromFluentValidation(Messages.InvalidData, validationResult.Errors);
-        }
-
-        //Alguns campos podem ser nulos
         var residence = ResidenceFactory
             .Create()
             .SetName(input.ResidenceName)
-            .SetStreet(input.Street)
-            .SetNumber(input.Number)
-            .SetApartment(input.Apartment)
-            .SetCity(input.City)
-            .SetPrefecture(input.Prefecture)
-            .SetCountry(input.Country)
-            .SetPostalCode(input.PostalCode);
+            .SetStreet(input.Street!)
+            .SetNumber(input.Number!)
+            .SetApartment(input.Apartment!)
+            .SetCity(input.City!)
+            .SetPrefecture(input.Prefecture!)
+            .SetCountry(input.Country!)
+            .SetPostalCode(input.PostalCode!);
 
         var userSettings = await _userSettingsRepository.GetByExpression(x => x.UserId == input.UserId, cancellationToken);
 
@@ -69,6 +76,7 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Resi
         try
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
+
             await _residenceRepository.AddAsync(residence, cancellationToken);
 
             userSettings.SetResidenceId(residence.Id);
@@ -90,7 +98,7 @@ public class CreateResidenceUseCase : IUseCase<CreateResidenceInput, Result<Resi
         catch (Exception ex)
         {
             await _unitOfWork.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, "Erro ao persistir residência e membro");
+            _logger.LogError(ex, "Erro ao persistir residência e membro para usuário {UserId}", input.UserId);
             return Result<Residence>.Failure(Messages.ResidenceCreationFailed, ErrorType.InternalError);
         }
     }

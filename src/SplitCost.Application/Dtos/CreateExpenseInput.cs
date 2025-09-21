@@ -10,5 +10,6 @@ public record CreateExpenseInput
     public string Description { get; set; } = string.Empty;
     public Guid PaidByUserId { get; set; }
     public bool IsSharedAmongMembers { get; set; } = false;
+    public Guid ResidenceId { get; set; }
     public List<Guid>? SharedWithUserIds { get; set; }
 }

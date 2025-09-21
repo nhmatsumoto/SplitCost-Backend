@@ -13,5 +13,5 @@ public class GetExpenseByIdOutput
     public string? Description { get; set; }
     public Guid ResidenceId { get; set; }
     public Guid RegisteredByUserId { get; set; }
-    public Guid PaidByUserId { get; set; }
+    public Guid PayingUserId { get; set; }
 }

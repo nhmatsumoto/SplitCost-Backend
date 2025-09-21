@@ -1,52 +1,66 @@
-﻿using SplitCost.Application.Common.Interfaces;
+﻿using Microsoft.Extensions.Logging;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
+using SplitCost.Application.Common.UseCases;
 using SplitCost.Application.Dtos;
 
-namespace SplitCost.Application.UseCases
+namespace SplitCost.Application.UseCases;
+
+public class UpdateResidenceUseCase : BaseUseCase<UpdateResidenceInput, UpdateResidenceOutput>
 {
-    public class UpdateResidenceUseCase : IUseCase<UpdateResidenceInput, Result<UpdateResidenceOutput>>
+    private readonly IResidenceRepository _residenceRepository;
+    private readonly ILogger<UpdateResidenceUseCase> _logger;
+
+    public UpdateResidenceUseCase(
+        IResidenceRepository residenceRepository,
+        ILogger<UpdateResidenceUseCase> logger)
     {
-        private readonly IResidenceRepository _residenceRepository;
+        _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public UpdateResidenceUseCase(IResidenceRepository residenceRepository)
+    protected override Task<FluentValidation.Results.ValidationResult> ValidateAsync(UpdateResidenceInput input, CancellationToken cancellationToken)
+    {
+        if (input == null)
         {
-            _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
+            return Task.FromResult(new FluentValidation.Results.ValidationResult(
+                new[] { new FluentValidation.Results.ValidationFailure(nameof(input), "Input não pode ser nulo") }
+            ));
         }
 
-        public async Task<Result<UpdateResidenceOutput>> ExecuteAsync(UpdateResidenceInput updateResidenceInput, CancellationToken cancellationToken)
+        if (input.ResidenceId == Guid.Empty)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            //var residence = await _residenceRepository.GetByIdAsync(updateResidenceInput.ResidenceId, cancellationToken);
-            //if (residence == null)
-            //    throw new InvalidOperationException("Residência não encontrada.");
-
-            //residence.SetName(updateResidenceInput.Name);
-            //_residenceRepository.Update(residence);
-
-            //return new ResidenceDto
-            //{
-            //    Id = residence.Id,
-            //    Name = residence.Name,
-            //    CreatedAt = residence.CreatedAt,
-            //    UpdatedAt = residence.UpdatedAt
-            //};
-
-            //var result = new UpdateResidenceOutput
-            //{
-            //    Id = residence.Id,
-            //    Name = residence.Name,
-            //};
-
-            var result = new UpdateResidenceOutput
-            {
-                Id = Guid.NewGuid(),
-                Name = "NÃO IMPLEMENTADO",
-            };
-
-            return Result<UpdateResidenceOutput>.Success(result);
+            return Task.FromResult(new FluentValidation.Results.ValidationResult(
+                new[] { new FluentValidation.Results.ValidationFailure(nameof(input.ResidenceId), "ResidenceId não pode ser vazio") }
+            ));
         }
 
-       
+        return Task.FromResult(new FluentValidation.Results.ValidationResult());
+    }
+
+    protected override async Task<Result<UpdateResidenceOutput>> HandleAsync(UpdateResidenceInput input, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        _logger.BeginScope("Atualizando residência {ResidenceId}", input.ResidenceId);
+
+        var residence = await _residenceRepository.GetByIdAsync(input.ResidenceId, cancellationToken);
+
+        if (residence == null)
+        {
+            _logger.LogWarning("Residência não encontrada: {ResidenceId}", input.ResidenceId);
+            return Result<UpdateResidenceOutput>.Failure("Residence not found", ErrorType.NotFound);
+        }
+
+        residence.SetName(input.Name);
+        await _residenceRepository.UpdateAsync(residence);
+
+        var output = new UpdateResidenceOutput
+        {
+            Id = residence.Id,
+            Name = residence.Name
+        };
+
+        return Result<UpdateResidenceOutput>.Success(output);
     }
 }
