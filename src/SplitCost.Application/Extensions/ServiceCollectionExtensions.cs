@@ -35,12 +35,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUseCase<Guid, Result<GetExpenseByIdOutput>>, ReadExpenseByIdUseCase>();
         services.AddScoped<IUseCase<Guid, Result<IEnumerable<GetExpenseByIdOutput>>>, ReadExpensesByResidenceIdUseCase>();
 
-        // Users
-        services.AddScoped<IUseCase<CreateUserInput, Result<CreateUserOutput>>, CreateApplicationUserUseCase>();
-        services.AddScoped<IUseCase<Guid, Result<User>>, GetApplicationUserByIdUseCase>();
-        services.AddScoped<IUseCase<Guid, Result<UserSettings>>, ReadUserSettingsByUserIdUseCase>();
-
-
         // Incomes
         services.AddScoped<IUseCase<CreateIncomeInput, Result<CreateIncomeOutput>>, CreateIncomeUseCase>();
         //services.AddScoped<IUseCase<Guid, Result<GetExpenseByIdOutput>>, GetExpenseByIdUseCase>();

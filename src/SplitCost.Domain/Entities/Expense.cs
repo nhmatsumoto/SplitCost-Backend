@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SplitCost.Domain.Entities;
 
 [Table("Expenses")]
-public class Expense : BaseEntity
+public class Expense : BaseTenantEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,22 +23,24 @@ public class Expense : BaseEntity
     [Required]
     public DateTime Date { get; private set; }
 
+    [Required]
+    [MaxLength(500)]
     [Column(TypeName = "decimal(18,2)")]
     public decimal Amount { get; private set; }
 
-    [MaxLength(500)]
     [Required]
+    [MaxLength(500)]
     public string Description { get; private set; } = string.Empty;
 
-    [ForeignKey("User")]
+    // UUID do usuário pagante (Keycloak)
+    [Required]
     [Column("PayingUserId")]
-    public Guid PayingUserId{ get; set; }
+    public Guid PayingUserId { get; private set; }
 
-    [ForeignKey("Residence")]
-    [Column("ResidenceId")]
-    public Guid ResidenceId { get; private set; }
+    // Relação com residência (tenant)
+    [Required]
     public Residence Residence { get; private set; } = null!;
-    
+
     public Expense() { }
 
     internal Expense(
@@ -47,14 +49,16 @@ public class Expense : BaseEntity
         decimal amount,
         DateTime date,
         string description,
-        Guid residenceId)
+        Guid residenceId,
+        Guid payingUserId)
     {
-        SetType(type);
-        SetCategory(category);
-        SetAmount(amount);
-        SetDate(date);
-        SetDescription(description);
-        SetResidenceId(residenceId);
+        SetType(type)
+            .SetCategory(category)
+            .SetAmount(amount)
+            .SetDate(date)
+            .SetDescription(description)
+            .SetResidenceId(residenceId)
+            .SetPayingUserId(payingUserId);
     }
 
     public Expense SetId(Guid id)
@@ -96,7 +100,6 @@ public class Expense : BaseEntity
         Description = description.Trim();
         return this;
     }
-
 
     public Expense SetResidenceId(Guid residenceId)
     {

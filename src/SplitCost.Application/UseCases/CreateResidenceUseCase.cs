@@ -52,7 +52,7 @@ public class CreateResidenceUseCase : BaseUseCase<CreateResidenceInput, Residenc
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        _logger.BeginScope("Criando residência para usuário {UserId}", input.UserId);
+        _logger.BeginScope("CREATE RESIDENCE FOR USER: {UserId}", input.UserId);
 
         var residence = ResidenceFactory
             .Create()

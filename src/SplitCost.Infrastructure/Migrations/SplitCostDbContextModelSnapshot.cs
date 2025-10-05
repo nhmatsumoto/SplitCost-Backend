@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SpitCost.Infrastructure.Context;
+using SplitCost.Infrastructure.Context;
 
 #nullable disable
 
@@ -28,11 +28,18 @@ namespace SplitCost.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("Amount")
+                        .HasMaxLength(500)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Category")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -50,8 +57,7 @@ namespace SplitCost.Infrastructure.Migrations
                         .HasColumnName("PayingUserId");
 
                     b.Property<Guid>("ResidenceId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("ResidenceId");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -77,11 +83,17 @@ namespace SplitCost.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Category")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -91,7 +103,8 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<Guid>("ResidenceId")
                         .HasColumnType("uniqueidentifier");
@@ -113,30 +126,38 @@ namespace SplitCost.Infrastructure.Migrations
 
             modelBuilder.Entity("SplitCost.Domain.Entities.Member", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("UserId");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("ResidenceId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ResidenceId");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserId", "ResidenceId");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("UserId");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ResidenceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Members");
                 });
@@ -146,6 +167,9 @@ namespace SplitCost.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Apartment")
                         .IsRequired()
@@ -161,6 +185,9 @@ namespace SplitCost.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -205,10 +232,16 @@ namespace SplitCost.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("AvatarUrl");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -245,6 +278,12 @@ namespace SplitCost.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CreateBy")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -272,8 +311,7 @@ namespace SplitCost.Infrastructure.Migrations
 
                     b.HasIndex("ResidenceId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserSettings");
                 });
@@ -301,15 +339,13 @@ namespace SplitCost.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SplitCost.Domain.Entities.User", "User")
+                    b.HasOne("SplitCost.Domain.Entities.User", null)
                         .WithMany("Incomes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Residence");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SplitCost.Domain.Entities.Member", b =>
@@ -320,15 +356,13 @@ namespace SplitCost.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SplitCost.Domain.Entities.User", "User")
+                    b.HasOne("SplitCost.Domain.Entities.User", null)
                         .WithMany("Members")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Residence");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SplitCost.Domain.Entities.UserSettings", b =>
@@ -338,8 +372,8 @@ namespace SplitCost.Infrastructure.Migrations
                         .HasForeignKey("ResidenceId");
 
                     b.HasOne("SplitCost.Domain.Entities.User", "User")
-                        .WithOne()
-                        .HasForeignKey("SplitCost.Domain.Entities.UserSettings", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

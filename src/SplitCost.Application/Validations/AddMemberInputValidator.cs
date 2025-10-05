@@ -8,20 +8,17 @@ public class AddMemberInputValidator : AbstractValidator<AddMemberInput>
 {
     private readonly IMemberRepository _memberRepository;
     private readonly IResidenceRepository _residenceRepository;
-    private readonly IUserRepository _userRepository;
 
     public AddMemberInputValidator(
-        IUserRepository userRepository,
         IResidenceRepository residenceRepository,
         IMemberRepository memberRepository)
     {
-        _userRepository         = userRepository        ?? throw new ArgumentNullException(nameof(userRepository));
         _residenceRepository    = residenceRepository   ?? throw new ArgumentNullException(nameof(residenceRepository));
         _memberRepository       = memberRepository      ?? throw new ArgumentNullException(nameof(memberRepository));
 
-        RuleFor(x => x.UserId)
-            .NotEmpty().WithMessage("User is required.")
-            .MustAsync(UserExists).WithMessage("Usuário não encontrado.");
+        //RuleFor(x => x.UserId)
+        //    .NotEmpty().WithMessage("User is required.")
+        //    .MustAsync(UserExists).WithMessage("Usuário não encontrado.");
 
         RuleFor(x => x.ResidenceId)
             .NotEmpty().WithMessage("Residence is required.")
@@ -29,11 +26,6 @@ public class AddMemberInputValidator : AbstractValidator<AddMemberInput>
 
         RuleFor(x => x)
             .MustAsync(NotAlreadyMember).WithMessage("Usuário já é membro dessa residência.");
-    }
-
-    private async Task<bool> UserExists(Guid userId, CancellationToken cancellationToken)
-    {
-        return await _userRepository.ExistsAsync(x => x.Id == userId, cancellationToken);
     }
 
     private async Task<bool> ResidenceExists(Guid residenceId, CancellationToken cancellationToken)

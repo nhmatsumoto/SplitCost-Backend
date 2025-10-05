@@ -5,18 +5,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SplitCost.Domain.Entities;
 
 [Table("Members")]
-public class Member : BaseEntity
+public class Member : BaseTenantEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
+    // UUID do usuário vindo do Keycloak
     [Required]
-    [ForeignKey("User")]
     [Column("UserId")]
     public Guid UserId { get; set; }
-    public User User { get; set; } = null!;
 
+    // Relação com a residência (tenant)
     [Required]
     [ForeignKey("Residence")]
     [Column("ResidenceId")]
@@ -26,23 +26,24 @@ public class Member : BaseEntity
     [Required]
     public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
 
-    internal Member() { }
+    public Member() { }
 
-    //Guid userId, Guid residenceId, 
-    internal Member(DateTime joinedAt)
+    // Construtor fluente
+    internal Member(Guid userId, Guid residenceId, DateTime joinedAt)
     {
-        //SetUserId(userId);
-        //SetResidenceId(residenceId);
+        SetUserId(userId);
+        SetResidenceId(residenceId);
         SetJoinedAt(joinedAt);
     }
 
-    public Member SetId(Guid id) 
+    public Member SetId(Guid id)
     {
         if (id == Guid.Empty)
             throw new ArgumentException("Id inválido.");
         Id = id;
         return this;
     }
+
     public Member SetUserId(Guid userId)
     {
         if (userId == Guid.Empty)

@@ -6,14 +6,11 @@ namespace SplitCost.Application.Validations;
 
 public class CreateExpenseInputValidator : AbstractValidator<CreateExpenseInput>
 {
-    private readonly IUserRepository _userRepository;
     private readonly IResidenceRepository _residenceRepository;
 
     public CreateExpenseInputValidator(
-        IUserRepository userRepository,
         IResidenceRepository residenceRepository)
     {
-        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _residenceRepository = residenceRepository ?? throw new ArgumentNullException(nameof(residenceRepository));
 
         RuleFor(x => x.Type)
@@ -42,11 +39,11 @@ public class CreateExpenseInputValidator : AbstractValidator<CreateExpenseInput>
         //    .MustAsync(ResidenceExists)
         //    .WithMessage("Residence not found.");
 
-        RuleFor(x => x.PaidByUserId)
-            .NotEmpty()
-            .WithMessage("PaidByUser is required.")
-            .MustAsync(UserExists)
-            .WithMessage("Paying user not found.");
+        //RuleFor(x => x.PaidByUserId)
+        //    .NotEmpty()
+        //    .WithMessage("PaidByUser is required.")
+        //    .MustAsync(UserExists)
+        //    .WithMessage("Paying user not found.");
 
         //RuleFor(x => x.RegisteredByUserId)
         //    .NotEmpty()
@@ -60,8 +57,4 @@ public class CreateExpenseInputValidator : AbstractValidator<CreateExpenseInput>
         return await _residenceRepository.ExistsAsync(x => x.Id == residenceId, ct);
     }
 
-    private async Task<bool> UserExists(Guid userId, CancellationToken ct)
-    {
-        return await _userRepository.ExistsAsync(x => x.Id == userId, ct);
-    }
 }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using SpitCost.Infrastructure.Context;
+using SplitCost.Infrastructure.Context;
+using SplitCost.Infrastructure.Tenancy;
 
 namespace Playground.Infrastructure.Context;
 
@@ -21,7 +22,7 @@ public class SplitCostDbContextFactory : IDesignTimeDbContextFactory<SplitCostDb
 {
     public SplitCostDbContext CreateDbContext(string[] args)
     {
-        var basePath = Directory.GetCurrentDirectory(); // Infrastructure como base
+        var basePath = Directory.GetCurrentDirectory();
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(basePath)
@@ -31,6 +32,8 @@ public class SplitCostDbContextFactory : IDesignTimeDbContextFactory<SplitCostDb
         var optionsBuilder = new DbContextOptionsBuilder<SplitCostDbContext>();
         optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
-        return new SplitCostDbContext(optionsBuilder.Options);
+        var tenantService = new DesignTimeTenantService();
+
+        return new SplitCostDbContext(optionsBuilder.Options, tenantService);
     }
 }

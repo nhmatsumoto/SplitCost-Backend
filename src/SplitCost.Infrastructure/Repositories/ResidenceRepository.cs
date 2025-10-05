@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SpitCost.Infrastructure.Context;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Domain.Entities;
+using SplitCost.Infrastructure.Context;
 using SplitCost.Infrastructure.Persistence.Mapping;
 
 namespace SplitCost.Infrastructure.Repositories;
@@ -29,13 +29,25 @@ public class ResidenceRepository : Repository<Residence>, IResidenceRepository
     {
         var entity = await _context.Residences
             .Include(r => r.Members)
-                .ThenInclude(m => m.User)
             .Include(r => r.Expenses)
             .Where(r => r.Members.Any(m => m.UserId == userId))
             .AsNoTracking()
             .FirstOrDefaultAsync(cancellationToken);
 
         return entity?.ToDomain();
+    }
+
+    public async Task<Residence?> GetByInviteCodeAsync(string inviteCode)
+    {
+        if (string.IsNullOrWhiteSpace(inviteCode))
+            return null;
+
+        var code = inviteCode.Trim().ToUpper();
+        return await _context.Residences
+            .Include(r => r.Members)
+            .Include(r => r.Incomes)
+            .Include(r => r.Expenses)
+            .FirstOrDefaultAsync(r => r.InviteCode == code);
     }
 
 }

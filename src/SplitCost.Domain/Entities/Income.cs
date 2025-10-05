@@ -1,48 +1,50 @@
 ﻿using SplitCost.Domain.Common;
 using SplitCost.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace SplitCost.Domain.Entities
 {
-    public class Income : BaseEntity
+    public class Income : BaseTenantEntity
     {
         public Guid Id { get; set; }
+
+        [Required]
         public decimal Amount { get; set; }
+
+        [Required]
         public IncomeCategory Category { get; set; }
+
+        [Required]
         public DateTime Date { get; set; }
+
+        [Required]
+        [MaxLength(500)]
         public string Description { get; set; } = string.Empty;
-        public Guid ResidenceId { get; set; }
+
+        // UUID do usuário do Keycloak
+        [Required]
         public Guid UserId { get; set; }
+
+        // Relação com residência (tenant)
         public Residence Residence { get; set; } = null!;
-        public User User { get; set; } = null!;
 
         internal Income() { }
 
-        public Income(
+        internal Income(
             decimal amount,
             IncomeCategory category,
             DateTime date,
             Guid residenceId,
             Guid registeredByUserId,
             string description = ""
-            ) : this(amount, category, date, description, residenceId, registeredByUserId)
+        )
         {
-        }
-
-        internal Income(
-            decimal amount,
-            IncomeCategory category,
-            DateTime date,
-            string description,
-            Guid residenceId,
-            Guid registeredByUserId
-            )
-        {
-            SetAmount(amount);
-            SetCategory(category);
-            SetDate(date);
-            SetDescription(description);
-            SetResidenceId(residenceId);
-            SetUserId(registeredByUserId);
+            SetAmount(amount)
+                .SetCategory(category)
+                .SetDate(date)
+                .SetDescription(description)
+                .SetResidenceId(residenceId)
+                .SetUserId(registeredByUserId);
         }
 
         public Income SetId(Guid id)

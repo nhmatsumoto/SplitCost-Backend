@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SplitCost.Application.Common;
-using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
 using SplitCost.Application.Common.UseCases;

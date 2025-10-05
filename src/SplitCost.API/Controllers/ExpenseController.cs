@@ -70,7 +70,7 @@ namespace SplitCost.API.Controllers
             }
         }
 
-        [HttpGet("residence/{input:guid}")]
+        [HttpGet("residence/ex{input:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

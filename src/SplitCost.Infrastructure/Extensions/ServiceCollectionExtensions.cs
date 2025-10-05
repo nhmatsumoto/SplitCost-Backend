@@ -2,14 +2,15 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using SpitCost.Infrastructure.Context;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Services;
 using SplitCost.Application.Interfaces;
+using SplitCost.Infrastructure.Context;
 using SplitCost.Infrastructure.Logging;
 using SplitCost.Infrastructure.Repositories;
 using SplitCost.Infrastructure.Services;
+using SplitCost.Infrastructure.Tenancy;
 using System.Net.Http.Headers;
 
 namespace Playground.Infrastructure.DependencyInjection;
@@ -42,12 +43,13 @@ public static class ServiceCollectionExtensions
             throw new InvalidOperationException("A string de conexão 'DefaultConnection' não foi encontrada.");
         }
 
+        services.AddScoped<ITenantService, TenantService>();
+
 #warning Alterar base para PostgreSQL
         services.AddDbContext<SplitCostDbContext>(options =>
             options.UseSqlServer(connectionString));
 
         services.AddScoped<IResidenceRepository, ResidenceRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();
         services.AddScoped<IIncomeRepository, IncomeRepository>();
         services.AddScoped<IMemberRepository, MemberRepository>();

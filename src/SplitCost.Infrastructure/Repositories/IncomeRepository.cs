@@ -1,6 +1,6 @@
-﻿using SpitCost.Infrastructure.Context;
-using SplitCost.Application.Common.Repositories;
+﻿using SplitCost.Application.Common.Repositories;
 using SplitCost.Domain.Entities;
+using SplitCost.Infrastructure.Context;
 
 namespace SplitCost.Infrastructure.Repositories;
 

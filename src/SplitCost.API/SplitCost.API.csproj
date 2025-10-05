@@ -22,4 +22,8 @@
     <ProjectReference Include="..\SplitCost.Infrastructure\SplitCost.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 </Project>

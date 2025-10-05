@@ -13,8 +13,6 @@ public class UserSettings : BaseEntity
     public Guid UserId { get; private set; }
     public Guid? ResidenceId { get; private set; }
 
-    // Navigation Property
-    public User User { get; private set; } = null!;
     public Residence Residence { get; private set; } = null!;
 
 
