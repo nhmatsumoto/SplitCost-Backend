@@ -1,4 +1,4 @@
-# SplitCosts
+# SplitCosts – Documento de Requisitos Funcionais
 
 ## 📌 Visão Geral
 
@@ -22,36 +22,36 @@ Ele permite o registro de **ganhos, despesas e investimentos**, organizados em c
 
 ### Entidades Principais
 
-- **Residência**
-  - Representa o grupo de pessoas que compartilham finanças.
-  - Contém os indivíduos e as transações **compartilhadas**.
+**Residência**  
+- Representa o grupo de pessoas que compartilham finanças.  
+- Contém os indivíduos e as transações **compartilhadas**.
 
-- **Indivíduo**
-  - Membro da residência.
-  - Registra ganhos, despesas e investimentos individuais.
-  - Participa das divisões de despesas compartilhadas.
+**Indivíduo**  
+- Membro da residência.  
+- Registra ganhos, despesas e investimentos individuais.  
+- Participa das divisões de despesas compartilhadas.
 
-- **Categoria**
-  - Classificação de transações.
-  - Tipos:
-    - **Compartilhada** → despesas coletivas (moradia, contas, alimentação).
-    - **Individual** → despesas pessoais (lazer, hobbies, saúde, etc.).
+**Categoria**  
+- Classificação de transações.  
+- Tipos:
+  - **Compartilhada** → despesas coletivas (moradia, contas, alimentação).  
+  - **Individual** → despesas pessoais (lazer, hobbies, saúde, etc.).  
 
-- **Transação**
-  - Registro financeiro (ganho, despesa ou investimento).
-  - Pode ser individual (ligada a um indivíduo) ou compartilhada (ligada à residência).
-  - Atributos:
-    - `tipo` → [ganho | despesa | investimento]
-    - `valor`, `data`, `descricao`
-    - `categoria_id`
-    - `residencia_id` *(se compartilhada)*
-    - `individuo_id` *(se individual)*
+**Transação**  
+- Registro financeiro (ganho, despesa ou investimento).  
+- Pode ser individual (ligada a um indivíduo) ou compartilhada (ligada à residência).  
+- Atributos:
+  - `tipo` → [ganho | despesa | investimento]  
+  - `valor`, `data`, `descricao`  
+  - `categoria_id`  
+  - `residencia_id` *(se compartilhada)*  
+  - `individuo_id` *(se individual)*  
 
-- **Divisão**
-  - Representa como uma transação compartilhada é repartida entre os membros.
-  - Pode ser:
-    - **Igualitária** → todos pagam o mesmo valor.
-    - **Proporcional** → baseado em pesos (ex.: renda de cada indivíduo).
+**Divisão**  
+- Representa como uma transação compartilhada é repartida entre os membros.  
+- Pode ser:
+  - **Igualitária** → todos pagam o mesmo valor.  
+  - **Proporcional** → baseado em pesos (ex.: renda de cada indivíduo).  
 
 ---
 
