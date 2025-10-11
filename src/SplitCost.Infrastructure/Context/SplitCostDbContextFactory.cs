@@ -22,7 +22,7 @@ public class SplitCostDbContextFactory : IDesignTimeDbContextFactory<SplitCostDb
 {
     public SplitCostDbContext CreateDbContext(string[] args)
     {
-        var basePath = Directory.GetCurrentDirectory();
+        var basePath = Path.Combine(Directory.GetCurrentDirectory(), "../SplitCost.Infrastructure");
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(basePath)
@@ -30,7 +30,7 @@ public class SplitCostDbContextFactory : IDesignTimeDbContextFactory<SplitCostDb
             .Build();
 
         var optionsBuilder = new DbContextOptionsBuilder<SplitCostDbContext>();
-        optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+        optionsBuilder.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
 
         var tenantService = new DesignTimeTenantService();
 

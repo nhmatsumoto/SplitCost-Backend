@@ -1,6 +1,16 @@
+@SplitCost.API_HostAddress = https://localhost:7041
 @NextHome.API_HostAddress = http://localhost:5153
 
 GET {{NextHome.API_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+POST {{SplitCost.API_HostAddress}}/api/expense
+Content-Type: application/json
+
+{
+  //CreateExpenseInput
+}
 
 ###

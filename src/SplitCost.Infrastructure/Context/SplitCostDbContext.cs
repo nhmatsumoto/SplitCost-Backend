@@ -100,6 +100,8 @@ public class SplitCostDbContext : DbContext
             entity.Property(us => us.Language).HasMaxLength(10);
         });
 
+        modelBuilder.HasPostgresExtension("uuid-ossp");
+
         ApplyGlobalTenantFilter(modelBuilder);
     }
 

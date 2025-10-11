@@ -40,14 +40,13 @@ public static class ServiceCollectionExtensions
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         if (string.IsNullOrEmpty(connectionString))
         {
-            throw new InvalidOperationException("A string de conexão 'DefaultConnection' não foi encontrada.");
+            throw new InvalidOperationException("A conexão não foi encontrada.");
         }
 
         services.AddScoped<ITenantService, TenantService>();
 
-#warning Alterar base para PostgreSQL
         services.AddDbContext<SplitCostDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseNpgsql(connectionString));
 
         services.AddScoped<IResidenceRepository, ResidenceRepository>();
         services.AddScoped<IExpenseRepository, ExpenseRepository>();

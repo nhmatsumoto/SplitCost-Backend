@@ -1,6 +1,5 @@
 ﻿using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
-using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.UseCases;
 
@@ -23,7 +22,7 @@ public class ResolveUserTenantUseCase
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> ResolveAsync(Guid keycloakUserId, string? residenceCode = null, string? newResidenceName = null, CancellationToken cancellation)
+    public async Task<Guid> ResolveAsync(Guid keycloakUserId, string? residenceCode = null, string? newResidenceName = null, CancellationToken cancellationToken = default)
     {
         // 1. Verifica se já é membro de alguma residência
         var member = await _memberRepository.GetByExpression(x => x.UserId == keycloakUserId);
