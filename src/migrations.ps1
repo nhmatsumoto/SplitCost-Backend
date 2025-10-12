@@ -1,3 +1,7 @@
+# Força codificação UTF-8 no console e no output
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+
 # Caminho para o projeto Infrastructure
 $infrastructureProjectPathRelative = "SplitCost.Infrastructure\SplitCost.Infrastructure.csproj"
 $infrastructureProjectPathFull = Join-Path $PSScriptRoot $infrastructureProjectPathRelative
@@ -13,10 +17,10 @@ if ($migrationName) {
         --startup-project "$infrastructureProjectPathFull"
 
     if ($LASTEXITCODE -ne 0) {
-        Write-Error "❌ Erro ao adicionar a migration."
+        Write-Error "Erro ao adicionar a migration."
         exit 1
     } else {
-        Write-Host "✅ Migration '$migrationName' adicionada com sucesso."
+        Write-Host "Migration '$migrationName' adicionada com sucesso."
     }
 }
 
@@ -27,10 +31,10 @@ dotnet ef database update `
     --startup-project "$infrastructureProjectPathFull"
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "❌ Erro ao aplicar as migrations."
+    Write-Error "Erro ao aplicar as migrations."
     exit 1
 } else {
-    Write-Host "✅ Migrations aplicadas com sucesso ao banco de dados PostgreSQL."
+    Write-Host "Migrations aplicadas com sucesso ao banco de dados PostgreSQL."
 }
 
-Write-Host "🎉 Processo de migrations concluído."
+Write-Host "Processo de migrations concluído."

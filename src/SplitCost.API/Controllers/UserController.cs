@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SplitCost.Application.Common.Services;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppUser;
 
 namespace SplitCost.API.Controllers;
 
@@ -8,18 +7,10 @@ namespace SplitCost.API.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    public readonly IKeycloakService _keycloakService;
-
-    public UserController(IKeycloakService keycloakService)
-    {
-        _keycloakService = keycloakService;
-    }
-
     [HttpPost("register")]
-    public IActionResult Register(CreateUserInput input)
+    public IActionResult Register(CreateApplicationUserInput input)
     {
-        _keycloakService.CreateUserAsync();
-
+      
         // Implement registration logic here
         return Ok("Registration successful");
     }

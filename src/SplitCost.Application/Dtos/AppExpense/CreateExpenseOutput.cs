@@ -1,8 +1,8 @@
 ﻿using SplitCost.Domain.Enums;
 
-namespace SplitCost.Application.Dtos;
+namespace SplitCost.Application.Dtos.AppExpense;
 
-public class GetExpenseByIdOutput
+public record CreateExpenseOutput
 {
     public Guid Id { get; set; }
     public ExpenseType Type { get; set; }
@@ -12,5 +12,6 @@ public class GetExpenseByIdOutput
     public bool IsSharedAmongMembers { get; set; }
     public string? Description { get; set; }
     public Guid ResidenceId { get; set; }
-    public Guid PayingUserId { get; set; }
+    public Guid RegisteredByUserId { get; set; }
+    public Guid PaidByUserId { get; set; }
 }

@@ -1,4 +1,7 @@
-﻿namespace SplitCost.Application.Dtos;
+﻿using SplitCost.Application.Dtos.AppExpense;
+using SplitCost.Application.Dtos.AppMember;
+
+namespace SplitCost.Application.Dtos.AppResidence;
 
 public class GetResidenceByIdOutput
 {

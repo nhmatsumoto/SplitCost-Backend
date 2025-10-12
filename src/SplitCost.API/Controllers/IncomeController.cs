@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppIncome;
 using SplitCost.Domain.Enums;
 
 namespace SplitCost.API.Controllers;

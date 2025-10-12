@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppMember;
+using SplitCost.Application.Dtos.AppResidence;
 using SplitCost.Domain.Entities;
 
 namespace SplitCost.API.Controllers

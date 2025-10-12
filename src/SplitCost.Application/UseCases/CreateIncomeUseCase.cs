@@ -5,7 +5,7 @@ using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
 using SplitCost.Application.Common.UseCases;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppIncome;
 using SplitCost.Domain.Entities;
 using SplitCost.Domain.Factories;
 

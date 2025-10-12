@@ -2,7 +2,7 @@
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
 using SplitCost.Application.Common.UseCases;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppResidence;
 
 namespace SplitCost.Application.UseCases;
 

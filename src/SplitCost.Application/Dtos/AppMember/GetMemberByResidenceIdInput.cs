@@ -1,4 +1,4 @@
-﻿namespace SplitCost.Application.Dtos;
+﻿namespace SplitCost.Application.Dtos.AppMember;
 
 public class GetMemberByResidenceIdInput
 {

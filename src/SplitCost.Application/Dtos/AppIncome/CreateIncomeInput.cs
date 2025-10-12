@@ -1,6 +1,6 @@
 ﻿using SplitCost.Domain.Enums;
 
-namespace SplitCost.Application.Dtos
+namespace SplitCost.Application.Dtos.AppIncome
 {
     public record CreateIncomeInput
     {

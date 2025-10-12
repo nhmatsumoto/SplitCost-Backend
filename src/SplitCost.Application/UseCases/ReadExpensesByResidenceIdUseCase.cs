@@ -3,7 +3,7 @@ using SplitCost.Application.Common;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
 using SplitCost.Application.Common.UseCases;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppExpense;
 using SplitCost.Domain.Entities;
 
 namespace SplitCost.Application.UseCases;

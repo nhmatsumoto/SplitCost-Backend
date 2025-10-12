@@ -25,7 +25,6 @@ builder.Configuration
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.Services.AddHttpClient<IKeycloakService, KeycloakService>();
 
 // Authentication
 builder.Services.AddAuthentication("Bearer")
@@ -43,17 +42,15 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-// Authorization
 builder.Services.AddAuthorization();
 
-// Infrastructure
-builder.Services.AddInfrastructure(builder.Configuration);
+// Custom services
+builder.Services
+    .AddInfrastructure(builder.Configuration)
+    .AddApplication()
+    .AddExceptions(builder.Configuration)
+    .AddHttpClient<IKeycloakService, KeycloakService>();
 
-// Application 
-builder.Services.AddApplication();
-
-// Exceptions
-builder.Services.AddExceptions(builder.Configuration);
 
 // Alterar para operar em produção
 builder.Services.AddCors(options =>

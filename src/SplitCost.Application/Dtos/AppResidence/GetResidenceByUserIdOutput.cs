@@ -1,6 +1,9 @@
-﻿namespace SplitCost.Application.Dtos;
+﻿using SplitCost.Application.Dtos.AppExpense;
+using SplitCost.Application.Dtos.AppMember;
 
-public record CreateResidenceOutput
+namespace SplitCost.Application.Dtos.AppResidence;
+
+public class GetResidenceByUserIdOutput
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -12,11 +15,17 @@ public record CreateResidenceOutput
     public string Country { get; private set; }
     public string PostalCode { get; private set; }
 
-    public List<GetMemberByresidenceIdOutput> Members { get; set; } = new();
-    public List<GetExpenseOutput> Expenses { get; set; } = new();
-
     // Auditoria
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
+    // Coleções
+    public List<AddMemberInput> Members { get; set; } = new List<AddMemberInput>();
+    public List<GetExpenseOutput> Expenses { get; set; } = new List<GetExpenseOutput>();
+
+
+    public GetResidenceByUserIdOutput()
+    {
+        
+    }
 }

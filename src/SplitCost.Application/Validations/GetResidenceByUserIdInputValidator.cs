@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppResidence;
 
 namespace SplitCost.Application.Validations;
 

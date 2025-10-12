@@ -2,7 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Application.Common.Responses;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppExpense;
+using SplitCost.Application.Dtos.AppIncome;
+using SplitCost.Application.Dtos.AppMember;
+using SplitCost.Application.Dtos.AppResidence;
 using SplitCost.Application.UseCases;
 using SplitCost.Application.Validations;
 using SplitCost.Domain.Entities;

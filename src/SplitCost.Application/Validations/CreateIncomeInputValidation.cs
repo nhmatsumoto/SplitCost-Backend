@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using SplitCost.Application.Common.Repositories;
-using SplitCost.Application.Dtos;
+using SplitCost.Application.Dtos.AppIncome;
 
 namespace SplitCost.Application.Validations;
 

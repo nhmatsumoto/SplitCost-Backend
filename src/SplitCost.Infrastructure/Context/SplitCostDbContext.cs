@@ -2,6 +2,7 @@
 using SplitCost.Application.Common.Interfaces;
 using SplitCost.Domain.Common;
 using SplitCost.Domain.Entities;
+using SplitCost.Infrastructure.Extensions;
 using System.Reflection;
 
 namespace SplitCost.Infrastructure.Context;
@@ -101,6 +102,7 @@ public class SplitCostDbContext : DbContext
         });
 
         modelBuilder.HasPostgresExtension("uuid-ossp");
+        ModelBuilderExtensions.UseLowerCaseNamingConvention(modelBuilder);
 
         ApplyGlobalTenantFilter(modelBuilder);
     }
