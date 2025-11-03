@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
@@ -36,12 +37,12 @@ public class CreateResidenceUseCase : BaseUseCase<CreateResidenceInput, Residenc
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    protected override async Task<FluentValidation.Results.ValidationResult> ValidateAsync(CreateResidenceInput input, CancellationToken cancellationToken)
+    protected override async Task<ValidationResult> ValidateAsync(CreateResidenceInput input, CancellationToken cancellationToken)
     {
         if (input == null)
         {
-            return new FluentValidation.Results.ValidationResult(
-                new[] { new FluentValidation.Results.ValidationFailure(nameof(input), "Input não pode ser nulo") }
+            return new ValidationResult(
+                new[] { new ValidationFailure(nameof(input), "Input não pode ser nulo") }
             );
         }
 

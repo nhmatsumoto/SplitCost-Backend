@@ -3,13 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SplitCost.Application.Common.Interfaces;
+using SplitCost.Application.Common.Interfaces.Identity;
 using SplitCost.Application.Common.Repositories;
-using SplitCost.Application.Common.Services;
 using SplitCost.Application.Interfaces;
 using SplitCost.Infrastructure.Context;
+using SplitCost.Infrastructure.Identity.Keycloak;
 using SplitCost.Infrastructure.Logging;
 using SplitCost.Infrastructure.Repositories;
-using SplitCost.Infrastructure.Services;
+using SplitCost.Infrastructure.Services.Auth;
 using SplitCost.Infrastructure.Tenancy;
 using System.Net.Http.Headers;
 
@@ -56,17 +57,33 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork<SplitCostDbContext>>();
 
         //Keycloak Config
+        services.AddScoped<IKeycloakUserService, KeycloakUserService>();
+        //services.AddScoped<IKeycloakAuthService, KeycloakAuthService>();
+
         services.Configure<KeycloakSettings>(configuration.GetSection("Keycloak"));
 
         services.AddOptions<KeycloakSettings>().Bind(configuration.GetSection("Keycloak")).ValidateOnStart();
 
-        services.AddHttpClient<IKeycloakService, KeycloakService>((serviceProvider, client) =>
+        services.AddHttpClient<IKeycloakAuthService, KeycloakAuthService>((serviceProvider, client) =>
         {
             var keycloakSettings = serviceProvider.GetRequiredService<IOptions<KeycloakSettings>>().Value;
 
             client.BaseAddress = new Uri(keycloakSettings.BaseUrl);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        })
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+        #if DEBUG
+            return new HttpClientHandler
+            {
+                // Somente para desenvolvimento! Aceita qualquer certificado
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+        #else
+            return new HttpClientHandler(); // Produção valida normalmente
+        #endif
         });
+
 
         //Retry policy for HttpClient
         //.AddPolicyHandler(Policy

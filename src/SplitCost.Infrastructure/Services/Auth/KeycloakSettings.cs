@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SplitCost.Infrastructure.Services;
+namespace SplitCost.Infrastructure.Services.Auth;
 
 public class KeycloakSettings
 {

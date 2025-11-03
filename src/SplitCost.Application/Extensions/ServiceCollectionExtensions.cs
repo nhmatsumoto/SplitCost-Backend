@@ -6,6 +6,7 @@ using SplitCost.Application.Dtos.AppExpense;
 using SplitCost.Application.Dtos.AppIncome;
 using SplitCost.Application.Dtos.AppMember;
 using SplitCost.Application.Dtos.AppResidence;
+using SplitCost.Application.Dtos.AppUser;
 using SplitCost.Application.UseCases;
 using SplitCost.Application.Validations;
 using SplitCost.Domain.Entities;
@@ -24,7 +25,11 @@ public static class ServiceCollectionExtensions
         // FluentValidation Configuration
         services.AddValidatorsFromAssemblyContaining<CreateExpenseInputValidator>();
 
-        // Residences
+        // User
+        services.AddScoped<IUseCase<CreateApplicationUserInput, Result<CreateApplicationUserOutput>>, CreateApplicationUserUseCase>();
+
+
+        // Residence
         services.AddScoped<IUseCase<CreateResidenceInput, Result<Residence>>, CreateResidenceUseCase>();
         services.AddScoped<IUseCase<GetResidenceByIdInput, Result<Residence>>, ReadResidenceByIdUseCase>();
         services.AddScoped<IUseCase<UpdateResidenceInput, Result<UpdateResidenceOutput>>, UpdateResidenceUseCase>();

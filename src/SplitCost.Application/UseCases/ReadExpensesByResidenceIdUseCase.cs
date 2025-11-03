@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 using SplitCost.Application.Common;
 using SplitCost.Application.Common.Repositories;
 using SplitCost.Application.Common.Responses;
@@ -21,16 +22,16 @@ public class ReadExpensesByResidenceIdUseCase : BaseUseCase<Guid, IEnumerable<Ge
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    protected override Task<FluentValidation.Results.ValidationResult> ValidateAsync(Guid residenceId, CancellationToken cancellationToken)
+    protected override Task<ValidationResult> ValidateAsync(Guid residenceId, CancellationToken cancellationToken)
     {
         if (residenceId == Guid.Empty)
         {
-            return Task.FromResult(new FluentValidation.Results.ValidationResult(
-                new[] { new FluentValidation.Results.ValidationFailure(nameof(residenceId), "ResidenceId não pode ser vazio") }
+            return Task.FromResult(new ValidationResult(
+                new[] { new ValidationFailure(nameof(residenceId), "ResidenceId não pode ser vazio") }
             ));
         }
 
-        return Task.FromResult(new FluentValidation.Results.ValidationResult());
+        return Task.FromResult(new ValidationResult());
     }
 
     protected override async Task<Result<IEnumerable<GetExpenseByIdOutput>>> HandleAsync(Guid residenceId, CancellationToken cancellationToken)

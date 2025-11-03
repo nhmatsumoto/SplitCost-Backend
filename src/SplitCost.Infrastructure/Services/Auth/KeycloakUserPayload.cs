@@ -1,6 +1,6 @@
 ﻿using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
-namespace SplitCost.Infrastructure.Services;
+namespace SplitCost.Infrastructure.Services.Auth;
 
 public class KeycloakUserPayload
 {

@@ -2,10 +2,10 @@ using Microsoft.IdentityModel.Tokens;
 using Playground.API.Middlewares;
 using Playground.Infrastructure.DependencyInjection;
 using Serilog;
-using SplitCost.Application.Common.Services;
+using SplitCost.Application.Common.Interfaces.Identity;
 using SplitCost.Application.Extensions;
 using SplitCost.Domain.Exceptions.Extensions;
-using SplitCost.Infrastructure.Services;
+using SplitCost.Infrastructure.Identity.Keycloak;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -49,7 +49,7 @@ builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddApplication()
     .AddExceptions(builder.Configuration)
-    .AddHttpClient<IKeycloakService, KeycloakService>();
+    .AddHttpClient<IKeycloakAuthService, KeycloakAuthService>();
 
 
 // Alterar para operar em produção

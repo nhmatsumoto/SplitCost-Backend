@@ -1,4 +1,4 @@
-﻿namespace SplitCost.Infrastructure.Services;
+﻿namespace SplitCost.Infrastructure.Services.Auth;
 
 public class Credential
 {

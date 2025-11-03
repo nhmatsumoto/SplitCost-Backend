@@ -1,4 +1,6 @@
-﻿namespace SplitCost.Application.Dtos.AppUser;
+﻿using SplitCost.Domain.Enums;
+
+namespace SplitCost.Application.Dtos.AppUser;
 
 public record CreateApplicationUserInput
 {
@@ -13,5 +15,5 @@ public record CreateApplicationUserInput
     /// Define o perfil do usuário no sistema.
     /// Pode ser "Administrator" (responsável pela residência) ou "Member" (participante).
     /// </summary>
-    public string Profile { get; init; } = string.Empty;
+    public UserProfileType Profile { get; init; }
 }

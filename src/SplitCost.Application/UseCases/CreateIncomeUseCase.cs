@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using SplitCost.Application.Common;
 using SplitCost.Application.Common.Interfaces;
@@ -30,19 +31,19 @@ public class CreateIncomeUseCase : BaseUseCase<CreateIncomeInput, CreateIncomeOu
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    protected override async Task<FluentValidation.Results.ValidationResult> ValidateAsync(CreateIncomeInput input, CancellationToken cancellationToken)
+    protected override async Task<ValidationResult> ValidateAsync(CreateIncomeInput input, CancellationToken cancellationToken)
     {
         if (input == null)
         {
-            return new FluentValidation.Results.ValidationResult(
+            return new ValidationResult(
                 new[] { new FluentValidation.Results.ValidationFailure(nameof(input), "Input não pode ser nulo") }
             );
         }
 
         if (input.Amount <= 0)
         {
-            return new FluentValidation.Results.ValidationResult(
-                new[] { new FluentValidation.Results.ValidationFailure(nameof(input.Amount), "O valor da renda deve ser maior que zero") }
+            return new ValidationResult(
+                new[] { new ValidationFailure(nameof(input.Amount), "O valor da renda deve ser maior que zero") }
             );
         }
 
